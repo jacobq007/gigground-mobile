@@ -27,9 +27,15 @@ export default function Profile() {
   const initial = (user?.name || "U")[0].toUpperCase();
   const km = KYC_META[kyc] || KYC_META.unverified;
 
+  const isHirer = user?.type === "business";
+  const isVerified = isHirer ? user?.isVerifiedHirer : user?.isVerifiedWorker;
+  const verifiedBadge = isVerified ? { label: "Verified", color: C.green, bg: C.greenSoft } : { label: "Not verified", color: C.text3, bg: C.surface2 };
+
   const MENU = [
     ["grid-outline", "Dashboard", C.indigo, () => router.push("/(tabs)/profile/dashboard")],
+    ["briefcase-outline", "My posted gigs", C.indigo, () => router.push("/(tabs)/profile/my-gigs")],
     ["shield-checkmark-outline", "KYC verification", C.text2, () => router.push("/(tabs)/profile/kyc"), km],
+    ["ribbon-outline", "Get Verified", C.text2, () => router.push("/modals/verify"), verifiedBadge],
     ["wallet-outline", "Payments", C.green, null],
     ["star-outline", "Reviews", C.text2, null],
     ["create-outline", "Edit profile", C.text2, () => router.push("/(tabs)/profile/edit")],

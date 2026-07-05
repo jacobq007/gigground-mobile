@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, TextInput, View, StyleSheet, Easing } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { C, F, money } from "../lib/theme";
 
 // ── Labelled text field ─────────────────────────────────────────────────────────
@@ -50,6 +51,41 @@ export function Chip({ label, tone = "neutral", small }) {
     <View style={{ backgroundColor: t.bg, paddingHorizontal: small ? 7 : 9, paddingVertical: small ? 2 : 3, borderRadius: 5, alignSelf: "flex-start" }}>
       <Text style={{ color: t.fg, fontFamily: F.med, fontSize: 11 }}>{label}</Text>
     </View>
+  );
+}
+
+// ── Verified badge — visually distinct from a plain Chip (filled icon + label) ──
+export function VerifiedBadge({ label = "Verified", size = "sm" }) {
+  const small = size === "sm";
+  return (
+    <View style={[bStyles.badge, small && bStyles.badgeSm]}>
+      <Ionicons name="checkmark-circle" size={small ? 11 : 13} color={C.indigo} />
+      <Text style={[bStyles.txt, small && bStyles.txtSm]}>{label}</Text>
+    </View>
+  );
+}
+const bStyles = StyleSheet.create({
+  badge: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: C.indigoSoft, borderWidth: 1, borderColor: C.indigo + "33", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 99, alignSelf: "flex-start" },
+  badgeSm: { paddingHorizontal: 6, paddingVertical: 2 },
+  txt: { fontFamily: F.bold, fontSize: 11, color: C.indigo },
+  txtSm: { fontSize: 10 },
+});
+
+// ── Toast — brief auto-dismissing bottom banner ─────────────────────────────────
+export function Toast({ message, visible }) {
+  const op = useRef(new Animated.Value(0)).current;
+  const ty = useRef(new Animated.Value(10)).current;
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(op, { toValue: visible ? 1 : 0, duration: 200, useNativeDriver: true }),
+      Animated.timing(ty, { toValue: visible ? 0 : 10, duration: 200, useNativeDriver: true }),
+    ]).start();
+  }, [visible]);
+  if (!message) return null;
+  return (
+    <Animated.View pointerEvents="none" style={{ position: "absolute", left: 18, right: 18, bottom: 24, opacity: op, transform: [{ translateY: ty }], backgroundColor: C.navy, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, alignItems: "center" }}>
+      <Text style={{ color: "#fff", fontFamily: F.med, fontSize: 13 }}>{message}</Text>
+    </Animated.View>
   );
 }
 
