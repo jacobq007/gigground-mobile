@@ -4,6 +4,17 @@ You don't need to understand any code. There are two ways — the **browser way 
 
 ---
 
+## One-time setup: install Node.js
+
+The app needs Node.js to run. If you don't already have it:
+
+1. Go to **nodejs.org** and download the "LTS" installer for your computer.
+2. Run the installer, clicking "Next" through the defaults.
+
+You only need to do this once.
+
+---
+
 ## ✅ EASIEST: see it in your computer's browser
 
 1. In the `gigground-mobile` folder, **double-click `OPEN_IN_BROWSER.bat`**.
