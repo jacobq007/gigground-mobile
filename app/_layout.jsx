@@ -34,8 +34,6 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="modals/notifications" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/post-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
-            <Stack.Screen name="modals/new-post" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
-            <Stack.Screen name="modals/new-event" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/active-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/verify" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
           </Stack>

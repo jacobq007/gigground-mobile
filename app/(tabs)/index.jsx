@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Skeleton, FadeIn } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
-import { gigsAPI, postsAPI, notificationsAPI, applicationsAPI } from "../../lib/api";
+import { gigsAPI, notificationsAPI, applicationsAPI } from "../../lib/api";
 import { sortGigsByZone } from "../../lib/gigSort";
 import { C, FJ, money } from "../../lib/theme";
 
@@ -106,7 +106,6 @@ export default function Home() {
   const { user } = useAuth();
   const { feedZone } = useLocation();
   const [gigs, setGigs] = useState(null);
-  const [posts, setPosts] = useState([]);
   const [apps, setApps] = useState([]);
   const [unread, setUnread] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -117,8 +116,8 @@ export default function Home() {
   const fabAnims = useRef(FAB_ACTIONS.map(() => new Animated.Value(0))).current;
 
   const load = useCallback(async () => {
-    const [g, p, u, a] = await Promise.all([gigsAPI.getAll(), postsAPI.getAll(), notificationsAPI.unreadCount(), applicationsAPI.getMy()]);
-    setGigs(g); setPosts(p); setUnread(u); setApps(a);
+    const [g, u, a] = await Promise.all([gigsAPI.getAll(), notificationsAPI.unreadCount(), applicationsAPI.getMy()]);
+    setGigs(g); setUnread(u); setApps(a);
   }, []);
   useEffect(() => { load(); }, [load]);
   useFocusEffect(useCallback(() => { applicationsAPI.getMy().then(setApps); }, []));
@@ -242,7 +241,7 @@ export default function Home() {
                     <Text style={s.sectionTitle}>Active gigs</Text>
                     <View style={s.countBadge}><Text style={s.countBadgeTxt}>{activeApps.length}</Text></View>
                   </View>
-                  <Pressable onPress={() => router.push("/(tabs)/profile/dashboard")}><Text style={s.sectionLink}>Dashboard ›</Text></Pressable>
+                  <Pressable onPress={() => router.push("/(tabs)/dashboard")}><Text style={s.sectionLink}>Dashboard ›</Text></Pressable>
                 </View>
                 {activeApps.map((a) => (
                   <ActiveGigCard key={a.id} app={a} onPress={() => router.push(`/modals/active-gig?id=${a.id}`)} />
@@ -278,26 +277,6 @@ export default function Home() {
               ))}
             </View>
           </FadeIn>
-
-          {/* Local buzz preview */}
-          {posts.length > 0 ? (
-            <FadeIn delay={180}>
-              <View style={{ marginTop: 22 }}>
-                <View style={s.sectionHead}>
-                  <Text style={s.sectionTitle}>Local buzz</Text>
-                  <Pressable onPress={() => router.push("/(tabs)/community")}><Text style={s.sectionLink}>Open ›</Text></Pressable>
-                </View>
-                <View style={s.buzzCard}>
-                  {posts.slice(0, 2).map((p, i) => (
-                    <Pressable key={p.id} onPress={() => router.push(`/(tabs)/community/${p.id}`)} style={[{ paddingVertical: 11 }, i === 0 && posts.length > 1 && s.buzzDivider]}>
-                      <Text style={s.buzzTitle} numberOfLines={1}>{p.title}</Text>
-                      <Text style={s.buzzMeta}>{p.area} · {p.authorName}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-            </FadeIn>
-          ) : null}
         </View>
       </ScrollView>
 
@@ -400,11 +379,6 @@ const s = StyleSheet.create({
   nearbyDate: { fontFamily: FJ.reg, fontSize: 11, color: "#929AA3", marginTop: 2 },
   urgentBadge: { backgroundColor: V2.urgentBg, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
   urgentTxt: { color: V2.urgentText, fontFamily: FJ.xbold, fontSize: 10, letterSpacing: 0.2, textTransform: "uppercase" },
-
-  buzzCard: { backgroundColor: "#fff", borderRadius: 16, paddingHorizontal: 14, shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
-  buzzDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "#EDEDF0" },
-  buzzTitle: { fontFamily: FJ.sbold, fontSize: 13, color: V2.textPrimary },
-  buzzMeta: { fontFamily: FJ.reg, fontSize: 12, color: "#929AA3", marginTop: 2 },
 
   fabAction: { position: "absolute", right: 20, bottom: 24, flexDirection: "row", alignItems: "center", gap: 12, zIndex: 102 },
   fabLabelPill: { backgroundColor: "#fff", paddingHorizontal: 15, paddingVertical: 8, borderRadius: 22, shadowColor: "#000", shadowOpacity: 0.14, shadowRadius: 12, shadowOffset: { width: 0, height: 3 }, elevation: 3 },

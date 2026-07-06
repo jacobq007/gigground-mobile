@@ -32,7 +32,6 @@ export default function Profile() {
   const verifiedBadge = isVerified ? { label: "Verified", color: C.green, bg: C.greenSoft } : { label: "Not verified", color: C.text3, bg: C.surface2 };
 
   const MENU = [
-    ["grid-outline", "Dashboard", C.indigo, () => router.push("/(tabs)/profile/dashboard")],
     ["briefcase-outline", "My posted gigs", C.indigo, () => router.push("/(tabs)/profile/my-gigs")],
     ["shield-checkmark-outline", "KYC verification", C.text2, () => router.push("/(tabs)/profile/kyc"), km],
     ["ribbon-outline", "Get Verified", C.text2, () => router.push("/modals/verify"), verifiedBadge],
