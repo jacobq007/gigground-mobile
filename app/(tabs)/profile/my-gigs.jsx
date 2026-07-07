@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Chip, Skeleton, Empty, VerifiedBadge } from "../../../components/ui";
 import { ApplicantCard } from "../../../components/ApplicantCard";
 import DayPicker from "../../../components/DayPicker";
-import { gigsAPI, applicantsAPI } from "../../../lib/api";
+import { gigsAPI, applicantsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
 import { formatPayRange } from "../../../lib/pay";
 import { C, F } from "../../../lib/theme";
 
@@ -87,7 +87,15 @@ export default function MyGigs() {
                 )
               ) : (
                 <View style={{ marginTop: 14 }}>
-                  <Text style={s.sectionLbl}>Applicants ({applicants.length})</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                    <Text style={[s.sectionLbl, { marginBottom: 0 }]}>Applicants ({applicants.length})</Text>
+                    {applicants.some((a) => OPEN_APP_STATUSES.includes(a.status)) ? (
+                      <Pressable onPress={() => router.push(`/(tabs)/profile/applicants?gigId=${gig.id}`)} style={s.triageLink}>
+                        <Text style={s.triageTxt}>Sort & triage</Text>
+                        <Ionicons name="chevron-forward" size={12} color={C.indigo} />
+                      </Pressable>
+                    ) : null}
+                  </View>
                   {applicants.length === 0 ? (
                     <Text style={s.noApplicants}>No applicants yet.</Text>
                   ) : applicants.map((a) => (
@@ -112,6 +120,8 @@ const s = StyleSheet.create({
   meta: { fontFamily: F.reg, fontSize: 12, color: C.text3, marginTop: 3 },
   pay: { fontFamily: F.bold, fontSize: 14, color: C.green },
   sectionLbl: { fontFamily: F.bold, fontSize: 11, color: C.text2, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.4 },
+  triageLink: { flexDirection: "row", alignItems: "center", gap: 2 },
+  triageTxt: { fontFamily: F.med, fontSize: 12, color: C.indigo },
   noApplicants: { fontFamily: F.reg, fontSize: 12, color: C.text3 },
   relistBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: C.indigo, borderRadius: 10, paddingVertical: 11, marginTop: 12 },
   relistBtnTxt: { fontFamily: F.bold, fontSize: 12, color: "#fff" },

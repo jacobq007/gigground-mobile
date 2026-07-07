@@ -9,6 +9,8 @@ import { C, F } from "../../lib/theme";
 
 const ICON = {
   accepted: ["checkmark-circle", C.green], applied: ["paper-plane", C.indigo],
+  hired: ["checkmark-circle", C.green], shortlisted: ["star", C.amber],
+  declined: ["close-circle", C.red], expired: ["hourglass", C.text3],
   message: ["chatbubble", C.indigo], gig: ["briefcase", C.amber],
   review: ["star", C.amber], community: ["people", C.text2],
 };

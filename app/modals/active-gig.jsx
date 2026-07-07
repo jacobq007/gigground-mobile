@@ -10,7 +10,7 @@ import { money } from "../../lib/theme";
 import { C, F } from "../../lib/theme";
 
 const STEPS = ["Applied", "Confirmed", "In shift", "Done"];
-const STEP_INDEX = { applied: 1, confirmed: 2, in_shift: 3, done: 4 };
+const STEP_INDEX = { applied: 1, seen: 1, shortlisted: 1, hired: 2, confirmed: 2, in_shift: 3, done: 4 };
 
 export default function ActiveGig() {
   const router = useRouter();
@@ -54,7 +54,7 @@ export default function ActiveGig() {
           </View>
           <View style={s.statusPill}>
             <View style={s.statusDot} />
-            <Text style={s.statusTxt}>{app.status === "confirmed" ? "Confirmed" : STEPS[step - 1]}</Text>
+            <Text style={s.statusTxt}>{app.status === "hired" || app.status === "confirmed" ? "Confirmed" : STEPS[step - 1]}</Text>
           </View>
         </View>
       </View>
