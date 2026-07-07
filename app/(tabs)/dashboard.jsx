@@ -3,10 +3,10 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Initials, Pay, Skeleton, Empty } from "../../../components/ui";
-import { applicationsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
-import { money } from "../../../lib/theme";
-import { C, F } from "../../../lib/theme";
+import { Initials, Pay, Skeleton, Empty } from "../../components/ui";
+import { applicationsAPI, OPEN_APP_STATUSES } from "../../lib/api";
+import { money } from "../../lib/theme";
+import { C, F } from "../../lib/theme";
 
 const STATUS = {
   applied:     { label: "Applied", color: C.text2, step: 1 },
@@ -32,9 +32,7 @@ export default function Dashboard() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }} edges={["top"]}>
       <View style={s.topbar}>
-        <Pressable onPress={() => router.back()} hitSlop={8}><Ionicons name="arrow-back" size={20} color={C.navy} /></Pressable>
         <Text style={s.h}>Dashboard</Text>
-        <View style={{ width: 20 }} />
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 28 }} showsVerticalScrollIndicator={false}>
@@ -108,8 +106,8 @@ export default function Dashboard() {
 }
 
 const s = StyleSheet.create({
-  topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
-  h: { fontFamily: F.bold, fontSize: 15, color: C.text },
+  topbar: { paddingHorizontal: 18, paddingVertical: 8 },
+  h: { fontFamily: F.bold, fontSize: 18, color: C.text },
   tile: { flex: 1, backgroundColor: C.surface2, borderRadius: 12, padding: 13, alignItems: "flex-start" },
   tileV: { fontFamily: F.bold, fontSize: 18, color: C.text },
   tileL: { fontFamily: F.reg, fontSize: 11, color: C.text2, marginTop: 2 },

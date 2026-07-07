@@ -30,7 +30,7 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="index" options={{ tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} /> }} />
       <Tabs.Screen name="jobs" options={{ tabBarIcon: ({ focused }) => <TabIcon name="briefcase" focused={focused} /> }} />
-      <Tabs.Screen name="community" options={{ tabBarIcon: ({ focused }) => <TabIcon name="people" focused={focused} /> }} />
+      <Tabs.Screen name="dashboard" options={{ tabBarIcon: ({ focused }) => <TabIcon name="grid" focused={focused} /> }} />
       <Tabs.Screen name="chat" options={{ tabBarIcon: ({ focused }) => <TabIcon name="chatbubble" focused={focused} /> }} />
       <Tabs.Screen name="profile" options={{ tabBarIcon: ({ focused }) => <TabIcon name="person" focused={focused} /> }} />
     </Tabs>

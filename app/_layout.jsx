@@ -1,4 +1,11 @@
 import { useFonts, DMSans_400Regular, DMSans_500Medium, DMSans_700Bold } from "@expo-google-fonts/dm-sans";
+import {
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from "@expo-google-fonts/plus-jakarta-sans";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, Platform } from "react-native";
@@ -10,7 +17,10 @@ import { C } from "../lib/theme";
 const isWeb = Platform.OS === "web";
 
 export default function RootLayout() {
-  const [loaded] = useFonts({ DMSans_400Regular, DMSans_500Medium, DMSans_700Bold });
+  const [loaded] = useFonts({
+    DMSans_400Regular, DMSans_500Medium, DMSans_700Bold,
+    PlusJakartaSans_400Regular, PlusJakartaSans_500Medium, PlusJakartaSans_600SemiBold, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold,
+  });
   if (!loaded) return <View style={{ flex: 1, backgroundColor: C.bg }} />;
 
   const tree = (
@@ -24,9 +34,8 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="modals/notifications" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/post-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
-            <Stack.Screen name="modals/new-post" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
-            <Stack.Screen name="modals/new-event" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/active-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/verify" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
           </Stack>
         </LocationProvider>
       </AuthProvider>

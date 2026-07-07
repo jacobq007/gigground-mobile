@@ -7,9 +7,8 @@ export default function ProfileLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="edit" />
       <Stack.Screen name="kyc" />
-      <Stack.Screen name="dashboard" />
-      <Stack.Screen name="applications" />
       <Stack.Screen name="my-gigs" />
+      <Stack.Screen name="applications" />
       <Stack.Screen name="applicants" />
     </Stack>
   );
