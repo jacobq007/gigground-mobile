@@ -6,6 +6,11 @@ import {
   PlusJakartaSans_700Bold,
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
+import {
+  SpaceGrotesk_500Medium,
+  SpaceGrotesk_600SemiBold,
+  SpaceGrotesk_700Bold,
+} from "@expo-google-fonts/space-grotesk";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, Platform } from "react-native";
@@ -20,6 +25,7 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     DMSans_400Regular, DMSans_500Medium, DMSans_700Bold,
     PlusJakartaSans_400Regular, PlusJakartaSans_500Medium, PlusJakartaSans_600SemiBold, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold,
+    SpaceGrotesk_500Medium, SpaceGrotesk_600SemiBold, SpaceGrotesk_700Bold,
   });
   if (!loaded) return <View style={{ flex: 1, backgroundColor: C.bg }} />;
 
