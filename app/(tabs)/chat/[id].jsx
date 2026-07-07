@@ -1,19 +1,23 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, ScrollView, Pressable, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Modal, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Initials } from "../../../components/ui";
-import { chatAPI } from "../../../lib/api";
+import * as Clipboard from "expo-clipboard";
+import { Initials, Toast } from "../../../components/ui";
+import { chatAPI, gigsAPI } from "../../../lib/api";
 import { promptReport } from "../../../lib/report";
-import { C, F } from "../../../lib/theme";
+import { C, F, money } from "../../../lib/theme";
 
 export default function ChatThread() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [conv, setConv] = useState(null);
+  const [gig, setGig] = useState(null);
   const [msgs, setMsgs] = useState([]);
   const [text, setText] = useState("");
+  const [sosOpen, setSosOpen] = useState(false);
+  const [toast, setToast] = useState("");
   const scroller = useRef(null);
 
   useEffect(() => { (async () => {
@@ -22,7 +26,18 @@ export default function ChatThread() {
     setConv(c);
     setMsgs(await chatAPI.getMessages(id));
     await chatAPI.markRead(id);
+    if (c?.gigId) setGig(await gigsAPI.getOne(c.gigId));
   })(); }, [id]);
+
+  const shareGigDetails = async () => {
+    if (!gig) return;
+    const suffix = gig.payUnit === "hr" ? "/hr" : gig.payUnit === "day" ? "/day" : "";
+    const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gig.area + ", Chennai")}`;
+    const text = `${gig.title}\nPay: ${money(gig.payAmount)}${suffix}\nTime: ${gig.timing || gig.hrs}\nLocation: ${mapsLink}`;
+    await Clipboard.setStringAsync(text);
+    setToast("Gig details copied");
+    setTimeout(() => setToast(""), 1800);
+  };
 
   const send = async () => {
     if (!text.trim()) return;
@@ -42,6 +57,8 @@ export default function ChatThread() {
             <Text style={s.gig}>{conv?.gigTitle}</Text>
           </View>
         </View>
+        <Pressable onPress={shareGigDetails} hitSlop={8} style={{ marginRight: 4 }}><Ionicons name="share-outline" size={19} color={C.text2} /></Pressable>
+        <Pressable onPress={() => setSosOpen(true)} hitSlop={8} style={{ marginRight: 4 }}><Ionicons name="alert-circle-outline" size={19} color={C.red} /></Pressable>
         <Pressable onPress={() => promptReport("message", id)} hitSlop={8}><Ionicons name="flag-outline" size={18} color={C.text3} /></Pressable>
       </View>
 
@@ -62,6 +79,25 @@ export default function ChatThread() {
           <Pressable onPress={send} style={s.sendBtn}><Ionicons name="arrow-up" size={18} color="#fff" /></Pressable>
         </View>
       </KeyboardAvoidingView>
+
+      <Toast message={toast} visible={!!toast} />
+
+      <Modal visible={sosOpen} transparent animationType="fade" onRequestClose={() => setSosOpen(false)}>
+        <View style={s.sosBackdrop}>
+          <View style={s.sosCard}>
+            <Ionicons name="alert-circle" size={34} color={C.red} />
+            <Text style={s.sosTitle}>Emergency contact</Text>
+            <Text style={s.sosBody}>In-app emergency contact feature coming soon. If you're in immediate danger, call emergency services now.</Text>
+            <Pressable onPress={() => Linking.openURL("tel:112")} style={s.sosCallBtn}>
+              <Ionicons name="call" size={16} color="#fff" />
+              <Text style={s.sosCallTxt}>Call 112</Text>
+            </Pressable>
+            <Pressable onPress={() => setSosOpen(false)} style={{ marginTop: 12 }}>
+              <Text style={s.sosClose}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -80,4 +116,11 @@ const s = StyleSheet.create({
   inputBar: { flexDirection: "row", alignItems: "flex-end", gap: 9, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.hairline, backgroundColor: C.surface },
   input: { flex: 1, fontFamily: F.reg, fontSize: 14, color: C.text, backgroundColor: C.surface2, borderRadius: 20, paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, maxHeight: 100, minHeight: 40 },
   sendBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: C.indigo, alignItems: "center", justifyContent: "center" },
+  sosBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", alignItems: "center", justifyContent: "center", padding: 28 },
+  sosCard: { backgroundColor: C.surface, borderRadius: 18, padding: 24, alignItems: "center", width: "100%" },
+  sosTitle: { fontFamily: F.bold, fontSize: 16, color: C.text, marginTop: 10 },
+  sosBody: { fontFamily: F.reg, fontSize: 13, color: C.text2, textAlign: "center", lineHeight: 19, marginTop: 8 },
+  sosCallBtn: { flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: C.red, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 24, marginTop: 18 },
+  sosCallTxt: { fontFamily: F.bold, fontSize: 14, color: "#fff" },
+  sosClose: { fontFamily: F.med, fontSize: 13, color: C.text2 },
 });

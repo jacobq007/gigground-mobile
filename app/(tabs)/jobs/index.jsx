@@ -9,7 +9,10 @@ import { useLocation } from "../../../lib/LocationContext";
 import { gigsAPI } from "../../../lib/api";
 import { sortGigsByZone } from "../../../lib/gigSort";
 import { TIMINGS } from "../../../lib/constants";
+import { promptReport } from "../../../lib/report";
 import { C, F } from "../../../lib/theme";
+
+const isExpired = (g) => g.completeBy && new Date(g.completeBy + "T00:00:00") < new Date(new Date().setHours(0, 0, 0, 0));
 
 export default function Jobs() {
   const router = useRouter();
@@ -25,7 +28,7 @@ export default function Jobs() {
   useEffect(() => { load(); }, [load]);
   const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
 
-  let filtered = gigs || [];
+  let filtered = (gigs || []).filter((g) => !isExpired(g));
   if (q) filtered = filtered.filter((g) => (g.title + g.who + g.category).toLowerCase().includes(q.toLowerCase()));
   if (timing) filtered = filtered.filter((g) => g.timing === timing);
   const sorted = gigs ? sortGigsByZone(filtered, feedZone) : null;
@@ -90,7 +93,7 @@ export default function Jobs() {
                 </View>
                 {sorted.worthTravel.map((g, i) => (
                   <FadeIn key={g.id} delay={i * 40}>
-                    <GigRow gig={g} dist={g.dist} last={i === sorted.worthTravel.length - 1} onPress={() => router.push(`/(tabs)/jobs/${g.id}`)} />
+                    <GigRow gig={g} dist={g.dist} last={i === sorted.worthTravel.length - 1} onPress={() => router.push(`/(tabs)/jobs/${g.id}`)} onReport={() => promptReport("gig", g.id, () => gigsAPI.report(g.id))} />
                   </FadeIn>
                 ))}
               </View>
@@ -103,7 +106,7 @@ export default function Jobs() {
                 <View style={s.card}>
                   {tier.gigs.map((g, i) => (
                     <FadeIn key={g.id} delay={i * 30}>
-                      <GigRow gig={g} dist={g.dist} last={i === tier.gigs.length - 1} onPress={() => router.push(`/(tabs)/jobs/${g.id}`)} />
+                      <GigRow gig={g} dist={g.dist} last={i === tier.gigs.length - 1} onPress={() => router.push(`/(tabs)/jobs/${g.id}`)} onReport={() => promptReport("gig", g.id, () => gigsAPI.report(g.id))} />
                     </FadeIn>
                   ))}
                 </View>
