@@ -36,6 +36,10 @@ export default function RootLayout() {
             <Stack.Screen name="modals/post-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/active-gig" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/verify" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/gigs-map" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/availability" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/refer" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/boost" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
           </Stack>
         </LocationProvider>
       </AuthProvider>
