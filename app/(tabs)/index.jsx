@@ -35,12 +35,15 @@ const V2 = {
 
 const WEEKLY_GOAL = 5000;
 const STEP_INDEX = { applied: 1, confirmed: 2, in_shift: 3, done: 4 };
+// Blue-indigo ramp from the hero-card family (deepest nearest the FAB) —
+// deliberately not the violet V2.accent.
 const FAB_ACTIONS = [
-  { label: "Set availability", icon: "calendar", color: "#241EAA" },
-  { label: "Quick apply", icon: "flash", color: "#3A30D6" },
-  { label: "Refer & earn", icon: "people", color: "#5F52F5" },
+  { label: "Post a gig", icon: "briefcase", color: "#16208C", go: "post" },
+  { label: "Set availability", icon: "calendar", color: "#1D2FAE", go: "availability" },
+  { label: "Quick apply", icon: "flash", color: "#2547D2", go: "jobs" },
+  { label: "Refer & earn", icon: "people", color: "#2F62F0", go: "refer" },
 ];
-const FAB_OFFSETS = [68, 136, 204];
+const FAB_OFFSETS = [68, 136, 204, 272];
 
 // ── Pulsing live dot ──────────────────────────────────────────────────────────
 function PulseDot({ color }) {
@@ -129,14 +132,16 @@ export default function Home() {
     Animated.timing(backdropAnim, { toValue: opening ? 1 : 0, duration: 260, useNativeDriver: true }).start();
     Animated.spring(fabRotate, { toValue: opening ? 1 : 0, useNativeDriver: true, friction: 7, tension: 80 }).start();
     fabAnims.forEach((v, i) => {
-      const delay = opening ? [0, 70, 140][i] : [80, 40, 0][i];
+      const delay = opening ? i * 70 : (FAB_ACTIONS.length - 1 - i) * 40;
       Animated.spring(v, { toValue: opening ? 1 : 0, delay, useNativeDriver: true, friction: 7, tension: 70 }).start();
     });
   };
   const handleFabAction = (i) => {
     toggleFab();
-    if (i === 0) Alert.alert("Set availability", "Coming soon — for now, keep your profile up to date.");
-    else if (i === 1) router.push("/(tabs)/jobs");
+    const go = FAB_ACTIONS[i].go;
+    if (go === "post") router.push("/modals/post-gig");
+    else if (go === "jobs") router.push("/(tabs)/jobs");
+    else if (go === "availability") Alert.alert("Set availability", "Coming soon — for now, keep your profile up to date.");
     else Alert.alert("Refer & earn", "Referral rewards are coming soon!");
   };
 
@@ -311,7 +316,7 @@ export default function Home() {
                 <Ionicons name="add" size={24} color="#fff" />
               </View>
             ) : (
-              <LinearGradient colors={[V2.accentLight, V2.accentMid]} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={s.fabFill}>
+              <LinearGradient colors={["#3E5BEE", "#1D2FAE"]} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={s.fabFill}>
                 <Ionicons name="add" size={24} color="#fff" />
               </LinearGradient>
             )}
@@ -383,8 +388,8 @@ const s = StyleSheet.create({
   fabAction: { position: "absolute", right: 20, bottom: 24, flexDirection: "row", alignItems: "center", gap: 12, zIndex: 102 },
   fabLabelPill: { backgroundColor: "#fff", paddingHorizontal: 15, paddingVertical: 8, borderRadius: 22, shadowColor: "#000", shadowOpacity: 0.14, shadowRadius: 12, shadowOffset: { width: 0, height: 3 }, elevation: 3 },
   fabLabelTxt: { fontFamily: FJ.bold, fontSize: 13, color: "#18181B" },
-  fabCircle: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", shadowColor: "#3820C8", shadowOpacity: 0.4, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
+  fabCircle: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", shadowColor: "#1D2FAE", shadowOpacity: 0.4, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
   fabMainWrap: { position: "absolute", bottom: 24, right: 20, zIndex: 103 },
-  fabMain: { width: 58, height: 58, borderRadius: 29, shadowColor: "#3214C8", shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 4 }, elevation: 5 },
+  fabMain: { width: 58, height: 58, borderRadius: 29, shadowColor: "#16208C", shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 4 }, elevation: 5 },
   fabFill: { flex: 1, borderRadius: 29, alignItems: "center", justifyContent: "center" },
 });
