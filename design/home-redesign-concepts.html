@@ -6,7 +6,7 @@
     --chip-bg:#EDEBFB; --chip-ink:#3A30D6;
     --hero-start:#1A1690; --hero-end:#0D0B5E; --accent2:#5F52F5; --accent-mid:#3830D0; --accent-light:#7068F0;
     --fab-a:#16208C; --fab-b:#2F62F0;
-    --hire-a:#B85E10; --hire-b:#E38A2E; --hire-soft:#FFF0E0;
+    --hire-a:#9D2478; --hire-b:#D6499A; --hire-soft:#FBE7F3; --hire-dark:#34092F;
     --money:#15803D;
     --app-bg:#ECEEF2; --surface:#FFFFFF; --border:#E5E7EB; --text:#111827; --text2:#6B7280; --text3:#9CA3AF;
   }
@@ -70,7 +70,7 @@
   /* hero */
   .hero{ padding:18px 20px 28px; color:#fff; border-radius:0 0 26px 26px; position:relative; overflow:hidden; }
   .hero.work{ background:linear-gradient(160deg,var(--hero-start),var(--hero-end)); }
-  .hero.hire{ background:linear-gradient(160deg,#3A2308,#1E1204); }
+  .hero.hire{ background:linear-gradient(160deg,#7A1C68,var(--hire-dark)); }
   .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
   .hero-greet{ font-size:13px; opacity:.78; }
   .hero-name{ font-size:19px; font-weight:800; font-family:"Plus Jakarta Sans",sans-serif; }
@@ -78,7 +78,7 @@
   .dot{ position:absolute; top:6px; right:6px; width:7px; height:7px; border-radius:50%; background:#FF6B4A; }
   .hero-headline{ font-size:23px; font-weight:800; font-family:"Plus Jakarta Sans",sans-serif; line-height:1.22; margin-bottom:4px; text-wrap:balance; }
   .hero-headline .amt{ color:#8CFFC1; }
-  .hero-headline .amt.hire{ color:#FFD08A; }
+  .hero-headline .amt.hire{ color:#F5A8D8; }
   .hero-sub{ font-size:12.5px; opacity:.8; margin-bottom:16px; }
   .streak{ display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:10px 14px; }
   .streak b{ font-size:13px; }
@@ -126,7 +126,7 @@
   .fab-item .label{ background:rgba(15,15,20,.86); color:#fff; font-size:11.5px; font-weight:600; padding:6px 10px; border-radius:8px; white-space:nowrap; }
   .fab-item .circle{ width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; box-shadow:0 6px 14px -6px rgba(0,0,0,.5); }
   .fab-main{ width:58px; height:58px; border-radius:50%; background:linear-gradient(150deg,var(--fab-a),var(--fab-b)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:26px; font-weight:400; box-shadow:0 10px 24px -8px rgba(22,32,140,.55); border:none; cursor:pointer; transition:transform .3s cubic-bezier(.34,1.56,.64,1), background .2s; }
-  .fab-main.hire{ background:linear-gradient(150deg,var(--hire-a),var(--hire-b)); box-shadow:0 10px 24px -8px rgba(184,94,16,.55); }
+  .fab-main.hire{ background:linear-gradient(150deg,var(--hire-a),var(--hire-b)); box-shadow:0 10px 24px -8px rgba(157,36,120,.55); }
   .fab-main.open{ transform:rotate(45deg); }
   .fab-backdrop{ position:absolute; inset:0; background:rgba(10,8,30,0); transition:background .25s ease; pointer-events:none; z-index:45; }
   .fab-backdrop.show{ background:rgba(10,8,30,.42); pointer-events:auto; }
@@ -164,7 +164,7 @@
   .intent-card .t{ font-weight:800; font-size:14px; color:var(--text); margin-bottom:3px; font-family:"Plus Jakarta Sans",sans-serif; }
   .intent-card .s{ font-size:11px; color:var(--text2); line-height:1.4; }
   .intent-card.work{ border-color:#C9C4FA; }
-  .intent-card.hire{ border-color:#F3CFA0; }
+  .intent-card.hire{ border-color:#F0B8DE; }
 
   .switch-chip{ position:absolute; top:52px; right:16px; z-index:35; background:rgba(0,0,0,.28); backdrop-filter:blur(6px); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius:999px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer; display:flex; align-items:center; gap:5px; }
 
@@ -418,9 +418,9 @@
     {label:'Set availability', color:'linear-gradient(150deg,#16208C,#241EAA)', icon:'📅'},
   ];
   const hireActionsA = [
-    {label:'Invite a worker', color:'linear-gradient(150deg,#8A4508,#B85E10)', icon:'✉️'},
-    {label:'Boost a gig', color:'linear-gradient(150deg,#B85E10,#D97A1E)', icon:'🚀'},
-    {label:'Post a gig', color:'linear-gradient(150deg,#D97A1E,#E38A2E)', icon:'＋'},
+    {label:'Invite a worker', color:'linear-gradient(150deg,#5C0F52,#9D2478)', icon:'✉️'},
+    {label:'Boost a gig', color:'linear-gradient(150deg,#9D2478,#C13590)', icon:'🚀'},
+    {label:'Post a gig', color:'linear-gradient(150deg,#C13590,#D6499A)', icon:'＋'},
   ];
   let fabOpenA = false, modeA = 'work';
   function renderFabA(){
