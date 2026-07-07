@@ -29,6 +29,8 @@ export default function Profile() {
 
   const MENU = [
     ["grid-outline", "Dashboard", C.indigo, () => router.push("/(tabs)/profile/dashboard")],
+    ["paper-plane-outline", "My applications", C.indigo, () => router.push("/(tabs)/profile/applications")],
+    ["megaphone-outline", "Gigs I posted", C.text2, () => router.push("/(tabs)/profile/my-gigs")],
     ["shield-checkmark-outline", "KYC verification", C.text2, () => router.push("/(tabs)/profile/kyc"), km],
     ["wallet-outline", "Payments", C.green, null],
     ["star-outline", "Reviews", C.text2, null],

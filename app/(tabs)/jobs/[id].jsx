@@ -99,10 +99,13 @@ export default function JobDetail() {
       {/* Sticky apply */}
       <View style={s.footer}>
         {applied ? (
-          <View style={s.appliedRow}>
+          <Pressable onPress={() => router.push("/(tabs)/profile/applications")} style={s.appliedRow}>
             <Ionicons name="checkmark-circle" size={20} color={C.green} />
-            <Text style={s.appliedTxt}>Application sent — we'll notify you</Text>
-          </View>
+            <View>
+              <Text style={s.appliedTxt}>Application sent — answer within 24h, guaranteed</Text>
+              <Text style={s.trayLink}>Track it in your application tray →</Text>
+            </View>
+          </Pressable>
         ) : (
           <Button title={busy ? "Applying…" : "Apply now"} onPress={apply} disabled={busy} />
         )}
@@ -131,4 +134,5 @@ const s = StyleSheet.create({
   footer: { paddingHorizontal: 18, paddingTop: 10, paddingBottom: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.hairline, backgroundColor: C.bg },
   appliedRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: C.greenSoft, borderRadius: 12, paddingVertical: 14 },
   appliedTxt: { fontFamily: F.med, fontSize: 13, color: "#166534" },
+  trayLink: { fontFamily: F.reg, fontSize: 11, color: "#166534", opacity: 0.75, marginTop: 2 },
 });
