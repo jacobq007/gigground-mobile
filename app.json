@@ -8,9 +8,13 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "GigGround uses your location to show gigs and work near you."
+      }
     },
     "android": {
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -23,7 +27,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "GigGround uses your location to show gigs and work near you."
+        }
+      ]
     ]
   }
 }

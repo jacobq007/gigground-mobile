@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Field } from "../../components/ui";
-import AreaPicker from "../../components/AreaPicker";
 import { useAuth } from "../../lib/AuthContext";
 import { C, F } from "../../lib/theme";
 
@@ -15,14 +14,14 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [area, setArea] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
     if (!name || !email || !password) { setErr("Please fill name, email and password"); return; }
     setErr(""); setBusy(true);
-    try { await signup({ name, email, password, type, city: "Chennai", area }); router.replace("/(auth)/onboarding"); }
+    // City + area are captured next, in the location onboarding step.
+    try { await signup({ name, email, password, type }); router.replace("/(auth)/onboarding"); }
     catch (e) { setErr(e.message || "Could not create account"); setBusy(false); }
   };
 
@@ -52,10 +51,6 @@ export default function Signup() {
           <Field label={type === "business" ? "Business name" : "Full name"} value={name} onChangeText={setName} placeholder={type === "business" ? "e.g. Studio K" : "e.g. Rahul Kumar"} />
           <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
           <Field label="Password" value={password} onChangeText={setPassword} placeholder="Choose a password" secureTextEntry />
-          <View>
-            <Text style={[s.lbl, { marginTop: 0 }]}>Your area</Text>
-            <AreaPicker value={area} onChange={setArea} height={200} />
-          </View>
           {err ? <Text style={s.err}>{err}</Text> : null}
           <Button title={busy ? "Creating…" : "Continue"} onPress={submit} disabled={busy} />
         </View>
