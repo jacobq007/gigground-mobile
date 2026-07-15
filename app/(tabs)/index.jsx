@@ -9,7 +9,7 @@ import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
 import { useMode } from "../../lib/ModeContext";
 import { useC } from "../../lib/ThemeContext";
-import { gigsAPI, notificationsAPI, applicationsAPI, applicantsAPI } from "../../lib/api";
+import { gigsAPI, notificationsAPI, applicationsAPI, applicantsAPI, matchesAPI } from "../../lib/api";
 import { sortGigsByZone } from "../../lib/gigSort";
 import { FJ, FS, money } from "../../lib/theme";
 
@@ -120,6 +120,7 @@ export default function Home() {
   const [apps, setApps] = useState([]);
   const [myGigs, setMyGigs] = useState(null);
   const [applicantCounts, setApplicantCounts] = useState({});
+  const [matchCount, setMatchCount] = useState(0);
   const [unread, setUnread] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
@@ -139,10 +140,10 @@ export default function Home() {
   const statBg = C.dark ? C.surface2 : T.statBg;
 
   const load = useCallback(async () => {
-    const [g, u, a, mine] = await Promise.all([
-      gigsAPI.getAll(), notificationsAPI.unreadCount(), applicationsAPI.getMy(), gigsAPI.getMy(),
+    const [g, u, a, mine, mc] = await Promise.all([
+      gigsAPI.getAll(), notificationsAPI.unreadCount(), applicationsAPI.getMy(), gigsAPI.getMy(), matchesAPI.countForMe(),
     ]);
-    setGigs(g); setUnread(u); setApps(a); setMyGigs(mine);
+    setGigs(g); setUnread(u); setApps(a); setMyGigs(mine); setMatchCount(mc);
     const entries = await Promise.all(mine.map(async (gig) => [gig.id, (await applicantsAPI.getForGig(gig.id)).length]));
     setApplicantCounts(Object.fromEntries(entries));
   }, []);
@@ -241,6 +242,22 @@ export default function Home() {
                 <Text style={s.heroContext}>{streak}-day streak · {nearCount} gigs open near {zone}</Text>
                 <StreakPill streak={streak} best={bestStreak} s={s} />
               </LinearGradient>
+
+              {/* Matched-for-you — Rapido-style pushed offers */}
+              {matchCount > 0 ? (
+                <Pressable onPress={() => router.push("/modals/matches")} style={s.matchCard}>
+                  <View style={[s.matchIcon, { backgroundColor: WORK.accent }]}>
+                    <Ionicons name="flash" size={18} color="#fff" />
+                  </View>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={s.matchTitle}>{matchCount} job{matchCount === 1 ? "" : "s"} matched to your skills</Text>
+                    <Text style={s.matchSub}>Tap to accept or skip — no feed scrolling</Text>
+                  </View>
+                  <View style={[s.matchBadge, { backgroundColor: WORK.badgeBg }]}>
+                    <Text style={[s.matchBadgeTxt, { color: WORK.badgeTx }]}>{matchCount} new</Text>
+                  </View>
+                </Pressable>
+              ) : null}
 
               {/* Live banner (white) + icon map button */}
               <View style={s.banner}>
@@ -341,11 +358,11 @@ export default function Home() {
                 <View style={{ gap: 8 }}>
                   {postedGigs.map((g, i) => (
                     <FadeIn key={g.id} delay={i * 60}>
-                      <Pressable onPress={() => router.push("/(tabs)/profile/my-gigs")} style={s.gigCard}>
+                      <Pressable onPress={() => router.push(`/(tabs)/profile/applicants?gigId=${g.id}`)} style={s.gigCard}>
                         <View style={[s.avatar, { backgroundColor: HIRE.avatar }]}><Text style={s.avatarTxt}>{g.initials}</Text></View>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={s.gigTitle} numberOfLines={1}>{g.title}</Text>
-                          <Text style={s.gigMeta} numberOfLines={1}>Posted {g.postedAgo || "recently"}</Text>
+                          <Text style={s.gigMeta} numberOfLines={1}>Posted {g.postedAgo || "recently"} · tap to review</Text>
                         </View>
                         <View style={[s.appliedBadge, { backgroundColor: HIRE.badgeBg }]}>
                           <Text style={[s.appliedTxt, { color: HIRE.badgeTx }]}>{applicantCounts[g.id] || 0} applied</Text>
@@ -434,6 +451,13 @@ const makeStyles = (C) => StyleSheet.create({
   bannerTitle: { fontFamily: FJ.bold, fontSize: 14.5, color: C.text },
   bannerSub: { fontFamily: FJ.med, fontSize: 12, color: C.text2, marginTop: 2 },
   mapBtn: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
+
+  matchCard: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 14, borderWidth: 1, borderColor: C.indigoSoft, shadowColor: "#140A28", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
+  matchIcon: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  matchTitle: { fontFamily: FJ.bold, fontSize: 14, color: C.text, letterSpacing: -0.2 },
+  matchSub: { fontFamily: FJ.med, fontSize: 12, color: C.text2, marginTop: 2 },
+  matchBadge: { borderRadius: 9, paddingHorizontal: 10, paddingVertical: 6 },
+  matchBadgeTxt: { fontFamily: FJ.bold, fontSize: 12 },
 
   sectionHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
   sectionTitle: { fontFamily: FJ.xbold, fontSize: 15, color: C.text, letterSpacing: -0.3 },
