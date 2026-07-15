@@ -14,14 +14,13 @@ export default function EditProfile() {
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [bio, setBio] = useState(user?.bio || "");
-  const [skills, setSkills] = useState(user?.skills || "");
   const [area, setArea] = useState(user?.area || "");
   const [insta, setInsta] = useState(user?.socials?.instagram || "");
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
     setBusy(true);
-    await update({ name, phone, bio, skills, area, socials: { ...(user?.socials || {}), instagram: insta } });
+    await update({ name, phone, bio, area, socials: { ...(user?.socials || {}), instagram: insta } });
     router.back();
   };
 
@@ -37,7 +36,13 @@ export default function EditProfile() {
           <Field label="Full name" value={name} onChangeText={setName} />
           <Field label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder="+91 ..." />
           <Field label="Bio" value={bio} onChangeText={setBio} multiline placeholder="A line about you" />
-          <Field label="Skills" value={skills} onChangeText={setSkills} placeholder="e.g. Moving, Event setup" />
+          <Pressable onPress={() => router.push("/modals/skills")} style={s.skillsRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.skillsLbl}>Skills & credentials</Text>
+              <Text style={s.skillsSub}>Add what you can do so we match you to the right jobs</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={C.text3} />
+          </Pressable>
           <Field label="Instagram" value={insta} onChangeText={setInsta} autoCapitalize="none" placeholder="@handle" />
           <View>
             <Text style={s.lbl}>Area</Text>
@@ -54,4 +59,7 @@ const s = StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   lbl: { fontFamily: F.med, fontSize: 12, color: C.text2, marginBottom: 8 },
+  skillsRow: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 },
+  skillsLbl: { fontFamily: F.bold, fontSize: 13.5, color: C.text },
+  skillsSub: { fontFamily: F.reg, fontSize: 11.5, color: C.text2, marginTop: 2 },
 });

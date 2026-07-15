@@ -5,7 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials } from "../../../components/ui";
 import { gigsAPI, applicantsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
+import { compatTone, skillLabel } from "../../../lib/skills";
 import { C, F } from "../../../lib/theme";
+
+const TONE = { high: { bg: C.indigoSoft, fg: C.indigo }, mid: { bg: "#FEF3E2", fg: C.amber }, low: { bg: C.surface2, fg: C.text3 } };
 
 const VERIF = [
   { label: "Unverified",      color: C.text3,  icon: "help-circle-outline" },
@@ -15,7 +18,7 @@ const VERIF = [
 ];
 
 const SORTS = [
-  { key: "fit",  label: "Best fit",   cmp: (a, b) => b.fit - a.fit },
+  { key: "fit",  label: "Best match", cmp: (a, b) => b.compat - a.compat },
   { key: "near", label: "Closest",    cmp: (a, b) => a.distKm - b.distKm },
   { key: "exp",  label: "Experience", cmp: (a, b) => b.catGigs - a.catGigs },
 ];
@@ -65,13 +68,18 @@ export default function Applicants() {
         {a.topPick && !muted ? (
           <View style={s.topPickTag}>
             <Ionicons name="sparkles" size={10} color="#fff" />
-            <Text style={s.topPickTxt}>TOP PICK</Text>
+            <Text style={s.topPickTxt}>BEST MATCH</Text>
           </View>
         ) : null}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 11 }}>
           <Initials text={a.initials} size={40} />
           <View style={{ flex: 1 }}>
-            <Text style={s.name}>{a.name}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+              <Text style={s.name}>{a.name}</Text>
+              {a.compat != null && !muted ? (() => { const t = TONE[compatTone(a.compat)]; return (
+                <View style={[s.matchPill, { backgroundColor: t.bg }]}><Text style={[s.matchTxt, { color: t.fg }]}>{a.compat}% match</Text></View>
+              ); })() : null}
+            </View>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 }}>
               <Ionicons name={v.icon} size={12} color={v.color} />
               <Text style={[s.verif, { color: v.color }]}>{v.label}</Text>
@@ -82,6 +90,17 @@ export default function Applicants() {
             <Text style={s.eta}>~{a.etaMin} min away</Text>
           </View>
         </View>
+
+        {a.compatReasons && !muted ? (
+          <View style={s.reasons}>
+            {a.compatReasons.map((r, i) => (
+              <View key={i} style={[s.rz, { backgroundColor: r.ok ? C.indigoSoft : C.surface2 }]}>
+                <Ionicons name={r.ok ? "checkmark" : "close"} size={10} color={r.ok ? C.indigo : C.text3} />
+                <Text style={[s.rzTxt, { color: r.ok ? C.indigo : C.text3 }]}>{r.label}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
 
         {/* The four scannable things: relevant stats · reliability + strikes · verification (above) · distance (above) */}
         <View style={s.statRow}>
@@ -141,7 +160,11 @@ export default function Applicants() {
         <Pressable onPress={() => router.back()} hitSlop={8}><Ionicons name="arrow-back" size={20} color={C.navy} /></Pressable>
         <View style={{ alignItems: "center" }}>
           <Text style={s.h}>Applicants</Text>
-          <Text style={s.sub} numberOfLines={1}>{gig.title} · {gig.area}</Text>
+          {gig.skillRequired && gig.skillKey ? (
+            <View style={s.hdrBadge}><Ionicons name="shield-checkmark" size={10} color="#fff" /><Text style={s.hdrBadgeTxt}>Skilled · {skillLabel(gig.skillKey)}</Text></View>
+          ) : (
+            <Text style={s.sub} numberOfLines={1}>{gig.title} · {gig.area}</Text>
+          )}
         </View>
         <View style={{ width: 20 }} />
       </View>
@@ -192,6 +215,13 @@ const s = StyleSheet.create({
   topPickTag: { position: "absolute", top: -9, left: 12, flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: C.indigo, paddingHorizontal: 7, paddingVertical: 2.5, borderRadius: 5 },
   topPickTxt: { fontFamily: F.bold, fontSize: 9, color: "#fff", letterSpacing: 0.5 },
   name: { fontFamily: F.bold, fontSize: 14, color: C.text },
+  matchPill: { borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2 },
+  matchTxt: { fontFamily: F.bold, fontSize: 10.5 },
+  reasons: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 10 },
+  rz: { flexDirection: "row", alignItems: "center", gap: 3, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
+  rzTxt: { fontFamily: F.bold, fontSize: 10 },
+  hdrBadge: { flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: C.indigo, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, marginTop: 2 },
+  hdrBadgeTxt: { fontFamily: F.bold, fontSize: 10, color: "#fff" },
   verif: { fontFamily: F.med, fontSize: 11 },
   dist: { fontFamily: F.bold, fontSize: 13, color: C.text },
   eta: { fontFamily: F.reg, fontSize: 11, color: C.text3, marginTop: 1 },

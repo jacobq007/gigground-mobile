@@ -2,6 +2,7 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Chip, VerifiedBadge } from "./ui";
 import { formatPayRange } from "../lib/pay";
+import { skillLabel } from "../lib/skills";
 import { C, F } from "../lib/theme";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -27,6 +28,9 @@ export function GigRow({ gig, dist, onPress, last, onReport }) {
       <View style={{ flex: 1, minWidth: 0 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           <Text style={[s.title, expired && s.mutedTxt]} numberOfLines={1}>{gig.title}</Text>
+          {gig.skillRequired && gig.skillKey && !expired ? (
+            <View style={s.skilled}><Ionicons name="shield-checkmark" size={9} color={C.indigo} /><Text style={s.skilledTxt}>{skillLabel(gig.skillKey)}</Text></View>
+          ) : null}
           {gig.urgent && !expired ? <Chip label="Urgent" tone="red" small /> : null}
           {expired ? <Chip label="Expired" tone="neutral" small /> : daysLeft != null ? (
             <Chip label={daysLeft === 0 ? "Expires today" : `Expires in ${daysLeft}d`} tone={daysLeft <= 1 ? "amber" : "neutral"} small />
@@ -62,4 +66,6 @@ const s = StyleSheet.create({
   title: { fontFamily: F.bold, fontSize: 13, color: C.text, flexShrink: 1 },
   meta: { fontFamily: F.reg, fontSize: 12, color: C.text3, marginTop: 2 },
   timing: { fontFamily: F.reg, fontSize: 11, color: C.text3, marginTop: 2 },
+  skilled: { flexDirection: "row", alignItems: "center", gap: 2, backgroundColor: C.indigoSoft, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 },
+  skilledTxt: { fontFamily: F.bold, fontSize: 9.5, color: C.indigo },
 });

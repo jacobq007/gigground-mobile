@@ -7,6 +7,7 @@ import { Initials } from "../../../components/ui";
 import { useAuth } from "../../../lib/AuthContext";
 import { useLocation } from "../../../lib/LocationContext";
 import { kycAPI } from "../../../lib/api";
+import { verifiedSkills, openToKeys, skillLabel, levelLabel } from "../../../lib/skills";
 import { money } from "../../../lib/theme";
 import { C, F } from "../../../lib/theme";
 
@@ -65,6 +66,9 @@ export default function Profile() {
           ))}
         </View>
 
+        {/* Skills & credentials */}
+        {!isHirer ? <SkillsSection user={user} onEdit={() => router.push("/modals/skills")} /> : null}
+
         {/* Menu */}
         <View style={s.menu}>
           {MENU.map(([ic, label, color, go, badge], i) => (
@@ -85,6 +89,70 @@ export default function Profile() {
     </SafeAreaView>
   );
 }
+
+function SkillsSection({ user, onEdit }) {
+  const verified = verifiedSkills(user);
+  const openTo = openToKeys(user);
+  const empty = verified.length === 0 && openTo.length === 0;
+  return (
+    <View style={sk.card}>
+      <View style={sk.head}>
+        <Text style={sk.title}>Skills & credentials</Text>
+        <Pressable onPress={onEdit} hitSlop={8} style={sk.editBtn}>
+          <Ionicons name={empty ? "add" : "create-outline"} size={14} color={C.indigo} />
+          <Text style={sk.editTxt}>{empty ? "Add" : "Edit"}</Text>
+        </Pressable>
+      </View>
+
+      {empty ? (
+        <Pressable onPress={onEdit} style={sk.emptyRow}>
+          <Ionicons name="sparkles-outline" size={16} color={C.indigo} />
+          <Text style={sk.emptyTxt}>Tell us what you can do — get matched to the right jobs.</Text>
+        </Pressable>
+      ) : (
+        <>
+          {verified.length > 0 ? (
+            <View style={{ marginBottom: openTo.length ? 12 : 0 }}>
+              <Text style={sk.subhead}><Ionicons name="shield-checkmark" size={11} color={C.indigo} /> Verified skills</Text>
+              {verified.map((v) => (
+                <View key={v.key} style={sk.vrow}>
+                  <Text style={sk.vname}>{skillLabel(v.key)}</Text>
+                  <View style={sk.vpill}><Text style={sk.vpillTxt}>{levelLabel(v.level)}{v.years ? ` · ${v.years} yr` : ""}</Text></View>
+                </View>
+              ))}
+            </View>
+          ) : null}
+          {openTo.length > 0 ? (
+            <View>
+              <Text style={sk.subhead}>Open to (general gigs)</Text>
+              <View style={sk.otWrap}>
+                {openTo.map((k) => <View key={k} style={sk.otChip}><Text style={sk.otTxt}>{skillLabel(k)}</Text></View>)}
+              </View>
+            </View>
+          ) : null}
+        </>
+      )}
+    </View>
+  );
+}
+
+const sk = StyleSheet.create({
+  card: { backgroundColor: C.surface, marginHorizontal: 16, marginTop: 16, borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 14 },
+  head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
+  title: { fontFamily: F.bold, fontSize: 14, color: C.text },
+  editBtn: { flexDirection: "row", alignItems: "center", gap: 3 },
+  editTxt: { fontFamily: F.bold, fontSize: 12.5, color: C.indigo },
+  emptyRow: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: C.indigoSoft, borderRadius: 11, padding: 12 },
+  emptyTxt: { flex: 1, fontFamily: F.med, fontSize: 12.5, color: C.text2, lineHeight: 17 },
+  subhead: { fontFamily: F.bold, fontSize: 11, color: C.text2, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.3 },
+  vrow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 6 },
+  vname: { fontFamily: F.bold, fontSize: 13, color: C.text },
+  vpill: { backgroundColor: C.indigoSoft, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 3 },
+  vpillTxt: { fontFamily: F.bold, fontSize: 10.5, color: C.indigo },
+  otWrap: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  otChip: { backgroundColor: C.surface2, borderRadius: 99, paddingHorizontal: 11, paddingVertical: 6 },
+  otTxt: { fontFamily: F.med, fontSize: 12, color: C.text2 },
+});
 
 const s = StyleSheet.create({
   header: { backgroundColor: C.navy, alignItems: "center", paddingTop: 6, paddingBottom: 22 },
