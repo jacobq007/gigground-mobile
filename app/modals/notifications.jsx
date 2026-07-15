@@ -14,6 +14,7 @@ const makeIcon = (C) => ({
   declined: ["close-circle", C.red], expired: ["hourglass", C.text3],
   message: ["chatbubble", C.indigo], gig: ["briefcase", C.amber],
   review: ["star", C.amber], community: ["people", C.text2],
+  match: ["flash", C.indigo],
 });
 
 export default function Notifications() {
@@ -37,16 +38,17 @@ export default function Notifications() {
         {items && items.length === 0 ? <Empty icon={<Ionicons name="notifications-off-outline" size={36} color={C.text3} />} title="You're all caught up" /> :
           (items || []).map((n) => {
             const [ic, color] = ICON[n.type] || ["ellipse", C.text2];
+            const tappable = n.type === "match";
             return (
-              <View key={n.id} style={[s.row, !n.read && s.unread]}>
+              <Pressable key={n.id} onPress={tappable ? () => router.push("/modals/matches") : undefined} style={[s.row, !n.read && s.unread]}>
                 <View style={[s.iconWrap, { backgroundColor: color + "1a" }]}><Ionicons name={ic} size={16} color={color} /></View>
                 <View style={{ flex: 1 }}>
                   <Text style={s.title}>{n.title}</Text>
                   <Text style={s.body}>{n.body}</Text>
                   <Text style={s.ago}>{n.postedAgo} ago</Text>
                 </View>
-                {!n.read ? <View style={s.dot} /> : null}
-              </View>
+                {tappable ? <Ionicons name="chevron-forward" size={15} color={C.text3} style={{ alignSelf: "center" }} /> : !n.read ? <View style={s.dot} /> : null}
+              </Pressable>
             );
           })}
       </ScrollView>
