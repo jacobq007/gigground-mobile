@@ -3,9 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../../components/ui";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 export default function Welcome() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   return (
     <SafeAreaView style={s.wrap}>
@@ -36,7 +39,7 @@ export default function Welcome() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   wrap: { flex: 1, backgroundColor: C.bg },
   badge: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: C.indigoSoft, alignSelf: "flex-start", paddingHorizontal: 11, paddingVertical: 5, borderRadius: 99, marginBottom: 16 },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: C.indigo },

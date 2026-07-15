@@ -6,9 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button, Field } from "../../../components/ui";
 import AreaPicker from "../../../components/AreaPicker";
 import { useAuth } from "../../../lib/AuthContext";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 export default function EditProfile() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { user, update } = useAuth();
   const [name, setName] = useState(user?.name || "");
@@ -55,7 +58,7 @@ export default function EditProfile() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   lbl: { fontFamily: F.med, fontSize: 12, color: C.text2, marginBottom: 8 },

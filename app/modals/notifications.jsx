@@ -5,17 +5,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Empty } from "../../components/ui";
 import { notificationsAPI } from "../../lib/api";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
-const ICON = {
+const makeIcon = (C) => ({
   accepted: ["checkmark-circle", C.green], applied: ["paper-plane", C.indigo],
   hired: ["checkmark-circle", C.green], shortlisted: ["star", C.amber],
   declined: ["close-circle", C.red], expired: ["hourglass", C.text3],
   message: ["chatbubble", C.indigo], gig: ["briefcase", C.amber],
   review: ["star", C.amber], community: ["people", C.text2],
-};
+});
 
 export default function Notifications() {
+  const C = useC();
+  const s = makeStyles(C);
+  const ICON = makeIcon(C);
   const router = useRouter();
   const [items, setItems] = useState(null);
 
@@ -50,7 +54,7 @@ export default function Notifications() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   mark: { fontFamily: F.med, fontSize: 13, color: C.indigo },

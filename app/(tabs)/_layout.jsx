@@ -3,6 +3,7 @@ import { View, Pressable, Text, StyleSheet, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { ModeProvider, useMode } from "../../lib/ModeContext";
+import { useC } from "../../lib/ThemeContext";
 import { FJ } from "../../lib/theme";
 
 // Per-mode accent — blue-violet (working) / magenta (hiring), matching the home redesign.
@@ -22,11 +23,12 @@ const TAB_CFG = {
 function ModeTabBar({ state, navigation }) {
   const { mode } = useMode();
   const insets = useSafeAreaInsets();
+  const C = useC();
   const accent = ACCENT[mode] || ACCENT.working;
-  const soft = SOFT[mode] || SOFT.working;
+  const soft = C.dark ? (mode === "hiring" ? "#2A1024" : "#161A33") : (SOFT[mode] || SOFT.working);
 
   return (
-    <View style={[s.bar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <View style={[s.bar, { backgroundColor: C.surface, borderTopColor: C.border, paddingBottom: Math.max(insets.bottom, 8) }]}>
       {state.routes.map((route, i) => {
         const cfg = TAB_CFG[route.name];
         if (!cfg) return null;

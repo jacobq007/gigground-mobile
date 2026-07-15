@@ -17,6 +17,7 @@ import { View, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/AuthContext";
 import { LocationProvider } from "../lib/LocationContext";
+import { ThemeProvider, useTheme } from "../lib/ThemeContext";
 import { C } from "../lib/theme";
 
 const isWeb = Platform.OS === "web";
@@ -28,13 +29,25 @@ export default function RootLayout() {
     SpaceGrotesk_500Medium, SpaceGrotesk_600SemiBold, SpaceGrotesk_700Bold,
   });
   if (!loaded) return <View style={{ flex: 1, backgroundColor: C.bg }} />;
-
-  const tree = (
+  return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <LocationProvider>
-          <StatusBar style="dark" />
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: C.bg }, animation: "slide_from_right" }}>
+      <ThemeProvider>
+        <AuthProvider>
+          <LocationProvider>
+            <Shell />
+          </LocationProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
+}
+
+function Shell() {
+  const { dark, colors } = useTheme();
+  const tree = (
+    <>
+          <StatusBar style={dark ? "light" : "dark"} />
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg }, animation: "slide_from_right" }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)" />
@@ -49,16 +62,14 @@ export default function RootLayout() {
             <Stack.Screen name="modals/skills" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/skill-category" options={{ presentation: "card", animation: "slide_from_right" }} />
           </Stack>
-        </LocationProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+    </>
   );
 
   // On web, frame the app like a phone so it looks right when shown on a desktop.
   if (isWeb) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#E9E8E4", minHeight: "100%" }}>
-        <View style={{ width: 400, height: 844, maxHeight: "100%", backgroundColor: C.bg, overflow: "hidden", borderRadius: 28, borderWidth: 1, borderColor: "rgba(0,0,0,0.12)" }}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: dark ? "#050506" : "#E9E8E4", minHeight: "100%" }}>
+        <View style={{ width: 400, height: 844, maxHeight: "100%", backgroundColor: colors.bg, overflow: "hidden", borderRadius: 28, borderWidth: 1, borderColor: dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.12)" }}>
           {tree}
         </View>
       </View>

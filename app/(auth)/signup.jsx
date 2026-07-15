@@ -5,9 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Field } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 export default function Signup() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { signup } = useAuth();
   const [type, setType] = useState("user");
@@ -59,7 +62,7 @@ export default function Signup() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   title: { fontFamily: F.bold, fontSize: 26, color: C.text },
   sub: { fontFamily: F.reg, fontSize: 14, color: C.text2, marginTop: 6 },
   lbl: { fontFamily: F.med, fontSize: 12, color: C.text2, marginTop: 20, marginBottom: 8 },

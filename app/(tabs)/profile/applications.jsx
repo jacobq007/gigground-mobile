@@ -5,9 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Skeleton, Empty, Chip } from "../../../components/ui";
 import { applicationsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
-const META = {
+const makeMeta = (C) => ({
   applied:     { label: "Applied",     color: C.text2,  bg: C.surface2,  icon: "paper-plane-outline" },
   seen:        { label: "Seen",        color: C.indigo, bg: C.indigoSoft, icon: "eye-outline" },
   shortlisted: { label: "Shortlisted", color: C.amber,  bg: "#FEF3E2",   icon: "star" },
@@ -17,11 +18,14 @@ const META = {
   declined:    { label: "Declined",    color: C.red,    bg: C.redSoft,   icon: "close-circle-outline" },
   expired:     { label: "Expired",     color: C.text3,  bg: C.surface2,  icon: "hourglass-outline" },
   withdrawn:   { label: "Withdrawn",   color: C.text3,  bg: C.surface2,  icon: "arrow-undo-outline" },
-};
+});
 
 const hrsLeft = (respondBy) => Math.max(0, Math.ceil((respondBy - Date.now()) / 3600000));
 
 export default function ApplicationTray() {
+  const C = useC();
+  const s = makeStyles(C);
+  const META = makeMeta(C);
   const router = useRouter();
   const [apps, setApps] = useState(null);
 
@@ -132,7 +136,7 @@ export default function ApplicationTray() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   promise: { flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: C.indigoSoft, borderRadius: 12, paddingHorizontal: 13, paddingVertical: 11 },

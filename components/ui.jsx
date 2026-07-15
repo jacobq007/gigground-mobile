@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, TextInput, View, StyleSheet, Easing } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { C, F, money } from "../lib/theme";
+import { F, money } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 // ── Labelled text field ─────────────────────────────────────────────────────────
 export function Field({ label, value, onChangeText, placeholder, secureTextEntry, keyboardType, autoCapitalize, multiline }) {
+  const C = useC();
   const [focus, setFocus] = useState(false);
   return (
     <View style={{ gap: 6 }}>
@@ -21,6 +23,7 @@ export function Field({ label, value, onChangeText, placeholder, secureTextEntry
 
 // ── Money text — the ONLY place green is used ───────────────────────────────────
 export function Pay({ amount, unit, size = 13, style }) {
+  const C = useC();
   const suffix = unit === "hr" ? "/hr" : unit === "day" ? "/day" : unit === "month" ? "/mo" : "";
   return (
     <Text style={[{ color: C.green, fontFamily: F.bold, fontSize: size }, style]}>
@@ -30,20 +33,22 @@ export function Pay({ amount, unit, size = 13, style }) {
 }
 
 // ── Initials avatar (circle for people, rounded square for businesses) ──────────
-export function Initials({ text, size = 30, square = false, bg = C.indigoSoft, color = C.indigo }) {
+export function Initials({ text, size = 30, square = false, bg, color }) {
+  const C = useC();
   return (
-    <View style={{ width: size, height: size, borderRadius: square ? size * 0.27 : size / 2, backgroundColor: bg, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ color, fontFamily: F.bold, fontSize: size * 0.38 }}>{text}</Text>
+    <View style={{ width: size, height: size, borderRadius: square ? size * 0.27 : size / 2, backgroundColor: bg || C.indigoSoft, alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ color: color || C.indigo, fontFamily: F.bold, fontSize: size * 0.38 }}>{text}</Text>
     </View>
   );
 }
 
 // ── Neutral chip ────────────────────────────────────────────────────────────────
 export function Chip({ label, tone = "neutral", small }) {
+  const C = useC();
   const tones = {
     neutral: { bg: C.surface2, fg: C.text2 },
     red:     { bg: C.redSoft, fg: C.red },
-    amber:   { bg: "#FEF3E2", fg: C.amber },
+    amber:   { bg: C.dark ? "#3A2A10" : "#FEF3E2", fg: C.amber },
     indigo:  { bg: C.indigoSoft, fg: C.indigo },
   };
   const t = tones[tone] || tones.neutral;
@@ -56,23 +61,19 @@ export function Chip({ label, tone = "neutral", small }) {
 
 // ── Verified badge — visually distinct from a plain Chip (filled icon + label) ──
 export function VerifiedBadge({ label = "Verified", size = "sm" }) {
+  const C = useC();
   const small = size === "sm";
   return (
-    <View style={[bStyles.badge, small && bStyles.badgeSm]}>
+    <View style={[{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: C.indigoSoft, borderWidth: 1, borderColor: C.indigo + "33", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 99, alignSelf: "flex-start" }, small && { paddingHorizontal: 6, paddingVertical: 2 }]}>
       <Ionicons name="checkmark-circle" size={small ? 11 : 13} color={C.indigo} />
-      <Text style={[bStyles.txt, small && bStyles.txtSm]}>{label}</Text>
+      <Text style={[{ fontFamily: F.bold, fontSize: 11, color: C.indigo }, small && { fontSize: 10 }]}>{label}</Text>
     </View>
   );
 }
-const bStyles = StyleSheet.create({
-  badge: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: C.indigoSoft, borderWidth: 1, borderColor: C.indigo + "33", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 99, alignSelf: "flex-start" },
-  badgeSm: { paddingHorizontal: 6, paddingVertical: 2 },
-  txt: { fontFamily: F.bold, fontSize: 11, color: C.indigo },
-  txtSm: { fontSize: 10 },
-});
 
 // ── Toast — brief auto-dismissing bottom banner ─────────────────────────────────
 export function Toast({ message, visible }) {
+  const C = useC();
   const op = useRef(new Animated.Value(0)).current;
   const ty = useRef(new Animated.Value(10)).current;
   useEffect(() => {
@@ -83,14 +84,15 @@ export function Toast({ message, visible }) {
   }, [visible]);
   if (!message) return null;
   return (
-    <Animated.View pointerEvents="none" style={{ position: "absolute", left: 18, right: 18, bottom: 24, opacity: op, transform: [{ translateY: ty }], backgroundColor: C.navy, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, alignItems: "center" }}>
-      <Text style={{ color: "#fff", fontFamily: F.med, fontSize: 13 }}>{message}</Text>
+    <Animated.View pointerEvents="none" style={{ position: "absolute", left: 18, right: 18, bottom: 24, opacity: op, transform: [{ translateY: ty }], backgroundColor: C.dark ? C.surface2 : C.navy, borderWidth: C.dark ? StyleSheet.hairlineWidth : 0, borderColor: C.border, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, alignItems: "center" }}>
+      <Text style={{ color: C.dark ? C.text : "#fff", fontFamily: F.med, fontSize: 13 }}>{message}</Text>
     </Animated.View>
   );
 }
 
 // ── Buttons with press-scale ────────────────────────────────────────────────────
 export function Button({ title, onPress, variant = "primary", icon, style, disabled }) {
+  const C = useC();
   const scale = useRef(new Animated.Value(1)).current;
   const spr = (to) => Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 0 }).start();
   const v = {
@@ -111,9 +113,8 @@ export function Button({ title, onPress, variant = "primary", icon, style, disab
 
 // ── Card ──────────────────────────────────────────────────────────────────────
 export function Card({ children, style, onPress }) {
-  const inner = (
-    <View style={[styles.card, style]}>{children}</View>
-  );
+  const C = useC();
+  const inner = <View style={[{ backgroundColor: C.surface, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 12 }, style]}>{children}</View>;
   if (onPress) return <Pressable onPress={onPress}>{inner}</Pressable>;
   return inner;
 }
@@ -133,6 +134,7 @@ export function FadeIn({ children, delay = 0, style }) {
 
 // ── Skeleton shimmer ────────────────────────────────────────────────────────────
 export function Skeleton({ height = 64, style }) {
+  const C = useC();
   const op = useRef(new Animated.Value(0.4)).current;
   useEffect(() => {
     Animated.loop(Animated.sequence([
@@ -145,6 +147,7 @@ export function Skeleton({ height = 64, style }) {
 
 // ── Empty state ──────────────────────────────────────────────────────────────────
 export function Empty({ icon, title, subtitle, action }) {
+  const C = useC();
   return (
     <View style={{ alignItems: "center", paddingVertical: 48, paddingHorizontal: 32 }}>
       {icon}
@@ -155,8 +158,7 @@ export function Empty({ icon, title, subtitle, action }) {
   );
 }
 
-export const Divider = ({ style }) => <View style={[{ height: StyleSheet.hairlineWidth, backgroundColor: C.border }, style]} />;
-
-const styles = StyleSheet.create({
-  card: { backgroundColor: C.surface, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 12 },
-});
+export const Divider = ({ style }) => {
+  const C = useC();
+  return <View style={[{ height: StyleSheet.hairlineWidth, backgroundColor: C.border }, style]} />;
+};

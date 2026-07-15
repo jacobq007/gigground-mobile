@@ -7,11 +7,14 @@ import * as ImagePicker from "expo-image-picker";
 import { Button, Field } from "../../../components/ui";
 import { useAuth } from "../../../lib/AuthContext";
 import { kycAPI } from "../../../lib/api";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 const ID_TYPES = ["Aadhaar", "PAN", "Driving licence", "Voter ID"];
 
 export default function Kyc() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { refresh } = useAuth();
   const [status, setStatus] = useState("unverified");
@@ -42,7 +45,7 @@ export default function Kyc() {
     const verified = status === "verified";
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }} edges={["top"]}>
-        <Topbar router={router} />
+        <Topbar router={router} s={s} C={C} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 32 }}>
           <View style={[s.bigIcon, { backgroundColor: verified ? C.greenSoft : "#FEF3E2" }]}>
             <Ionicons name={verified ? "shield-checkmark" : "time-outline"} size={34} color={verified ? C.green : C.amber} />
@@ -57,7 +60,7 @@ export default function Kyc() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }} edges={["top"]}>
-      <Topbar router={router} />
+      <Topbar router={router} s={s} C={C} />
       <View style={s.steps}>
         {[1, 2, 3].map((n) => (
           <View key={n} style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -111,7 +114,7 @@ export default function Kyc() {
   );
 }
 
-function Topbar({ router }) {
+function Topbar({ router, s, C }) {
   return (
     <View style={s.topbar}>
       <Pressable onPress={() => router.back()} hitSlop={8}><Ionicons name="arrow-back" size={20} color={C.navy} /></Pressable>
@@ -121,7 +124,7 @@ function Topbar({ router }) {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   steps: { flexDirection: "row", paddingHorizontal: 24, paddingVertical: 18 },

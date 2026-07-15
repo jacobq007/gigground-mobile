@@ -2,10 +2,13 @@ import { useState } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getCityAreas } from "../lib/geo";
-import { C, F } from "../lib/theme";
+import { F } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 // Search box + bubble chips of the major localities in `city`.
 export default function CityAreaPicker({ city, value, onChange, height = 340 }) {
+  const C = useC();
+  const s = makeStyles(C);
   const [q, setQ] = useState("");
   const all = getCityAreas(city);
   const query = q.trim().toLowerCase();
@@ -47,7 +50,7 @@ export default function CityAreaPicker({ city, value, onChange, height = 340 }) 
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   searchWrap: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 10, paddingHorizontal: 12, height: 44, marginBottom: 12 },
   search: { flex: 1, fontFamily: F.reg, fontSize: 14, color: C.text },
   wrap: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingBottom: 8 },

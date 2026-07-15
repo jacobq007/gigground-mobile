@@ -8,7 +8,8 @@ import { useLocation } from "../../lib/LocationContext";
 import { gigsAPI } from "../../lib/api";
 import { sortGigsByZone } from "../../lib/gigSort";
 import { getAreaCoords } from "../../lib/geo";
-import { C, F, money } from "../../lib/theme";
+import { F, money } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 const isExpired = (g) => g.completeBy && new Date(g.completeBy + "T00:00:00") < new Date(new Date().setHours(0, 0, 0, 0));
 
@@ -25,6 +26,8 @@ function groupByArea(gigs) {
 }
 
 export default function GigsMap() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { feedZone } = useLocation();
   const [gigs, setGigs] = useState(null);
@@ -59,7 +62,7 @@ export default function GigsMap() {
       ) : Platform.OS === "web" ? (
         <WebMap groups={groups} onOpen={openGig} />
       ) : (
-        <NativeMap groups={groups} onOpen={openGig} />
+        <NativeMap groups={groups} onOpen={openGig} C={C} />
       )}
     </SafeAreaView>
   );
@@ -139,7 +142,8 @@ function WebMap({ groups, onOpen }) {
 }
 
 // ── Native fallback: area pins + expandable gig list ──────────────────────────
-function NativeMap({ groups, onOpen }) {
+function NativeMap({ groups, onOpen, C }) {
+  const ms = makeMs(C);
   return (
     <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
       <View style={ms.legend}>
@@ -169,14 +173,14 @@ function NativeMap({ groups, onOpen }) {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingTop: 8, paddingBottom: 12 },
   title: { fontFamily: F.bold, fontSize: 19, color: C.text },
   sub: { fontFamily: F.reg, fontSize: 12.5, color: C.text2, marginTop: 2 },
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: C.surface2, alignItems: "center", justifyContent: "center" },
 });
 
-const ms = StyleSheet.create({
+const makeMs = (C) => StyleSheet.create({
   legend: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 14 },
   legendTxt: { fontFamily: F.med, fontSize: 12, color: C.text2 },
   areaCard: { backgroundColor: C.surface, borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, paddingHorizontal: 14, paddingVertical: 8, marginBottom: 12 },

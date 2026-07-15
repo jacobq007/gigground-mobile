@@ -11,11 +11,14 @@ import { gigsAPI } from "../../lib/api";
 import { MIN_PAY, JOB_KINDS } from "../../lib/constants";
 import { violatesGuidelines } from "../../lib/moderation";
 import { skilledSkills, skillLabel } from "../../lib/skills";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
 export default function PostGig() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { user } = useAuth();
   const [title, setTitle] = useState("");
@@ -167,7 +170,7 @@ export default function PostGig() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   lbl: { fontFamily: F.med, fontSize: 12, color: C.text2, marginBottom: 8 },

@@ -3,7 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Chip, VerifiedBadge } from "./ui";
 import { formatPayRange } from "../lib/pay";
 import { skillLabel } from "../lib/skills";
-import { C, F } from "../lib/theme";
+import { F } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -18,6 +19,8 @@ function daysUntil(completeBy) {
 // Compact list row — business square · role + meta · pay/timing.
 // `onReport`, when passed, shows a flag button (worker feed only — never on a hirer's own posts).
 export function GigRow({ gig, dist, onPress, last, onReport }) {
+  const C = useC();
+  const s = makeStyles(C);
   const isBiz = gig.who && !gig.who.startsWith("Self");
   const daysLeft = daysUntil(gig.completeBy);
   const expired = daysLeft != null && daysLeft < 0;
@@ -58,7 +61,7 @@ export function GigRow({ gig, dist, onPress, last, onReport }) {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 11, paddingVertical: 11 },
   border: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   expiredRow: { opacity: 0.55 },

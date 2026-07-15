@@ -5,9 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Chip, Skeleton, FadeIn } from "../../../components/ui";
 import { gigsAPI } from "../../../lib/api";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 export default function FullTime() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const [jobs, setJobs] = useState(null);
   useEffect(() => { (async () => setJobs(await gigsAPI.getBoard()))(); }, []);
@@ -49,7 +52,7 @@ export default function FullTime() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   back: { fontFamily: F.med, fontSize: 13, color: C.text2 },
   h: { fontFamily: F.bold, fontSize: 14, color: C.text },

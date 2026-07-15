@@ -6,12 +6,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button, Toast } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
 import { groupMeta, groupConfig, getGroupExtras, LEVELS, isSkilled } from "../../lib/skills";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 export default function SkillCategory() {
   const router = useRouter();
   const { group: groupKey } = useLocalSearchParams();
   const { user, update } = useAuth();
+  const C = useC();
+  const s = makeStyles(C);
   const group = groupMeta(groupKey);
   const cfg = groupConfig(groupKey);
 
@@ -157,7 +160,7 @@ export default function SkillCategory() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 14, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 16, color: C.text },
   blurb: { fontFamily: F.reg, fontSize: 13.5, color: C.text2, lineHeight: 20, marginBottom: 18 },

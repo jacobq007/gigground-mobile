@@ -5,7 +5,8 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Toast } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const dayLabel = (d) => d.toLocaleDateString("en-IN", { weekday: "short" });
@@ -19,6 +20,8 @@ const SLOTS = [
 ];
 
 export default function Availability() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { user, update } = useAuth();
   const start = new Date(new Date().setHours(0, 0, 0, 0));
@@ -101,7 +104,7 @@ export default function Availability() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingTop: 8, paddingBottom: 8 },
   title: { fontFamily: F.bold, fontSize: 19, color: C.text },
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: C.surface2, alignItems: "center", justifyContent: "center" },

@@ -5,9 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials, Skeleton, FadeIn, Empty } from "../../../components/ui";
 import { chatAPI } from "../../../lib/api";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 export default function ChatList() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const [chats, setChats] = useState(null);
 
@@ -46,7 +49,7 @@ export default function ChatList() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   head: { paddingHorizontal: 18, paddingVertical: 8 },
   title: { fontFamily: F.bold, fontSize: 18, color: C.text },
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 13 },

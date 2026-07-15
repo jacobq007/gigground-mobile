@@ -5,7 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../lib/AuthContext";
 import { SKILL_GROUPS, profileStrength, groupStatus, verifiedSkills } from "../../lib/skills";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 // Soft tint per category so the boxes read as distinct destinations.
 const TINT = {
@@ -25,6 +26,8 @@ export default function Skills() {
   // Re-read after returning from a category page so counts/strength update.
   useFocusEffect(useCallback(() => { refresh?.().finally(() => force((n) => n + 1)); }, []));
 
+  const C = useC();
+  const s = makeStyles(C);
   const strength = Math.round(profileStrength(user) * 100);
   const vCount = verifiedSkills(user).length;
 
@@ -75,7 +78,7 @@ export default function Skills() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   lede: { fontFamily: F.reg, fontSize: 13.5, color: C.text2, lineHeight: 20 },

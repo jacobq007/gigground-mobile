@@ -6,16 +6,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { Initials } from "../../../components/ui";
 import { gigsAPI, applicantsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
 import { compatTone, skillLabel } from "../../../lib/skills";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
-const TONE = { high: { bg: C.indigoSoft, fg: C.indigo }, mid: { bg: "#FEF3E2", fg: C.amber }, low: { bg: C.surface2, fg: C.text3 } };
+const makeTone = (C) => ({ high: { bg: C.indigoSoft, fg: C.indigo }, mid: { bg: C.dark ? "#3A2A10" : "#FEF3E2", fg: C.amber }, low: { bg: C.surface2, fg: C.text3 } });
 
-const VERIF = [
+const makeVerif = (C) => ([
   { label: "Unverified",      color: C.text3,  icon: "help-circle-outline" },
   { label: "ID verified",     color: C.indigo, icon: "shield-checkmark-outline" },
   { label: "ID + selfie",     color: C.indigo, icon: "shield-checkmark" },
   { label: "Police verified", color: C.green,  icon: "shield-checkmark" },
-];
+]);
 
 const SORTS = [
   { key: "fit",  label: "Best match", cmp: (a, b) => b.compat - a.compat },
@@ -27,6 +28,10 @@ const DECLINE_REASONS = ["Too far", "Not enough experience", "Position filled"];
 
 export default function Applicants() {
   const router = useRouter();
+  const C = useC();
+  const s = makeStyles(C);
+  const TONE = makeTone(C);
+  const VERIF = makeVerif(C);
   const { gigId } = useLocalSearchParams();
   const [gig, setGig] = useState(null);
   const [list, setList] = useState(null);
@@ -198,7 +203,7 @@ export default function Applicants() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: C.bg },
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },

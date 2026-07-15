@@ -7,9 +7,12 @@ import * as Clipboard from "expo-clipboard";
 import { Initials, Toast } from "../../../components/ui";
 import { chatAPI, gigsAPI } from "../../../lib/api";
 import { promptReport } from "../../../lib/report";
-import { C, F, money } from "../../../lib/theme";
+import { F, money } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 export default function ChatThread() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [conv, setConv] = useState(null);
@@ -102,7 +105,7 @@ export default function ChatThread() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   name: { fontFamily: F.bold, fontSize: 14, color: C.text },
   gig: { fontFamily: F.med, fontSize: 11, color: C.indigo },

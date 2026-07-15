@@ -8,12 +8,15 @@ import { ApplicantCard } from "../../../components/ApplicantCard";
 import DayPicker from "../../../components/DayPicker";
 import { gigsAPI, applicantsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
 import { formatPayRange } from "../../../lib/pay";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const isExpired = (g) => g.completeBy && new Date(g.completeBy + "T00:00:00") < new Date(new Date().setHours(0, 0, 0, 0));
 
 export default function MyGigs() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const [gigs, setGigs] = useState(null);
   const [applicantsByGig, setApplicantsByGig] = useState({});
@@ -111,7 +114,7 @@ export default function MyGigs() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   card: { backgroundColor: C.surface, borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 14, marginBottom: 12 },

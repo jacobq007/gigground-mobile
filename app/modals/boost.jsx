@@ -5,7 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Toast, Skeleton, Empty, Initials } from "../../components/ui";
 import { gigsAPI, applicantsAPI } from "../../lib/api";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 // Hiring-mode accent (plum/magenta) — see design/hiring-mode-design-spec.md
 const PLUM = "#9D2478";
@@ -18,6 +19,8 @@ const BOOST_PERKS = [
 ];
 
 export default function Boost() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const [gigs, setGigs] = useState(null);
   const [applicants, setApplicants] = useState({});
@@ -104,7 +107,7 @@ export default function Boost() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingTop: 8, paddingBottom: 8 },
   title: { fontFamily: F.bold, fontSize: 19, color: C.text },
   close: { width: 36, height: 36, borderRadius: 18, backgroundColor: C.surface2, alignItems: "center", justifyContent: "center" },
