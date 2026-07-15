@@ -47,6 +47,7 @@ export default function RootLayout() {
             <Stack.Screen name="modals/refer" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/boost" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
             <Stack.Screen name="modals/skills" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+            <Stack.Screen name="modals/skill-category" options={{ presentation: "card", animation: "slide_from_right" }} />
           </Stack>
         </LocationProvider>
       </AuthProvider>
