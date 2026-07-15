@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Toast } from "../../components/ui";
@@ -12,8 +12,20 @@ export default function Skills() {
   const router = useRouter();
   const { user, update } = useAuth();
   const [graph, setGraph] = useState(() => (user?.skillGraph || []).map((s) => ({ ...s })));
+  const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState("");
+  const query = q.trim().toLowerCase();
+
+  // Hydrate once if the screen mounted before auth resolved (a cold deep-link),
+  // so we never render — or save — an empty graph over the user's real skills.
+  const hydrated = useRef(!!user);
+  useEffect(() => {
+    if (!hydrated.current && user) {
+      setGraph((user.skillGraph || []).map((s) => ({ ...s })));
+      hydrated.current = true;
+    }
+  }, [user]);
 
   const entry = (key) => graph.find((s) => s.key === key);
   const has = (key) => !!entry(key);
@@ -65,10 +77,22 @@ export default function Skills() {
         </View>
       </View>
 
+      <View style={s.searchWrap}>
+        <Ionicons name="search" size={16} color={C.text3} />
+        <TextInput value={q} onChangeText={setQ} placeholder="Search a skill…" placeholderTextColor={C.text3} style={s.search} autoCapitalize="none" />
+        {q ? <Pressable onPress={() => setQ("")} hitSlop={8}><Ionicons name="close-circle" size={16} color={C.text3} /></Pressable> : null}
+      </View>
+
       <ScrollView contentContainerStyle={{ padding: 18, paddingTop: 6, paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
-        {SKILL_GROUPS.map((group) => (
+        {SKILL_GROUPS.map((group) => {
+          // Match the group name too, so "cook" surfaces the whole Home cooking group.
+          const groupMatch = group.label.toLowerCase().includes(query);
+          const visible = !query || groupMatch ? group.skills : group.skills.filter((sk) => sk.label.toLowerCase().includes(query));
+          if (visible.length === 0) return null;
+          return (
           <View key={group.key} style={{ marginBottom: 20 }}>
             <View style={s.groupHead}>
+              <Ionicons name={group.icon} size={15} color={group.skilled ? C.indigo : C.text2} />
               <View style={[s.groupTag, group.skilled ? s.tagSkill : s.tagGen]}>
                 <Text style={[s.groupTagTxt, { color: group.skilled ? C.indigo : C.text2 }]}>{group.skilled ? "Skilled" : "General"}</Text>
               </View>
@@ -77,7 +101,7 @@ export default function Skills() {
             </View>
 
             <View style={s.chips}>
-              {group.skills.map((sk) => {
+              {visible.map((sk) => {
                 const on = has(sk.key);
                 return (
                   <Pressable key={sk.key} onPress={() => toggle(sk.key)} style={[s.chip, on && (group.skilled ? s.chipOn : s.chipOnGen)]}>
@@ -89,7 +113,7 @@ export default function Skills() {
             </View>
 
             {/* Detail cards for selected skilled skills */}
-            {group.skilled && group.skills.filter((sk) => has(sk.key)).map((sk) => {
+            {group.skilled && visible.filter((sk) => has(sk.key)).map((sk) => {
               const e = entry(sk.key);
               return (
                 <View key={sk.key} style={s.det}>
@@ -119,7 +143,8 @@ export default function Skills() {
               );
             })}
           </View>
-        ))}
+          );
+        })}
       </ScrollView>
 
       <View style={s.footer}>
@@ -127,7 +152,7 @@ export default function Skills() {
           <Text style={s.summT}>{vCount} verified skill{vCount === 1 ? "" : "s"} · {oCount} you're open to</Text>
           <Text style={s.summS}>You'll be matched to {matchTypes} job type{matchTypes === 1 ? "" : "s"}</Text>
         </View>
-        <Button title={busy ? "Saving…" : "Save skills"} onPress={save} disabled={busy || graph.length === 0} />
+        <Button title={busy ? "Saving…" : "Save skills"} onPress={save} disabled={busy || !user || graph.length === 0} />
       </View>
       <Toast message={toast} visible={!!toast} />
     </SafeAreaView>
@@ -142,6 +167,8 @@ const s = StyleSheet.create({
   progTrack: { height: 6, backgroundColor: C.surface2, borderRadius: 3, overflow: "hidden" },
   progFill: { height: "100%", backgroundColor: C.indigo, borderRadius: 3 },
   progLbl: { fontFamily: F.med, fontSize: 11, color: C.text2, marginTop: 6 },
+  searchWrap: { flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 18, marginTop: 12, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 10, paddingHorizontal: 12, height: 42 },
+  search: { flex: 1, fontFamily: F.reg, fontSize: 14, color: C.text },
 
   groupHead: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 10 },
   groupTag: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 5 },
