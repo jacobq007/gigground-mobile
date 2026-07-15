@@ -1,30 +1,33 @@
 import { useCallback, useState } from "react";
 import { useRouter, useFocusEffect } from "expo-router";
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Pressable, Switch, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Initials } from "../../../components/ui";
 import { useAuth } from "../../../lib/AuthContext";
 import { useLocation } from "../../../lib/LocationContext";
+import { useTheme, useC } from "../../../lib/ThemeContext";
 import { kycAPI } from "../../../lib/api";
 import { verifiedSkills, openToKeys, skillLabel, levelLabel } from "../../../lib/skills";
 import { money } from "../../../lib/theme";
-import { C, F } from "../../../lib/theme";
-
-const KYC_META = {
-  unverified: { label: "Not verified", color: C.text3, bg: C.surface2 },
-  pending:    { label: "Under review", color: C.amber, bg: "#FEF3E2" },
-  verified:   { label: "Verified", color: C.green, bg: C.greenSoft },
-};
+import { F } from "../../../lib/theme";
 
 export default function Profile() {
   const router = useRouter();
   const { user, signout } = useAuth();
   const { homeZone } = useLocation();
+  const { dark, toggle } = useTheme();
+  const C = useC();
+  const s = makeS(C);
   const [kyc, setKyc] = useState(user?.kyc_status || "unverified");
 
   useFocusEffect(useCallback(() => { (async () => setKyc((await kycAPI.getStatus()).status))(); }, []));
 
+  const KYC_META = {
+    unverified: { label: "Not verified", color: C.text3, bg: C.surface2 },
+    pending:    { label: "Under review", color: C.amber, bg: dark ? "#3A2A10" : "#FEF3E2" },
+    verified:   { label: "Verified", color: C.green, bg: C.greenSoft },
+  };
   const initial = (user?.name || "U")[0].toUpperCase();
   const km = KYC_META[kyc] || KYC_META.unverified;
 
@@ -69,6 +72,21 @@ export default function Profile() {
         {/* Skills & credentials */}
         {!isHirer ? <SkillsSection user={user} onEdit={() => router.push("/modals/skills")} /> : null}
 
+        {/* Appearance */}
+        <View style={s.menu}>
+          <View style={s.row}>
+            <Ionicons name={dark ? "moon" : "moon-outline"} size={19} color={C.indigo} />
+            <Text style={s.rowLabel}>Dark mode</Text>
+            <Switch
+              value={dark}
+              onValueChange={toggle}
+              trackColor={{ false: C.border, true: C.indigo }}
+              thumbColor="#fff"
+              ios_backgroundColor={C.border}
+            />
+          </View>
+        </View>
+
         {/* Menu */}
         <View style={s.menu}>
           {MENU.map(([ic, label, color, go, badge], i) => (
@@ -91,6 +109,8 @@ export default function Profile() {
 }
 
 function SkillsSection({ user, onEdit }) {
+  const C = useC();
+  const sk = makeSk(C);
   const verified = verifiedSkills(user);
   const openTo = openToKeys(user);
   const empty = verified.length === 0 && openTo.length === 0;
@@ -136,7 +156,7 @@ function SkillsSection({ user, onEdit }) {
   );
 }
 
-const sk = StyleSheet.create({
+const makeSk = (C) => StyleSheet.create({
   card: { backgroundColor: C.surface, marginHorizontal: 16, marginTop: 16, borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 14 },
   head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
   title: { fontFamily: F.bold, fontSize: 14, color: C.text },
@@ -154,7 +174,7 @@ const sk = StyleSheet.create({
   otTxt: { fontFamily: F.med, fontSize: 12, color: C.text2 },
 });
 
-const s = StyleSheet.create({
+const makeS = (C) => StyleSheet.create({
   header: { backgroundColor: C.navy, alignItems: "center", paddingTop: 6, paddingBottom: 22 },
   name: { fontFamily: F.bold, fontSize: 17, color: "#fff" },
   loc: { fontFamily: F.reg, fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 3 },

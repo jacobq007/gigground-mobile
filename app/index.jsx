@@ -2,11 +2,12 @@ import { Redirect } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
 import { useAuth } from "../lib/AuthContext";
 import { useLocation } from "../lib/LocationContext";
-import { C } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 export default function Index() {
   const { user, loading } = useAuth();
   const { homeZone } = useLocation();
+  const C = useC();
 
   if (loading) {
     return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: C.bg }}>

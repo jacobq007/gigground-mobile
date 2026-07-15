@@ -9,7 +9,8 @@ import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
 import { detectHome } from "../../lib/locate";
 import { SERVED_CITIES, distanceToCity } from "../../lib/geo";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 const DEFAULT_CITY = "Chennai";
 const FAR_KM = 60; // beyond this, we treat the user as outside the city's footprint
@@ -26,6 +27,8 @@ export default function Onboarding() {
   const [locating, setLocating] = useState(false);
   const [note, setNote] = useState(null); // { tone, text }
   const [busy, setBusy] = useState(false);
+  const C = useC();
+  const s = makeStyles(C);
 
   const allowLocation = async () => {
     setLocating(true);
@@ -154,7 +157,7 @@ export default function Onboarding() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   bigIcon: { width: 72, height: 72, borderRadius: 22, backgroundColor: C.indigoSoft, alignItems: "center", justifyContent: "center", marginBottom: 22 },
   iconWrap: { width: 48, height: 48, borderRadius: 14, backgroundColor: C.indigoSoft, alignItems: "center", justifyContent: "center", marginBottom: 16 },
   title: { fontFamily: F.bold, fontSize: 26, color: C.text, textAlign: "center", letterSpacing: -0.5 },

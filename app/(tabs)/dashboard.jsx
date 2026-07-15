@@ -6,9 +6,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { Initials, Pay, Skeleton, Empty } from "../../components/ui";
 import { applicationsAPI, OPEN_APP_STATUSES } from "../../lib/api";
 import { money } from "../../lib/theme";
-import { C, F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
+import { F } from "../../lib/theme";
 
-const STATUS = {
+const makeStatus = (C) => ({
   applied:     { label: "Applied", color: C.text2, step: 1 },
   seen:        { label: "Seen by hirer", color: C.indigo, step: 1 },
   shortlisted: { label: "Shortlisted", color: C.amber, step: 1 },
@@ -16,11 +17,14 @@ const STATUS = {
   confirmed:   { label: "Confirmed", color: C.indigo, step: 2 },
   in_shift:    { label: "In shift", color: C.amber, step: 3 },
   done:        { label: "Completed", color: C.green, step: 4 },
-};
+});
 const ACTIVE = [...OPEN_APP_STATUSES, "hired", "confirmed", "in_shift"];
 
 export default function Dashboard() {
   const router = useRouter();
+  const C = useC();
+  const s = makeStyles(C);
+  const STATUS = makeStatus(C);
   const [apps, setApps] = useState(null);
   useFocusEffect(useCallback(() => { (async () => setApps(await applicationsAPI.getMy()))(); }, []));
 
@@ -105,7 +109,7 @@ export default function Dashboard() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { paddingHorizontal: 18, paddingVertical: 8 },
   h: { fontFamily: F.bold, fontSize: 18, color: C.text },
   tile: { flex: 1, backgroundColor: C.surface2, borderRadius: 12, padding: 13, alignItems: "flex-start" },

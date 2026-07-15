@@ -6,11 +6,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Initials, Chip, Button, Pay } from "../../../components/ui";
 import { gigsAPI, savedAPI } from "../../../lib/api";
 import { money } from "../../../lib/theme";
-import { C, F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
+import { F } from "../../../lib/theme";
 
 const parseHrs = (h) => { const m = String(h).match(/(\d+)/); return m ? parseInt(m[1]) : null; };
 
 export default function JobDetail() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [gig, setGig] = useState(null);
@@ -114,7 +117,7 @@ export default function JobDetail() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: C.bg },
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   back: { fontFamily: F.med, fontSize: 13, color: C.text2 },

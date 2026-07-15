@@ -7,12 +7,15 @@ import { Initials } from "../../components/ui";
 import { applicationsAPI, chatAPI } from "../../lib/api";
 import { getAreaCoords } from "../../lib/geo";
 import { money } from "../../lib/theme";
-import { C, F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
+import { F } from "../../lib/theme";
 
 const STEPS = ["Applied", "Confirmed", "In shift", "Done"];
 const STEP_INDEX = { applied: 1, seen: 1, shortlisted: 1, hired: 2, confirmed: 2, in_shift: 3, done: 4 };
 
 export default function ActiveGig() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [app, setApp] = useState(null);
@@ -116,7 +119,7 @@ export default function ActiveGig() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: C.bg },
   header: { backgroundColor: C.navy, paddingHorizontal: 18, paddingTop: 6, paddingBottom: 20 },
   kicker: { fontFamily: F.bold, fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: 1.5 },

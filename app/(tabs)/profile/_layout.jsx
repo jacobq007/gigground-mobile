@@ -1,7 +1,8 @@
 import { Stack } from "expo-router";
-import { C } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 export default function ProfileLayout() {
+  const C = useC();
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: C.bg }, animation: "slide_from_right" }}>
       <Stack.Screen name="index" />

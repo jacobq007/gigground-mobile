@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet } from "react-native";
 import { CHENNAI_AREAS } from "../lib/geo";
-import { C, F } from "../lib/theme";
+import { F } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 export default function AreaPicker({ value, onChange, height = 280 }) {
+  const C = useC();
+  const s = makeStyles(C);
   const [q, setQ] = useState("");
   const areas = CHENNAI_AREAS.map((a) => a[0]).filter((n) => n.toLowerCase().includes(q.toLowerCase()));
   return (
@@ -26,7 +29,7 @@ export default function AreaPicker({ value, onChange, height = 280 }) {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   search: { fontFamily: F.reg, fontSize: 14, color: C.text, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 10, paddingHorizontal: 13, height: 44, marginBottom: 12 },
   wrap: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingBottom: 8 },
   chip: { paddingHorizontal: 13, paddingVertical: 8, borderRadius: 99, backgroundColor: C.surface2, borderWidth: 1, borderColor: "transparent" },

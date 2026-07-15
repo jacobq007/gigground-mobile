@@ -1,12 +1,15 @@
 import { Alert, View, Text, Pressable, StyleSheet } from "react-native";
 import { Initials, Chip, VerifiedBadge } from "./ui";
 import { reliability } from "../lib/reliability";
-import { C, F } from "../lib/theme";
+import { F } from "../lib/theme";
+import { useC } from "../lib/ThemeContext";
 
 const STATUS_LABEL = { applied: "Applied", confirmed: "Confirmed", in_shift: "In shift", done: "Completed", no_show: "No-show" };
 const NO_SHOW_ELIGIBLE = ["confirmed", "in_shift"];
 
 export function ApplicantCard({ applicant, onNoShow }) {
+  const C = useC();
+  const s = makeStyles(C);
   const { pct, strikes } = reliability(applicant);
 
   const confirmNoShow = () => {
@@ -42,7 +45,7 @@ export function ApplicantCard({ applicant, onNoShow }) {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   card: { backgroundColor: C.surface, borderRadius: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border, padding: 13, marginBottom: 10 },
   name: { fontFamily: F.bold, fontSize: 13, color: C.text },
   reliability: { fontFamily: F.reg, fontSize: 11, color: C.text2 },

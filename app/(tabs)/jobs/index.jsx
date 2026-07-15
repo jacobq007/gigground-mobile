@@ -10,7 +10,8 @@ import { gigsAPI } from "../../../lib/api";
 import { sortGigsByZone } from "../../../lib/gigSort";
 import { TIMINGS } from "../../../lib/constants";
 import { promptReport } from "../../../lib/report";
-import { C, F } from "../../../lib/theme";
+import { F } from "../../../lib/theme";
+import { useC } from "../../../lib/ThemeContext";
 
 const isExpired = (g) => g.completeBy && new Date(g.completeBy + "T00:00:00") < new Date(new Date().setHours(0, 0, 0, 0));
 
@@ -23,6 +24,8 @@ export default function Jobs() {
   const [timing, setTiming] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const C = useC();
+  const s = makeStyles(C);
 
   const load = useCallback(async () => { setGigs(await gigsAPI.getAll()); }, []);
   useEffect(() => { load(); }, [load]);
@@ -120,11 +123,12 @@ export default function Jobs() {
 }
 
 function FullTimeRedirect({ router }) {
+  const C = useC();
   useEffect(() => { router.replace("/(tabs)/jobs/fulltime"); }, []);
   return <View style={{ flex: 1, backgroundColor: C.bg }} />;
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   head: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 8 },
   title: { fontFamily: F.bold, fontSize: 18, color: C.text },
   filterBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: C.surface2, alignItems: "center", justifyContent: "center" },

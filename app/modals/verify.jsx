@@ -5,9 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
-import { C, F } from "../../lib/theme";
+import { F } from "../../lib/theme";
+import { useC } from "../../lib/ThemeContext";
 
 export default function Verify() {
+  const C = useC();
+  const s = makeStyles(C);
   const router = useRouter();
   const { user, update } = useAuth();
   const [uploaded, setUploaded] = useState(false);
@@ -45,7 +48,7 @@ export default function Verify() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   topbar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 18, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   h: { fontFamily: F.bold, fontSize: 15, color: C.text },
   sub: { fontFamily: F.reg, fontSize: 13, color: C.text2, lineHeight: 19, marginBottom: 20 },

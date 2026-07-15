@@ -8,6 +8,7 @@ import { Skeleton, FadeIn, Empty } from "../../components/ui";
 import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
 import { useMode } from "../../lib/ModeContext";
+import { useC } from "../../lib/ThemeContext";
 import { gigsAPI, notificationsAPI, applicationsAPI, applicantsAPI } from "../../lib/api";
 import { sortGigsByZone } from "../../lib/gigSort";
 import { FJ, FS, money } from "../../lib/theme";
@@ -100,7 +101,7 @@ function FlameIcon() {
   );
 }
 
-function StreakPill({ streak, best }) {
+function StreakPill({ streak, best, s }) {
   return (
     <View style={s.streakPill}>
       <FlameIcon />
@@ -132,6 +133,10 @@ export default function Home() {
 
   const isWorking = mode === "working";
   const T = isWorking ? WORK : HIRE;
+  const C = useC();
+  const s = makeStyles(C);
+  const pageBg = C.dark ? C.bg : T.pageBg;
+  const statBg = C.dark ? C.surface2 : T.statBg;
 
   const load = useCallback(async () => {
     const [g, u, a, mine] = await Promise.all([
@@ -195,18 +200,18 @@ export default function Home() {
   const thumbTranslate = segAnim.interpolate({ inputRange: [0, 1], outputRange: [0, Math.max(0, trackW / 2 - 4)] });
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: T.pageBg }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: pageBg }} edges={["top"]}>
       {/* Header — name + bell */}
-      <View style={[s.header, { backgroundColor: T.pageBg }]}>
+      <View style={[s.header, { backgroundColor: pageBg }]}>
         <Text style={s.name} numberOfLines={1}>{name}</Text>
         <Pressable onPress={() => router.push("/modals/notifications")} style={[s.bell, { backgroundColor: T.bell }]}>
           <Ionicons name="notifications-outline" size={17} color="#fff" />
-          {unread > 0 ? <View style={[s.bellDot, { borderColor: T.pageBg }]} /> : null}
+          {unread > 0 ? <View style={[s.bellDot, { borderColor: pageBg }]} /> : null}
         </Pressable>
       </View>
 
       {/* Segmented Working / Hiring */}
-      <View style={[s.segWrap, { backgroundColor: T.pageBg }]}>
+      <View style={[s.segWrap, { backgroundColor: pageBg }]}>
         <View style={[s.segTrack, { backgroundColor: T.track }]} onLayout={(e) => setTrackW(e.nativeEvent.layout.width)}>
           <Animated.View style={[s.segThumb, { width: trackW ? trackW / 2 - 4 : "48%", transform: [{ translateX: thumbTranslate }] }]} />
           <Pressable style={s.segBtn} onPress={() => switchMode("working")}>
@@ -234,7 +239,7 @@ export default function Home() {
                   <Text style={s.heroNumSuffix}> today</Text>
                 </Text>
                 <Text style={s.heroContext}>{streak}-day streak · {nearCount} gigs open near {zone}</Text>
-                <StreakPill streak={streak} best={bestStreak} />
+                <StreakPill streak={streak} best={bestStreak} s={s} />
               </LinearGradient>
 
               {/* Live banner (white) + icon map button */}
@@ -244,7 +249,7 @@ export default function Home() {
                   <Text style={s.bannerTitle}>{nearCount} gigs live near {zone}</Text>
                   <Text style={s.bannerSub}>Updated 3 min ago</Text>
                 </View>
-                <Pressable onPress={() => router.push("/modals/gigs-map")} style={[s.mapBtn, { backgroundColor: WORK.statBg }]}>
+                <Pressable onPress={() => router.push("/modals/gigs-map")} style={[s.mapBtn, { backgroundColor: statBg }]}>
                   <Ionicons name="map" size={16} color={WORK.accent} />
                 </Pressable>
               </View>
@@ -284,7 +289,7 @@ export default function Home() {
                   <Text style={s.heroNumSuffix}> new applicants</Text>
                 </Text>
                 <Text style={s.heroContext}>{postedGigs.length} active post{postedGigs.length === 1 ? "" : "s"} · fill them before the weekend</Text>
-                <StreakPill streak={streak} best={bestStreak} />
+                <StreakPill streak={streak} best={bestStreak} s={s} />
               </LinearGradient>
 
               {/* Live banner (white) */}
@@ -298,16 +303,16 @@ export default function Home() {
 
               {/* Stat strip */}
               <View style={s.statRow}>
-                <View style={[s.statCard, { backgroundColor: HIRE.statBg }]}>
+                <View style={[s.statCard, { backgroundColor: statBg }]}>
                   <Text style={s.statNum}>{postedGigs.length}</Text>
                   <Text style={s.statLabel}>Active gigs</Text>
                 </View>
-                <View style={[s.statCard, { backgroundColor: HIRE.statBg }]}>
+                <View style={[s.statCard, { backgroundColor: statBg }]}>
                   <Text style={[s.statNum, { color: HIRE.accent }]}>{newApplicants}</Text>
                   <Text style={s.statLabel}>New applicants</Text>
                 </View>
-                <View style={[s.statCard, { backgroundColor: HIRE.statBg }]}>
-                  <Text style={[s.statNum, { color: CO.pay }]}>{money(committedPay)}</Text>
+                <View style={[s.statCard, { backgroundColor: statBg }]}>
+                  <Text style={[s.statNum, { color: C.green }]}>{money(committedPay)}</Text>
                   <Text style={s.statLabel}>Committed pay</Text>
                 </View>
               </View>
@@ -401,9 +406,9 @@ export default function Home() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (C) => StyleSheet.create({
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 6, paddingBottom: 8 },
-  name: { fontFamily: FJ.xbold, fontSize: 20, color: CO.heading, letterSpacing: -0.5, flex: 1 },
+  name: { fontFamily: FJ.xbold, fontSize: 20, color: C.text, letterSpacing: -0.5, flex: 1 },
   bell: { width: 36, height: 36, borderRadius: 12, alignItems: "center", justifyContent: "center", position: "relative" },
   bellDot: { position: "absolute", top: 8, right: 8, width: 8, height: 8, borderRadius: 4, backgroundColor: CO.unread, borderWidth: 1.5 },
 
@@ -425,36 +430,36 @@ const s = StyleSheet.create({
   streakTxt: { color: "#fff", fontFamily: FJ.bold, fontSize: 12 },
   streakBest: { color: "rgba(255,255,255,0.55)", fontFamily: FJ.med, fontSize: 12 },
 
-  banner: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: "#fff", borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 22, shadowColor: "#140A28", shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
-  bannerTitle: { fontFamily: FJ.bold, fontSize: 14.5, color: CO.heading },
-  bannerSub: { fontFamily: FJ.med, fontSize: 12, color: CO.muted, marginTop: 2 },
+  banner: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 22, shadowColor: "#140A28", shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
+  bannerTitle: { fontFamily: FJ.bold, fontSize: 14.5, color: C.text },
+  bannerSub: { fontFamily: FJ.med, fontSize: 12, color: C.text2, marginTop: 2 },
   mapBtn: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
 
   sectionHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
-  sectionTitle: { fontFamily: FJ.xbold, fontSize: 15, color: CO.heading, letterSpacing: -0.3 },
+  sectionTitle: { fontFamily: FJ.xbold, fontSize: 15, color: C.text, letterSpacing: -0.3 },
   sectionLink: { fontFamily: FJ.sbold, fontSize: 13 },
 
   statRow: { flexDirection: "row", gap: 8, marginBottom: 22 },
   statCard: { flex: 1, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 10 },
-  statNum: { fontFamily: FS.bold, fontSize: 19, color: CO.heading, letterSpacing: -0.3 },
-  statLabel: { fontFamily: FJ.sbold, fontSize: 10.5, color: CO.muted, marginTop: 2 },
+  statNum: { fontFamily: FS.bold, fontSize: 19, color: C.text, letterSpacing: -0.3 },
+  statLabel: { fontFamily: FJ.sbold, fontSize: 10.5, color: C.text2, marginTop: 2 },
 
-  gigCard: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: "#fff", borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, shadowColor: "#140A28", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
+  gigCard: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, shadowColor: "#140A28", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
   avatar: { width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" },
   avatarTxt: { color: "#fff", fontFamily: FJ.xbold, fontSize: 11 },
-  gigTitle: { fontFamily: FJ.bold, fontSize: 14, color: CO.heading },
-  gigMeta: { fontFamily: FJ.med, fontSize: 12, color: CO.muted, marginTop: 2 },
-  pay: { fontFamily: FS.bold, fontSize: 16, color: CO.pay, letterSpacing: -0.3 },
+  gigTitle: { fontFamily: FJ.bold, fontSize: 14, color: C.text },
+  gigMeta: { fontFamily: FJ.med, fontSize: 12, color: C.text2, marginTop: 2 },
+  pay: { fontFamily: FS.bold, fontSize: 16, color: C.green, letterSpacing: -0.3 },
   appliedBadge: { borderRadius: 9, paddingHorizontal: 10, paddingVertical: 6 },
   appliedTxt: { fontFamily: FJ.bold, fontSize: 12 },
 
-  emptyWrap: { backgroundColor: "#fff", borderRadius: 16, shadowColor: "#140A28", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
+  emptyWrap: { backgroundColor: C.surface, borderRadius: 16, shadowColor: "#140A28", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
   emptyCta: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12 },
   emptyCtaTxt: { fontFamily: FJ.bold, fontSize: 14, color: "#fff" },
 
   fabAction: { position: "absolute", right: 20, bottom: 24, flexDirection: "row", alignItems: "center", gap: 12, zIndex: 102 },
-  fabLabelPill: { backgroundColor: "#fff", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 22, shadowColor: "#000", shadowOpacity: 0.14, shadowRadius: 12, shadowOffset: { width: 0, height: 3 }, elevation: 3 },
-  fabLabelTxt: { fontFamily: FJ.bold, fontSize: 12.5, color: "#151718" },
+  fabLabelPill: { backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 22, shadowColor: "#000", shadowOpacity: 0.14, shadowRadius: 12, shadowOffset: { width: 0, height: 3 }, elevation: 3 },
+  fabLabelTxt: { fontFamily: FJ.bold, fontSize: 12.5, color: C.text },
   fabCircle: { width: 50, height: 50, borderRadius: 25, alignItems: "center", justifyContent: "center", shadowColor: "#000", shadowOpacity: 0.28, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
   fabMainWrap: { position: "absolute", bottom: 24, right: 20, zIndex: 103 },
   fabMain: { width: 58, height: 58, borderRadius: 29, shadowColor: "#000", shadowOpacity: 0.3, shadowRadius: 20, shadowOffset: { width: 0, height: 6 }, elevation: 5 },
