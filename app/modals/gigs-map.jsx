@@ -60,7 +60,7 @@ export default function GigsMap() {
       {!gigs ? (
         <View style={{ padding: 18 }}><Skeleton height={320} style={{ borderRadius: 18 }} /></View>
       ) : Platform.OS === "web" ? (
-        <WebMap groups={groups} onOpen={openGig} />
+        <WebMap groups={groups} onOpen={openGig} C={C} />
       ) : (
         <NativeMap groups={groups} onOpen={openGig} C={C} />
       )}
@@ -69,7 +69,7 @@ export default function GigsMap() {
 }
 
 // ── Web: real Leaflet map, one marker per area (count badge), popup lists gigs ──
-function WebMap({ groups, onOpen }) {
+function WebMap({ groups, onOpen, C }) {
   useEffect(() => {
     const handler = (e) => { if (e.data?.gigId) onOpen(e.data.gigId); };
     window.addEventListener("message", handler);
