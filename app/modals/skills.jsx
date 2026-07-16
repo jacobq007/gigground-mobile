@@ -4,19 +4,9 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../lib/AuthContext";
-import { SKILL_GROUPS, profileStrength, groupStatus, verifiedSkills } from "../../lib/skills";
+import { SKILL_GROUPS, profileStrength, groupStatus, verifiedSkills, GROUP_TINT as TINT, GROUP_TINT_FG as TINT_FG } from "../../lib/skills";
 import { F } from "../../lib/theme";
 import { useC } from "../../lib/ThemeContext";
-
-// Soft tint per category so the boxes read as distinct destinations.
-const TINT = {
-  tutoring: "#EEF0FE", cooking: "#FDEFE7", beauty: "#FBE9F4",
-  repairs: "#E9F3EE", media: "#EAF0FB", general: "#F1F0EE",
-};
-const TINT_FG = {
-  tutoring: "#4338CA", cooking: "#B65B25", beauty: "#AD248C",
-  repairs: "#2F855A", media: "#2F55D4", general: "#6B7280",
-};
 
 export default function Skills() {
   const router = useRouter();
