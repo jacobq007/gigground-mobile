@@ -136,18 +136,28 @@
   .screen .body { padding: 4px 16px 18px; }
   .icn { width:1em; height:1em; display:inline-block; vertical-align:-.12em; }
 
+  /* the "lil bit": avatars, hairline icons, one warm figure */
+  .screen .av { width:40px; height:40px; border-radius:12px; background:var(--s-acc-soft); color:var(--s-acc);
+    font-weight:680; font-size:12.5px; letter-spacing:.02em; display:flex; align-items:center; justify-content:center; flex:none; }
+  .screen .av.accent { background:var(--s-acc); color:#fff; }
+  .screen .av.co { background:var(--s-line2); color:var(--s-ink2); }
+  .ic { width:12px; height:12px; display:inline-block; vertical-align:-.14em; opacity:.85; }
+  .ic + .ic-gap, .ic-lead { margin-left:2px; }
+
   /* --- Direction A : "Column" (list-first, hairline) --- */
   .A .lead { font-size:12px; color:var(--s-ink2); padding:6px 0 14px; border-bottom:1px solid var(--s-line); }
   .A .cand { padding:16px 0; border-bottom:1px solid var(--s-line); }
-  .A .cand.best { position:relative; }
-  .A .cand .toprow { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .A .cand.best { background: color-mix(in srgb, var(--s-acc) 6%, var(--s-bg)); margin:0 -16px; padding:16px; }
+  .A .cand .toprow { display:flex; align-items:flex-start; justify-content:space-between; gap:11px; }
+  .A .cand .grow { flex:1; min-width:0; }
   .A .cand .nm { font-weight:660; font-size:15px; letter-spacing:-.01em; }
   .A .cand .nm .v { color:var(--s-acc); font-size:11px; font-weight:600; margin-left:6px; }
   .A .cand .meta { font-size:12px; color:var(--s-ink2); margin-top:3px; }
   .A .cand .why { font-size:12px; color:var(--s-ink2); margin-top:8px; }
   .A .cand .why b { color:var(--s-ink); font-weight:600; }
   .A .match { text-align:right; flex:none; }
-  .A .match .pct { font-size:20px; font-weight:680; letter-spacing:-.02em; }
+  .A .match .pct { font-size:21px; font-weight:680; letter-spacing:-.02em; color:var(--s-acc); }
+  .A .cand:not(.best) .match .pct { color:var(--s-ink); }
   .A .match .l { font-size:9.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--s-ink3); }
   .A .match .bar { width:52px; height:3px; border-radius:2px; background:var(--s-line); margin:6px 0 0 auto; overflow:hidden; }
   .A .match .bar i { display:block; height:100%; background:var(--s-acc); }
@@ -176,10 +186,11 @@
   .B .sortbar { display:flex; gap:8px; padding:8px 0 14px; font-size:12px; }
   .B .sortbar .s { padding:5px 11px; border-radius:8px; border:1px solid var(--s-line); color:var(--s-ink2); }
   .B .sortbar .s.on { border-color:var(--s-acc); color:var(--s-acc); background:var(--s-acc-soft); font-weight:600; }
-  .B .card { background:var(--s-card); border:1px solid var(--s-line); border-radius:14px; padding:14px; margin-bottom:11px; }
-  .B .card.best { border-color: color-mix(in srgb, var(--s-acc) 45%, var(--s-line)); }
+  .B .card { background:var(--s-card); border:1px solid var(--s-line); border-radius:14px; padding:14px; margin-bottom:11px; box-shadow:0 1px 2px rgba(20,22,40,.04); }
+  .B .card.best { border-color: color-mix(in srgb, var(--s-acc) 40%, var(--s-line)); background: color-mix(in srgb, var(--s-acc) 4%, var(--s-card)); }
   .B .card .best-lbl { font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--s-acc); margin-bottom:9px; }
-  .B .card .hd { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .B .card .hd { display:flex; justify-content:space-between; gap:11px; align-items:flex-start; }
+  .B .card .hd .grow { flex:1; min-width:0; }
   .B .card .nm { font-weight:660; font-size:15px; letter-spacing:-.01em; }
   .B .card .nm .v { color:var(--s-acc); font-size:11px; font-weight:600; margin-left:5px; }
   .B .card .role { font-size:12px; color:var(--s-ink2); margin-top:2px; }
@@ -187,7 +198,7 @@
   .B .card .rate small { display:block; font-size:10px; color:var(--s-ink3); font-weight:500; }
   .B .meter { margin:13px 0 4px; }
   .B .meter .mt { display:flex; justify-content:space-between; font-size:11px; color:var(--s-ink2); margin-bottom:5px; }
-  .B .meter .mt b { color:var(--s-ink); font-weight:660; font-size:12px; }
+  .B .meter .mt b { color:var(--s-acc); font-weight:680; font-size:12px; }
   .B .meter .track { height:5px; border-radius:3px; background:var(--s-line2); overflow:hidden; }
   .B .meter .track i { display:block; height:100%; background:var(--s-acc); border-radius:3px; }
   .B .kv { display:flex; gap:0; margin-top:13px; border-top:1px solid var(--s-line2); padding-top:11px; }
@@ -322,13 +333,14 @@
         <div class="demo-card" style="padding:0;">
           <div class="screen A" style="border-radius:14px;">
             <div class="body" style="padding:16px 16px 6px;">
-              <div class="cand best" style="border:none; padding-top:2px;">
+              <div class="cand best" style="border:none; margin:0; padding:2px 0 0; background:transparent;">
                 <span class="ribbon">Best match</span>
                 <div class="toprow">
-                  <div>
-                    <div class="nm">Priya Nair <span class="v">✓ ID + selfie</span></div>
-                    <div class="meta">M.Sc Maths · 6 yrs · Velachery · 1.2 km away</div>
-                    <div class="why"><b>Verified in Maths.</b> 31 tutoring gigs at 4.9★, 97% reliable. Rate ₹450/hr — just over budget.</div>
+                  <div class="av accent">PN</div>
+                  <div class="grow">
+                    <div class="nm">Priya Nair <span class="v"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> ID + selfie</span></div>
+                    <div class="meta"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 6.6c0 3.5-5 8-5 8s-5-4.5-5-8a5 5 0 0 1 10 0Z"/><circle cx="8" cy="6.4" r="1.7"/></svg> 1.2 km · M.Sc Maths · 6 yrs</div>
+                    <div class="why"><b>Verified in Maths.</b> 31 tutoring gigs · <svg class="ic" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 14l.8-4.2L2 6.9l4.2-.5L8 1.6Z"/></svg> 4.9 · 97% reliable. Rate ₹450 — just over budget.</div>
                   </div>
                   <div class="match">
                     <div class="pct mono">96</div>
@@ -373,10 +385,11 @@
             <div class="cand best">
               <span class="ribbon">Best match</span>
               <div class="toprow">
-                <div>
-                  <div class="nm">Priya Nair <span class="v">✓ ID + selfie</span></div>
-                  <div class="meta">M.Sc Maths · 6 yrs · 1.2 km</div>
-                  <div class="why"><b>Verified in Maths.</b> 31 gigs · 4.9★ · 97% reliable.</div>
+                <div class="av accent">PN</div>
+                <div class="grow">
+                  <div class="nm">Priya Nair <span class="v"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> ID + selfie</span></div>
+                  <div class="meta"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 6.6c0 3.5-5 8-5 8s-5-4.5-5-8a5 5 0 0 1 10 0Z"/><circle cx="8" cy="6.4" r="1.7"/></svg> 1.2 km · M.Sc Maths · 6 yrs</div>
+                  <div class="why"><b>Verified in Maths.</b> 31 gigs · <svg class="ic" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 14l.8-4.2L2 6.9l4.2-.5L8 1.6Z"/></svg> 4.9 · 97% reliable.</div>
                 </div>
                 <div class="match"><div class="pct mono">96</div><div class="l">match</div><div class="bar"><i style="width:96%"></i></div></div>
               </div>
@@ -385,10 +398,11 @@
 
             <div class="cand">
               <div class="toprow">
-                <div>
-                  <div class="nm">Ravi Menon <span class="v">✓ ID verified</span></div>
-                  <div class="meta">B.Ed Physics · 3.4 km</div>
-                  <div class="why">Verified in Maths &amp; Science · 18 gigs · 4.8★.</div>
+                <div class="av">RM</div>
+                <div class="grow">
+                  <div class="nm">Ravi Menon <span class="v"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> ID verified</span></div>
+                  <div class="meta"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 6.6c0 3.5-5 8-5 8s-5-4.5-5-8a5 5 0 0 1 10 0Z"/><circle cx="8" cy="6.4" r="1.7"/></svg> 3.4 km · B.Ed Physics</div>
+                  <div class="why">Verified in Maths &amp; Science · 18 gigs · <svg class="ic" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 14l.8-4.2L2 6.9l4.2-.5L8 1.6Z"/></svg> 4.8.</div>
                 </div>
                 <div class="match"><div class="pct mono">88</div><div class="l">match</div><div class="bar"><i style="width:88%"></i></div></div>
               </div>
@@ -397,9 +411,10 @@
 
             <div class="cand">
               <div class="toprow">
-                <div>
+                <div class="av">KS</div>
+                <div class="grow">
                   <div class="nm">Karthik S</div>
-                  <div class="meta">0.9 km · new to tutoring</div>
+                  <div class="meta"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 6.6c0 3.5-5 8-5 8s-5-4.5-5-8a5 5 0 0 1 10 0Z"/><circle cx="8" cy="6.4" r="1.7"/></svg> 0.9 km · new to tutoring</div>
                   <div class="why">Open to learn — not yet verified in Maths.</div>
                 </div>
                 <div class="match"><div class="pct mono">54</div><div class="l">match</div><div class="bar"><i style="width:54%"></i></div></div>
@@ -424,8 +439,13 @@
           </div>
           <div class="body">
             <div class="gig-h">
-              <div class="t">Maths tuition · Class 10</div>
-              <div class="co">Anitha R · Velachery · posted 2m ago</div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <div class="av co">AR</div>
+                <div>
+                  <div class="t" style="font-size:18px;">Maths tuition · Class 10</div>
+                  <div class="co">Anitha R · Velachery · 2m ago</div>
+                </div>
+              </div>
               <div class="pay">₹500 <span>/ hour</span></div>
             </div>
             <div class="facts">
@@ -436,8 +456,8 @@
             </div>
             <p class="desc">CBSE Class 10 student needs help before the board exams. Twice a week, at home. Looking for someone patient with proven results.</p>
             <div class="fitline">
-              <span>◆</span>
-              <span><b style="font-weight:600">You're a strong fit.</b> You're verified in Maths and 1.1 km away — expect a fast yes.</span>
+              <svg class="ic" style="margin-top:2px" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.6 4.9L14.5 8l-4.9 1.6L8 14.5 6.4 9.6 1.5 8l4.9-1.6L8 1Z"/></svg>
+              <span><b style="font-weight:600">You're a strong fit.</b> Verified in Maths and 1.1 km away — expect a fast yes.</span>
             </div>
             <div class="cta">Apply — one tap</div>
             <div class="cta-sub">Anitha answers within 24h, or it frees your slot.</div>
@@ -475,8 +495,9 @@
             <div class="card best">
               <div class="best-lbl">Best match</div>
               <div class="hd">
-                <div>
-                  <div class="nm">Priya Nair <span class="v">✓ ID + selfie</span></div>
+                <div class="av accent">PN</div>
+                <div class="grow">
+                  <div class="nm">Priya Nair <span class="v"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> ID + selfie</span></div>
                   <div class="role">M.Sc Maths · 6 yrs · Velachery</div>
                 </div>
                 <div class="rate">₹450<small>/ hr</small></div>
@@ -495,8 +516,9 @@
 
             <div class="card">
               <div class="hd">
-                <div>
-                  <div class="nm">Ravi Menon <span class="v">✓ ID</span></div>
+                <div class="av">RM</div>
+                <div class="grow">
+                  <div class="nm">Ravi Menon <span class="v"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> ID</span></div>
                   <div class="role">B.Ed Physics · Adyar</div>
                 </div>
                 <div class="rate">₹520<small>/ hr</small></div>
@@ -530,11 +552,16 @@
           <div class="body offer">
             <div class="cap">One clear yes-or-no at a time — no feed to scroll.</div>
             <div class="oc">
-              <div class="t">Maths tuition · Class 10</div>
-              <div class="co">Anitha R · Velachery</div>
+              <div style="display:flex; gap:11px; align-items:center;">
+                <div class="av co">AR</div>
+                <div class="grow">
+                  <div class="t">Maths tuition · Class 10</div>
+                  <div class="co">Anitha R · Velachery</div>
+                </div>
+              </div>
               <div class="pay">₹500 <span>/ hour</span></div>
               <div class="kv2"><span><b>1.1 km</b> away</span><span><b>Mon/Wed/Fri</b> · 6 pm</span></div>
-              <div class="fit"><span>◆</span> You're verified in Maths — a strong match.</div>
+              <div class="fit"><svg class="ic" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.6 4.9L14.5 8l-4.9 1.6L8 14.5 6.4 9.6 1.5 8l4.9-1.6L8 1Z"/></svg> You're verified in Maths — a strong match.</div>
               <div class="meter" style="margin-top:13px;">
                 <div class="mt"><span>Fit</span><b class="mono">94%</b></div>
                 <div class="track"><i style="width:94%"></i></div>
