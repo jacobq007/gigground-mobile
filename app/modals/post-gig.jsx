@@ -10,15 +10,11 @@ import { useAuth } from "../../lib/AuthContext";
 import { gigsAPI } from "../../lib/api";
 import { MIN_PAY } from "../../lib/constants";
 import { violatesGuidelines } from "../../lib/moderation";
-import { SKILL_GROUPS } from "../../lib/skills";
+import { SKILL_GROUPS, GROUP_TINT as TINT, GROUP_TINT_FG as TINT_FG } from "../../lib/skills";
 import { F } from "../../lib/theme";
 import { useC } from "../../lib/ThemeContext";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
-
-// Soft tint per category — same mapping as the Skills & credentials page.
-const TINT = { tutoring: "#EEF0FE", cooking: "#FDEFE7", beauty: "#FBE9F4", repairs: "#E9F3EE", media: "#EAF0FB", general: "#F1F0EE" };
-const TINT_FG = { tutoring: "#4338CA", cooking: "#B65B25", beauty: "#AD248C", repairs: "#2F855A", media: "#2F55D4", general: "#6B7280" };
 
 export default function PostGig() {
   const C = useC();
