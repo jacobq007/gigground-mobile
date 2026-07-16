@@ -194,6 +194,8 @@ export default function Home() {
   const postedGigs = myGigs || [];
   const newApplicants = postedGigs.reduce((sum, g) => sum + (applicantCounts[g.id] || 0), 0);
   const committedPay = postedGigs.reduce((sum, g) => sum + (g.payAmount || 0), 0);
+  const showManageBar = !isWorking && postedGigs.length > 0; // frozen bottom bar in hiring mode
+  const fabBottom = showManageBar ? 86 : 24;                 // lift the FAB clear of the frozen bar
 
   const earnCount = useCountUp(potentialToday, [mode, potentialToday]);
   const applicantsCount = useCountUp(newApplicants, [mode, newApplicants]);
@@ -225,7 +227,7 @@ export default function Home() {
       </View>
 
       <Animated.View style={{ flex: 1, opacity: contentAnim, transform: [{ translateY: contentAnim.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }, { scale: contentAnim.interpolate({ inputRange: [0, 1], outputRange: [0.985, 1] }) }] }}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 8, paddingBottom: 40 }}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 8, paddingBottom: showManageBar ? 96 : 40 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={T.accent} />}>
 
           {isWorking ? (
@@ -307,6 +309,10 @@ export default function Home() {
                 </Text>
                 <Text style={s.heroContext}>{postedGigs.length} active post{postedGigs.length === 1 ? "" : "s"} · fill them before the weekend</Text>
                 <StreakPill streak={streak} best={bestStreak} s={s} />
+                <Pressable onPress={() => router.push("/modals/post-gig")} style={s.heroPostBtn}>
+                  <Ionicons name="add" size={17} color={HIRE.accent} />
+                  <Text style={s.heroPostTxt}>Post a gig</Text>
+                </Pressable>
               </LinearGradient>
 
               {/* Live banner (white) */}
@@ -336,7 +342,6 @@ export default function Home() {
 
               <View style={s.sectionHead}>
                 <Text style={s.sectionTitle}>Your posted gigs</Text>
-                <Pressable onPress={() => router.push("/(tabs)/profile/my-gigs")}><Text style={[s.sectionLink, { color: HIRE.accent }]}>Manage ›</Text></Pressable>
               </View>
               {!myGigs ? (
                 <View style={{ gap: 8 }}>{[1, 2].map((i) => <Skeleton key={i} height={72} style={{ borderRadius: 16 }} />)}</View>
@@ -377,6 +382,16 @@ export default function Home() {
         </ScrollView>
       </Animated.View>
 
+      {/* Frozen "Manage all gigs" bar — stays pinned while the page scrolls (hiring mode) */}
+      {showManageBar ? (
+        <Pressable onPress={() => router.push("/(tabs)/profile/my-gigs")} style={s.manageBar}>
+          <Ionicons name="grid-outline" size={16} color={HIRE.accent} />
+          <Text style={s.manageBarTxt}>Manage all gigs</Text>
+          <Text style={s.manageBarCount}>{postedGigs.length} active</Text>
+          <Ionicons name="chevron-forward" size={16} color={HIRE.accent} />
+        </Pressable>
+      ) : null}
+
       {/* FAB backdrop */}
       <Animated.View pointerEvents={fabOpen ? "auto" : "none"} style={[StyleSheet.absoluteFill, { opacity: backdropAnim }]}>
         <Pressable style={{ flex: 1, backgroundColor: "rgba(10,5,20,0.42)" }} onPress={toggleFab} />
@@ -387,7 +402,7 @@ export default function Home() {
         const anim = fabAnims[i];
         const translateY = anim.interpolate({ inputRange: [0, 1], outputRange: [0, -FAB_OFFSETS[i]] });
         return (
-          <Animated.View key={action.label} pointerEvents={fabOpen ? "auto" : "none"} style={[s.fabAction, { opacity: anim, transform: [{ translateY }] }]}>
+          <Animated.View key={action.label} pointerEvents={fabOpen ? "auto" : "none"} style={[s.fabAction, { bottom: fabBottom, opacity: anim, transform: [{ translateY }] }]}>
             <Pressable onPress={() => handleFabAction(i)} accessibilityRole="button" accessibilityLabel={action.label} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
               <View style={s.fabLabelPill}><Text style={s.fabLabelTxt}>{action.label}</Text></View>
               <View style={[s.fabCircle, { backgroundColor: action.color }]}>
@@ -399,7 +414,7 @@ export default function Home() {
       })}
 
       {/* FAB main */}
-      <View style={s.fabMainWrap}>
+      <View style={[s.fabMainWrap, { bottom: fabBottom }]}>
         <Pressable onPress={toggleFab} accessibilityRole="button" accessibilityLabel={fabOpen ? "Close quick actions" : "Open quick actions"}>
           <Animated.View style={[s.fabMain, {
             transform: [
@@ -446,6 +461,11 @@ const makeStyles = (C) => StyleSheet.create({
   streakPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "rgba(255,255,255,0.13)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", alignSelf: "flex-start" },
   streakTxt: { color: "#fff", fontFamily: FJ.bold, fontSize: 12 },
   streakBest: { color: "rgba(255,255,255,0.55)", fontFamily: FJ.med, fontSize: 12 },
+  heroPostBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, backgroundColor: "#fff", borderRadius: 12, paddingVertical: 12, marginTop: 16 },
+  heroPostTxt: { fontFamily: FJ.bold, fontSize: 13.5, color: HIRE.accent },
+  manageBar: { position: "absolute", left: 0, right: 0, bottom: 0, flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: C.surface, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.border, paddingHorizontal: 20, paddingTop: 15, paddingBottom: 18, shadowColor: "#140A28", shadowOpacity: 0.07, shadowRadius: 12, shadowOffset: { width: 0, height: -3 }, elevation: 10, zIndex: 50 },
+  manageBarTxt: { flex: 1, fontFamily: FJ.bold, fontSize: 14, color: C.text },
+  manageBarCount: { fontFamily: FJ.med, fontSize: 12.5, color: C.text2 },
 
   banner: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 22, shadowColor: "#140A28", shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 2 }, elevation: 1 },
   bannerTitle: { fontFamily: FJ.bold, fontSize: 14.5, color: C.text },
