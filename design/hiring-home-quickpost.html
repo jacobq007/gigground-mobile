@@ -1,0 +1,239 @@
+<title>GigGround — Hiring home: quick-post & manage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{--paper:#F3F4F7;--card:#FFFFFF;--ink:#171922;--ink2:#565C6E;--ink3:#8A90A1;--line:#E4E6EC;--accent:#AD248C;--shadow:0 1px 2px rgba(20,22,40,.05),0 8px 24px rgba(20,22,40,.05);--maxw:1180px;}
+  @media (prefers-color-scheme: dark){:root{--paper:#0D0E13;--card:#16181F;--ink:#ECEEF3;--ink2:#A6ABBA;--ink3:#6D7385;--line:#262932;--accent:#E77BC6;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}}
+  :root[data-theme="dark"]{--paper:#0D0E13;--card:#16181F;--ink:#ECEEF3;--ink2:#A6ABBA;--ink3:#6D7385;--line:#262932;--accent:#E77BC6;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}
+  :root[data-theme="light"]{--paper:#F3F4F7;--card:#FFFFFF;--ink:#171922;--ink2:#565C6E;--ink3:#8A90A1;--line:#E4E6EC;--accent:#AD248C;--shadow:0 1px 2px rgba(20,22,40,.05),0 8px 24px rgba(20,22,40,.05);}
+
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  h1,h2{text-wrap:balance;margin:0;letter-spacing:-.01em;}
+  p{margin:0;}
+  header.top{padding:60px 0 28px;border-bottom:1px solid var(--line);}
+  header.top h1{font-size:clamp(28px,5vw,42px);font-weight:680;line-height:1.05;margin:14px 0 16px;}
+  header.top .lede{font-size:clamp(15px,2.1vw,18px);color:var(--ink2);max-width:64ch;}
+  .rule-tag{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);border:1px solid var(--line);background:var(--card);padding:5px 11px;border-radius:999px;}
+  .rule-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+  .changes{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;}
+  .chg{flex:1;min-width:240px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 16px;}
+  .chg b{font-weight:660;} .chg p{font-size:13.5px;color:var(--ink2);margin-top:3px;}
+  .chg .k{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
+
+  section{padding:44px 0;}
+  .stage{display:flex;flex-wrap:wrap;gap:40px 30px;align-items:flex-start;}
+  .device{width:300px;flex:none;}
+  .device .screen{border-radius:30px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);}
+  .device .cap{margin-top:14px;}
+  .device .cap .idx{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
+  .device .cap .name{font-size:15px;font-weight:660;margin-top:3px;}
+  .device .cap p{font-size:12.5px;color:var(--ink2);margin-top:6px;}
+  .device .cap p .hl{color:var(--ink);font-weight:600;}
+
+  /* ---- hiring-home screen palette (fixed light, matches the app) ---- */
+  .screen{--bg:#F3ECF1;--surf:#FFFFFF;--tx:#0B0D12;--tx2:#66696F;--tx3:#9AA0A6;--ln:#EFE6EC;
+    --acc:#AD248C;--heroA:#3B002D;--heroB:#1B0016;--heroN:#FB72C6;--badgeB:#FFD5EE;--badgeT:#780053;
+    --statB:#EFE4EB;--avatar:#751E5F;--money:#15803D;--track:#39072C;
+    background:var(--bg);color:var(--tx);font-size:13px;line-height:1.45;padding-bottom:8px;}
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;}
+  .hdr .nm{font-weight:800;font-size:18px;letter-spacing:-.02em;}
+  .bell{width:32px;height:32px;border-radius:10px;background:var(--acc);display:flex;align-items:center;justify-content:center;position:relative;}
+  .bell svg{width:15px;height:15px;color:#fff;}
+  .bell .d{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#E62B34;border:1.5px solid var(--acc);}
+  .seg{margin:0 16px 10px;display:flex;background:var(--track);border-radius:999px;padding:4px;}
+  .seg span{flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;border-radius:999px;color:rgba(255,255,255,.5);}
+  .seg span.on{background:#fff;color:var(--acc);}
+  .pad{padding:2px 16px 6px;}
+  .hero{border-radius:20px;padding:16px;background:linear-gradient(135deg,var(--heroA),var(--heroB));overflow:hidden;position:relative;}
+  .hero .lb{color:rgba(255,255,255,.6);font-size:12px;}
+  .hero .big{margin:2px 0 4px;}
+  .hero .big .n{color:var(--heroN);font-weight:800;font-size:26px;letter-spacing:-1px;}
+  .hero .big .s{color:#fff;font-weight:800;font-size:20px;}
+  .hero .ctx{color:rgba(255,255,255,.5);font-size:11px;margin-bottom:11px;}
+  .hero .streak{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 11px;color:#fff;font-size:11px;font-weight:700;}
+  .hero .streak s{text-decoration:none;color:rgba(255,255,255,.55);font-weight:500;}
+  .heroBtn{margin-top:13px;display:flex;align-items:center;justify-content:center;gap:7px;background:#fff;border-radius:11px;padding:11px;color:var(--acc);font-weight:700;font-size:13px;}
+  .banner{display:flex;align-items:center;gap:10px;background:var(--surf);border-radius:14px;padding:12px 14px;margin-top:12px;box-shadow:0 1px 2px rgba(20,10,40,.05);}
+  .banner .g{width:9px;height:9px;border-radius:50%;background:#33A340;flex:none;}
+  .banner .t{font-weight:700;font-size:13px;} .banner .u{font-size:11.5px;color:var(--tx2);margin-top:1px;}
+  .stats{display:flex;gap:8px;margin-top:12px;}
+  .stat{flex:1;background:var(--statB);border-radius:12px;padding:11px 10px;}
+  .stat .n{font-weight:800;font-size:17px;letter-spacing:-.3px;} .stat .l{font-size:10px;font-weight:600;color:var(--tx2);margin-top:1px;}
+  .sec{display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:10px;}
+  .sec .t{font-weight:800;font-size:14px;letter-spacing:-.2px;}
+  .link{font-size:12.5px;font-weight:700;color:var(--acc);}
+  .gig{display:flex;align-items:center;gap:11px;background:var(--surf);border-radius:14px;padding:12px 13px;box-shadow:0 1px 2px rgba(20,10,40,.05);margin-bottom:8px;}
+  .gig .av{width:40px;height:40px;border-radius:12px;background:var(--avatar);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex:none;}
+  .gig .ti{font-weight:700;font-size:13.5px;} .gig .mt{font-size:11.5px;color:var(--tx2);margin-top:2px;}
+  .badge{background:var(--badgeB);color:var(--badgeT);border-radius:9px;padding:5px 9px;font-size:11.5px;font-weight:700;flex:none;}
+  .tabbar{display:flex;justify-content:space-around;padding:9px 0 3px;margin-top:6px;border-top:1px solid var(--ln);}
+  .tabbar .tb{font-size:9.5px;color:var(--tx3);display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tabbar .tb.on{color:var(--acc);} .tabbar .tb svg{width:16px;height:16px;}
+
+  /* quick-post treatments */
+  .qbar{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--ln);border-radius:14px;padding:12px 13px;margin-top:12px;box-shadow:0 1px 2px rgba(20,10,40,.05);}
+  .qbar .ph{flex:1;color:var(--tx3);font-size:13px;}
+  .qbar .go{width:30px;height:30px;border-radius:9px;background:var(--acc);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
+  .qbar .go svg{width:15px;height:15px;}
+  .duo{display:flex;gap:9px;margin-top:12px;}
+  .duo .b{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:12px;padding:13px;font-weight:700;font-size:13px;}
+  .duo .b.pri{background:var(--acc);color:#fff;} .duo .b.sec{background:var(--surf);border:1px solid var(--ln);color:var(--tx);}
+  .duo .b svg{width:15px;height:15px;}
+  .headpill{display:inline-flex;align-items:center;gap:5px;background:var(--acc);color:#fff;border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:700;}
+  .headpill svg{width:13px;height:13px;}
+  .qchips{margin-top:12px;}
+  .qchips .cap{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .qchips .cap svg{width:13px;height:13px;color:var(--acc);}
+  .qchips .row{display:flex;gap:7px;flex-wrap:wrap;}
+  .qc{display:flex;align-items:center;gap:6px;background:var(--surf);border:1px solid var(--ln);border-radius:999px;padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--tx2);}
+  .qc.more{background:var(--acc);border-color:var(--acc);color:#fff;}
+  .qc svg{width:13px;height:13px;}
+  .minitabs{display:flex;gap:7px;margin-bottom:10px;}
+  .minitabs .mt{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--ln);color:var(--tx2);background:var(--surf);}
+  .minitabs .mt.on{background:var(--acc);border-color:var(--acc);color:#fff;}
+  .gig .rev{font-size:11.5px;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:2px;flex:none;}
+  .gig .rev svg{width:12px;height:12px;}
+  .manageAll{display:flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin-top:4px;}
+  .manageAll .t{flex:1;font-weight:700;font-size:13px;} .manageAll .c{font-size:11.5px;color:var(--tx2);}
+  .manageAll svg{width:15px;height:15px;color:var(--acc);}
+  .manageBtn{font-size:12px;font-weight:700;color:var(--acc);border:1px solid var(--acc);border-radius:999px;padding:5px 12px;}
+
+  .reco{margin-top:20px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:18px;font-size:14px;color:var(--ink2);}
+  .reco b{color:var(--ink);font-weight:640;}
+  footer{padding:34px 0 70px;color:var(--ink3);font-size:13px;}
+  .toggle{position:fixed;top:16px;right:16px;z-index:20;background:var(--card);border:1px solid var(--line);color:var(--ink2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);}
+</style>
+
+<button class="toggle" id="tg" aria-label="Toggle theme">◐ Theme</button>
+
+<!-- reusable SVGs -->
+<svg style="display:none"><defs>
+  <g id="bell"><path d="M8 2a4 4 0 0 0-4 4c0 3-1 4-1 4h10s-1-1-1-4a4 4 0 0 0-4-4Z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.4"/></g>
+  <g id="plus"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></g>
+  <g id="chev"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g id="grid"><rect x="3" y="3" width="4.5" height="4.5" rx="1" fill="currentColor"/><rect x="8.5" y="3" width="4.5" height="4.5" rx="1" fill="currentColor"/><rect x="3" y="8.5" width="4.5" height="4.5" rx="1" fill="currentColor"/><rect x="8.5" y="8.5" width="4.5" height="4.5" rx="1" fill="currentColor"/></g>
+  <g id="home"><path d="M3 7l5-4 5 4v6H3V7Z" fill="none" stroke="currentColor" stroke-width="1.4"/></g>
+  <g id="bag"><rect x="3" y="5" width="10" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6 5V4h4v1" fill="none" stroke="currentColor" stroke-width="1.4"/></g>
+  <g id="chat"><path d="M3 4h10v6H7l-3 2V4Z" fill="none" stroke="currentColor" stroke-width="1.4"/></g>
+  <g id="user"><circle cx="8" cy="5.5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 13c0-2.2 1.8-3.5 4-3.5s4 1.3 4 3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></g>
+  <g id="bolt"><path d="M9 2 4 9h3l-1 5 5-7H8l1-5Z" fill="currentColor"/></g>
+</defs></svg>
+
+<header class="top">
+  <div class="wrap">
+    <span class="rule-tag"><span class="dot"></span> Design study · Hiring home</span>
+    <h1>A place to post fast, and a clearer way to manage.</h1>
+    <p class="lede">Same hiring home you have now — hero, live banner, stat strip, posted-gigs list all unchanged. Five ways to add a <b>quick-post</b> entry on the page and give <b>Manage</b> a real, discoverable treatment instead of a tiny top-right link.</p>
+    <div class="changes">
+      <div class="chg"><div class="k">Change 1</div><b>Quick post on the page</b><p>Posting shouldn't hide behind only the floating ＋. Give it a visible spot in the flow.</p></div>
+      <div class="chg"><div class="k">Change 2</div><b>Rework “Manage ›”</b><p>The 12-px link is easy to miss and vague. Make managing gigs an obvious, labelled action.</p></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="stage">
+
+      <!-- V1 -->
+      <div class="device"><div class="screen">
+        <div class="hdr"><span class="nm">Rahul Kumar</span><span class="bell"><svg><use href="#bell"/></svg><span class="d"></span></span></div>
+        <div class="seg"><span>Working</span><span class="on">Hiring</span></div>
+        <div class="pad">
+          <div class="hero"><div class="lb">Your gigs have</div><div class="big"><span class="n">4</span> <span class="s">new applicants</span></div><div class="ctx">2 active posts · fill them before the weekend</div><span class="streak">11-day streak <s>· best is 11</s></span></div>
+          <div class="qbar"><div class="ph">What do you need done?</div><div class="go"><svg><use href="#plus"/></svg></div></div>
+          <div class="banner"><span class="g"></span><div style="flex:1"><div class="t">42 workers active near Chennai</div><div class="u">Good time to post</div></div></div>
+          <div class="stats"><div class="stat"><div class="n">2</div><div class="l">Active gigs</div></div><div class="stat"><div class="n" style="color:var(--acc)">4</div><div class="l">New applicants</div></div><div class="stat"><div class="n" style="color:var(--money)">₹350</div><div class="l">Committed pay</div></div></div>
+          <div class="sec"><span class="t">Your posted gigs</span><span class="manageBtn">Manage all</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Help unload delivery van</div><div class="mt">Posted 1h · tap to review</div></div><span class="badge">3 applied</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Pick up groceries</div><div class="mt">Posted 6d · tap to review</div></div><span class="badge">1 applied</span></div>
+        </div>
+        <div class="tabbar"><span class="tb on"><svg><use href="#home"/></svg>Home</span><span class="tb"><svg><use href="#bag"/></svg>Jobs</span><span class="tb"><svg><use href="#grid"/></svg>My gigs</span><span class="tb"><svg><use href="#chat"/></svg>Chat</span><span class="tb"><svg><use href="#user"/></svg>Profile</span></div>
+      </div>
+      <div class="cap"><div class="idx">Variation 1</div><div class="name">Quick-post search bar</div><p><span class="hl">Quick post:</span> a "What do you need done?" bar under the hero, opening the post flow. <span class="hl">Manage:</span> the link becomes an outlined <b>Manage all</b> pill.</p></div></div>
+
+      <!-- V2 -->
+      <div class="device"><div class="screen">
+        <div class="hdr"><span class="nm">Rahul Kumar</span><span class="bell"><svg><use href="#bell"/></svg><span class="d"></span></span></div>
+        <div class="seg"><span>Working</span><span class="on">Hiring</span></div>
+        <div class="pad">
+          <div class="hero"><div class="lb">Your gigs have</div><div class="big"><span class="n">4</span> <span class="s">new applicants</span></div><div class="ctx">2 active posts · fill them before the weekend</div><span class="streak">11-day streak <s>· best is 11</s></span></div>
+          <div class="duo"><span class="b pri"><svg><use href="#plus"/></svg>Post a gig</span><span class="b sec"><svg><use href="#grid"/></svg>Manage gigs</span></div>
+          <div class="banner"><span class="g"></span><div style="flex:1"><div class="t">42 workers active near Chennai</div><div class="u">Good time to post</div></div></div>
+          <div class="stats"><div class="stat"><div class="n">2</div><div class="l">Active gigs</div></div><div class="stat"><div class="n" style="color:var(--acc)">4</div><div class="l">New applicants</div></div><div class="stat"><div class="n" style="color:var(--money)">₹350</div><div class="l">Committed pay</div></div></div>
+          <div class="sec"><span class="t">Your posted gigs</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Help unload delivery van</div><div class="mt">Posted 1h · tap to review</div></div><span class="badge">3 applied</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Pick up groceries</div><div class="mt">Posted 6d · tap to review</div></div><span class="badge">1 applied</span></div>
+        </div>
+        <div class="tabbar"><span class="tb on"><svg><use href="#home"/></svg>Home</span><span class="tb"><svg><use href="#bag"/></svg>Jobs</span><span class="tb"><svg><use href="#grid"/></svg>My gigs</span><span class="tb"><svg><use href="#chat"/></svg>Chat</span><span class="tb"><svg><use href="#user"/></svg>Profile</span></div>
+      </div>
+      <div class="cap"><div class="idx">Variation 2</div><div class="name">Two action buttons</div><p><span class="hl">Quick post &amp; manage together:</span> a filled <b>Post a gig</b> next to an outlined <b>Manage gigs</b>, right under the hero. The top-right link goes away entirely.</p></div></div>
+
+      <!-- V3 -->
+      <div class="device"><div class="screen">
+        <div class="hdr"><span class="nm">Rahul Kumar</span><span class="headpill"><svg><use href="#plus"/></svg>Post</span></div>
+        <div class="seg"><span>Working</span><span class="on">Hiring</span></div>
+        <div class="pad">
+          <div class="hero"><div class="lb">Your gigs have</div><div class="big"><span class="n">4</span> <span class="s">new applicants</span></div><div class="ctx">2 active posts · fill them before the weekend</div><span class="streak">11-day streak <s>· best is 11</s></span></div>
+          <div class="banner"><span class="g"></span><div style="flex:1"><div class="t">42 workers active near Chennai</div><div class="u">Good time to post</div></div></div>
+          <div class="stats"><div class="stat"><div class="n">2</div><div class="l">Active gigs</div></div><div class="stat"><div class="n" style="color:var(--acc)">4</div><div class="l">New applicants</div></div><div class="stat"><div class="n" style="color:var(--money)">₹350</div><div class="l">Committed pay</div></div></div>
+          <div class="sec"><span class="t">Your posted gigs</span><span class="link">See all</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Help unload delivery van</div><div class="mt">Posted 1h · 3 applied</div></div><span class="rev">Review<svg><use href="#chev"/></svg></span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Pick up groceries</div><div class="mt">Posted 6d · 1 applied</div></div><span class="rev">Review<svg><use href="#chev"/></svg></span></div>
+        </div>
+        <div class="tabbar"><span class="tb on"><svg><use href="#home"/></svg>Home</span><span class="tb"><svg><use href="#bag"/></svg>Jobs</span><span class="tb"><svg><use href="#grid"/></svg>My gigs</span><span class="tb"><svg><use href="#chat"/></svg>Chat</span><span class="tb"><svg><use href="#user"/></svg>Profile</span></div>
+      </div>
+      <div class="cap"><div class="idx">Variation 3</div><div class="name">Header pill + per-gig Review</div><p><span class="hl">Quick post:</span> a small <b>＋ Post</b> pill in the header, always reachable. <span class="hl">Manage:</span> each gig gets its own <b>Review ›</b>, and the header link becomes "See all".</p></div></div>
+
+      <!-- V4 -->
+      <div class="device"><div class="screen">
+        <div class="hdr"><span class="nm">Rahul Kumar</span><span class="bell"><svg><use href="#bell"/></svg><span class="d"></span></span></div>
+        <div class="seg"><span>Working</span><span class="on">Hiring</span></div>
+        <div class="pad">
+          <div class="hero"><div class="lb">Your gigs have</div><div class="big"><span class="n">4</span> <span class="s">new applicants</span></div><div class="ctx">2 active posts · fill them before the weekend</div><span class="streak">11-day streak <s>· best is 11</s></span></div>
+          <div class="qchips"><div class="cap"><svg><use href="#bolt"/></svg>Post in seconds</div><div class="row"><span class="qc">Delivery</span><span class="qc">Cleaning</span><span class="qc">Errand</span><span class="qc more"><svg><use href="#plus"/></svg>New</span></div></div>
+          <div class="banner"><span class="g"></span><div style="flex:1"><div class="t">42 workers active near Chennai</div><div class="u">Good time to post</div></div></div>
+          <div class="sec"><span class="t">Your posted gigs</span></div>
+          <div class="minitabs"><span class="mt on">Active · 2</span><span class="mt">Filled</span><span class="mt">Drafts</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Help unload delivery van</div><div class="mt">Posted 1h · tap to review</div></div><span class="badge">3 applied</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Pick up groceries</div><div class="mt">Posted 6d · tap to review</div></div><span class="badge">1 applied</span></div>
+        </div>
+        <div class="tabbar"><span class="tb on"><svg><use href="#home"/></svg>Home</span><span class="tb"><svg><use href="#bag"/></svg>Jobs</span><span class="tb"><svg><use href="#grid"/></svg>My gigs</span><span class="tb"><svg><use href="#chat"/></svg>Chat</span><span class="tb"><svg><use href="#user"/></svg>Profile</span></div>
+      </div>
+      <div class="cap"><div class="idx">Variation 4</div><div class="name">Category shortcuts + status tabs</div><p><span class="hl">Quick post:</span> one-tap category chips that pre-fill the post. <span class="hl">Manage:</span> the link becomes <b>Active / Filled / Drafts</b> tabs — managing by state, right above the list.</p></div></div>
+
+      <!-- V5 -->
+      <div class="device"><div class="screen">
+        <div class="hdr"><span class="nm">Rahul Kumar</span><span class="bell"><svg><use href="#bell"/></svg><span class="d"></span></span></div>
+        <div class="seg"><span>Working</span><span class="on">Hiring</span></div>
+        <div class="pad">
+          <div class="hero"><div class="lb">Your gigs have</div><div class="big"><span class="n">4</span> <span class="s">new applicants</span></div><div class="ctx">2 active posts · fill them before the weekend</div><span class="streak">11-day streak <s>· best is 11</s></span><div class="heroBtn"><svg style="width:15px;height:15px"><use href="#plus"/></svg>Post a gig</div></div>
+          <div class="banner"><span class="g"></span><div style="flex:1"><div class="t">42 workers active near Chennai</div><div class="u">Good time to post</div></div></div>
+          <div class="stats"><div class="stat"><div class="n">2</div><div class="l">Active gigs</div></div><div class="stat"><div class="n" style="color:var(--acc)">4</div><div class="l">New applicants</div></div><div class="stat"><div class="n" style="color:var(--money)">₹350</div><div class="l">Committed pay</div></div></div>
+          <div class="sec"><span class="t">Your posted gigs</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Help unload delivery van</div><div class="mt">Posted 1h · tap to review</div></div><span class="badge">3 applied</span></div>
+          <div class="gig"><div class="av">RK</div><div style="flex:1"><div class="ti">Pick up groceries</div><div class="mt">Posted 6d · tap to review</div></div><span class="badge">1 applied</span></div>
+          <div class="manageAll"><svg><use href="#grid"/></svg><span class="t">Manage all gigs</span><span class="c">2 active</span><svg><use href="#chev"/></svg></div>
+        </div>
+        <div class="tabbar"><span class="tb on"><svg><use href="#home"/></svg>Home</span><span class="tb"><svg><use href="#bag"/></svg>Jobs</span><span class="tb"><svg><use href="#grid"/></svg>My gigs</span><span class="tb"><svg><use href="#chat"/></svg>Chat</span><span class="tb"><svg><use href="#user"/></svg>Profile</span></div>
+      </div>
+      <div class="cap"><div class="idx">Variation 5</div><div class="name">Hero button + manage footer</div><p><span class="hl">Quick post:</span> a <b>Post a gig</b> button inside the hero — where your attention already is. <span class="hl">Manage:</span> a full-width <b>Manage all gigs · 2 active ›</b> row closing the list.</p></div></div>
+
+    </div>
+
+    <div class="reco">
+      <b>My pick:</b> Variation 2 (two buttons) is the clearest single move — one obvious Post, one obvious Manage, no hunting for a tiny link. If you want to keep the page shorter, Variation 5 spends no extra vertical space (post lives in the hero, manage closes the list). Variation 4's category chips are the most ambitious — great once posting-by-category is wired, but more to build.
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Design study for GigGround · Hiring home · pick a variation and I'll build it into the app.</div></footer>
+
+<script>
+  (function(){var b=document.documentElement,t=document.getElementById('tg');
+    t.addEventListener('click',function(){var c=b.getAttribute('data-theme');
+      if(!c)c=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+      b.setAttribute('data-theme',c==='dark'?'light':'dark');});})();
+</script>
