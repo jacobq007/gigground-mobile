@@ -1,0 +1,309 @@
+<title>GigGround — Rethinking the "which skill?" picker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --paper:#F3F4F7; --card:#FFFFFF; --ink:#171922; --ink2:#565C6E; --ink3:#8A90A1;
+    --line:#E4E6EC; --line2:#EEF0F4; --accent:#2A44D6; --accent-soft:#EAEDFB;
+    --money:#1C7A54; --warn:#B26A12; --shadow:0 1px 2px rgba(20,22,40,.05),0 8px 24px rgba(20,22,40,.05); --maxw:1120px;
+  }
+  @media (prefers-color-scheme: dark){:root{--paper:#0D0E13;--card:#16181F;--ink:#ECEEF3;--ink2:#A6ABBA;--ink3:#6D7385;--line:#262932;--line2:#1E212A;--accent:#7E8DF6;--accent-soft:#1C2140;--money:#4FC58C;--warn:#E0A551;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}}
+  :root[data-theme="dark"]{--paper:#0D0E13;--card:#16181F;--ink:#ECEEF3;--ink2:#A6ABBA;--ink3:#6D7385;--line:#262932;--line2:#1E212A;--accent:#7E8DF6;--accent-soft:#1C2140;--money:#4FC58C;--warn:#E0A551;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}
+  :root[data-theme="light"]{--paper:#F3F4F7;--card:#FFFFFF;--ink:#171922;--ink2:#565C6E;--ink3:#8A90A1;--line:#E4E6EC;--line2:#EEF0F4;--accent:#2A44D6;--accent-soft:#EAEDFB;--money:#1C7A54;--warn:#B26A12;--shadow:0 1px 2px rgba(20,22,40,.05),0 8px 24px rgba(20,22,40,.05);}
+
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  h1,h2,h3{text-wrap:balance;margin:0;letter-spacing:-.01em;}
+  p{margin:0;}
+  a{color:var(--accent);}
+
+  header.top{padding:64px 0 30px;border-bottom:1px solid var(--line);}
+  header.top h1{font-size:clamp(29px,5vw,44px);font-weight:680;line-height:1.05;margin:14px 0 16px;}
+  header.top .lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink2);max-width:64ch;}
+  .rule-tag{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);border:1px solid var(--line);background:var(--card);padding:5px 11px;border-radius:999px;}
+  .rule-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+  .sec-head h2{font-size:clamp(21px,3vw,27px);font-weight:640;}
+  .sec-head .n{font-size:13px;color:var(--ink3);}
+
+  .diag{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .diag > div{background:var(--card);padding:20px;}
+  .diag h3{font-size:15px;font-weight:640;margin-bottom:7px;display:flex;gap:9px;align-items:center;}
+  .diag h3 .x{color:var(--warn);font-weight:800;}
+  .diag p{font-size:13.5px;color:var(--ink2);}
+
+  .stage{display:flex;flex-wrap:wrap;gap:34px 30px;align-items:flex-start;}
+  .device{width:312px;flex:none;}
+  .device .screen{border-radius:30px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);}
+  .device .cap{margin-top:14px;}
+  .device .cap .idx{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
+  .device .cap .name{font-size:15px;font-weight:660;margin-top:3px;}
+  .device .cap p{font-size:13px;color:var(--ink2);margin-top:5px;}
+  .device .cap .best{font-size:12.5px;color:var(--ink2);margin-top:8px;padding-top:8px;border-top:1px solid var(--line);}
+  .device .cap .best b{color:var(--ink);font-weight:640;}
+
+  /* app screen (fixed light) */
+  .screen{--s-bg:#FBFBFC;--s-card:#FFFFFF;--s-ink:#15171E;--s-ink2:#5B6172;--s-ink3:#9297A6;--s-line:#EAECF1;--s-line2:#F1F3F6;--s-acc:#2545DE;--s-acc-soft:#ECEFFC;--s-money:#177A4E;
+    background:var(--s-bg);color:var(--s-ink);font-size:13.5px;line-height:1.5;}
+  .screen .st{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;}
+  .screen .st .h{font-weight:660;font-size:14.5px;}
+  .screen .st .x{color:var(--s-ink3);font-size:17px;}
+  .screen .steps{display:flex;gap:5px;padding:0 16px 12px;}
+  .screen .steps i{height:3px;border-radius:2px;background:var(--s-line);flex:1;}
+  .screen .steps i.on{background:var(--s-acc);}
+  .screen .body{padding:4px 16px 18px;}
+  .lbl{font-size:12px;font-weight:600;color:var(--s-ink2);margin:15px 0 8px;display:block;}
+  .lbl:first-child{margin-top:4px;}
+  .fieldbox{border:1px solid var(--s-line);border-radius:11px;padding:12px 13px;background:var(--s-card);font-size:13.5px;color:var(--s-ink);}
+  .fieldbox.ph{color:var(--s-ink3);}
+  .ic{width:13px;height:13px;display:inline-block;vertical-align:-.14em;}
+  .pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--s-line);border-radius:999px;padding:7px 12px;font-size:12.5px;color:var(--s-ink2);background:var(--s-card);}
+  .pill.on{border-color:var(--s-acc);background:var(--s-acc-soft);color:var(--s-acc);font-weight:600;}
+  .paylabelrow{display:flex;gap:10px;}
+  .paylabelrow > div{flex:1;}
+  .muted{font-size:11.5px;color:var(--s-ink3);margin-top:7px;}
+
+  /* Idea 1 — infer from title */
+  .sug{border:1px solid var(--s-acc);background:var(--s-acc-soft);border-radius:12px;padding:13px;margin-top:8px;}
+  .sug .row{display:flex;align-items:center;gap:9px;}
+  .sug .row .t{font-weight:660;font-size:13.5px;color:var(--s-ink);}
+  .sug .row .t .k{color:var(--s-acc);}
+  .sug .chg{margin-left:auto;font-size:12px;font-weight:600;color:var(--s-acc);}
+  .sug .note{font-size:12px;color:var(--s-ink2);margin-top:7px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--s-acc) 20%,transparent);display:flex;gap:7px;align-items:center;}
+  .sug.alt{border-color:var(--s-line);background:var(--s-card);}
+  .sug.alt .row .t .k{color:var(--s-ink2);}
+
+  /* Idea 2 — search + smart picks */
+  .search{display:flex;align-items:center;gap:9px;border:1px solid var(--s-line);border-radius:11px;padding:11px 13px;background:var(--s-card);}
+  .search .ph{color:var(--s-ink3);font-size:13.5px;}
+  .search.active{border-color:var(--s-acc);}
+  .search .typed{color:var(--s-ink);font-size:13.5px;}
+  .search .car{width:1.5px;height:15px;background:var(--s-acc);display:inline-block;vertical-align:-2px;}
+  .dropdown{border:1px solid var(--s-line);border-top:none;border-radius:0 0 11px 11px;background:var(--s-card);margin-top:-2px;overflow:hidden;}
+  .dropdown .grp{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--s-ink3);padding:9px 13px 4px;}
+  .dropdown .opt{display:flex;align-items:center;gap:9px;padding:9px 13px;font-size:13px;border-top:1px solid var(--s-line2);}
+  .dropdown .opt .tag{margin-left:auto;font-size:10.5px;color:var(--s-ink3);}
+  .dropdown .opt .tag.v{color:var(--s-acc);}
+  .popular{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+
+  /* Idea 3 — category then skill */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .tile{border:1px solid var(--s-line);border-radius:12px;padding:12px 8px;text-align:center;background:var(--s-card);}
+  .tile.on{border-color:var(--s-acc);background:var(--s-acc-soft);}
+  .tile .ico{width:22px;height:22px;margin:0 auto 7px;color:var(--s-ink2);}
+  .tile.on .ico{color:var(--s-acc);}
+  .tile .nm{font-size:11.5px;font-weight:600;color:var(--s-ink);line-height:1.2;}
+  .tile.on .nm{color:var(--s-acc);}
+  .subskills{border:1px solid var(--s-acc);background:var(--s-acc-soft);border-radius:12px;padding:12px;margin-top:10px;}
+  .subskills .cap{font-size:11.5px;font-weight:600;color:var(--s-acc);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+  .subskills .row{display:flex;flex-wrap:wrap;gap:7px;}
+  .subskills .sk{border:1px solid var(--s-line);background:var(--s-card);border-radius:999px;padding:6px 11px;font-size:12px;color:var(--s-ink2);}
+  .subskills .sk.on{border-color:var(--s-acc);background:var(--s-acc);color:#fff;font-weight:600;}
+
+  .reco{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:start;}
+  .reco .lead-p{font-size:15px;color:var(--ink2);}
+  .reco .lead-p b{color:var(--ink);font-weight:640;}
+  .checklist{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .checklist li{background:var(--card);padding:13px 16px;font-size:14px;display:flex;gap:11px;align-items:flex-start;}
+  .checklist li .m{color:var(--accent);font-weight:700;}
+  .checklist li b{font-weight:640;}
+  .aside{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;font-size:13.5px;color:var(--ink2);}
+  .aside h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);font-weight:600;margin-bottom:12px;}
+  .aside p + p{margin-top:10px;}
+
+  footer{padding:40px 0 70px;color:var(--ink3);font-size:13px;}
+  .toggle{position:fixed;top:16px;right:16px;z-index:20;background:var(--card);border:1px solid var(--line);color:var(--ink2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);}
+  @media (max-width:820px){.diag{grid-template-columns:1fr;}.reco{grid-template-columns:1fr;}}
+</style>
+
+<button class="toggle" id="tg" aria-label="Toggle theme">◐ Theme</button>
+
+<header class="top">
+  <div class="wrap">
+    <span class="rule-tag"><span class="dot"></span> Design study · Post a gig</span>
+    <h1>The skill picker shouldn't show every skill.</h1>
+    <p class="lede">Right now "Which skill?" dumps ~20 bubbles on the page, sits next to a separate three-option "Job type", and won't survive the next category you add. Three ways to make one compact control that scales to any number of jobs — and folds "job type" into it.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><h2>Why the current picker breaks</h2></div>
+    <div class="diag">
+      <div><h3><span class="x">✕</span> It doesn't scale</h3><p>Every new job type adds another bubble to a flat list. Twenty today, fifty tomorrow — the page just keeps growing.</p></div>
+      <div><h3><span class="x">✕</span> It costs a screen of space</h3><p>Showing all options at once pushes pay and the post button far below the fold, on the one screen you want to feel fast.</p></div>
+      <div><h3><span class="x">✕</span> It asks twice</h3><p>"Which skill?" and "Job type" (Errand / Delivery / Other) are the same question split in two — and "Other" is where most real gigs fall.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><h2>Three directions</h2><span class="n">One compact control · replaces skill + job-type</span></div>
+    <div class="stage">
+
+      <!-- IDEA 1 -->
+      <div class="device">
+        <div class="screen">
+          <div class="st"><div class="h">Post a gig</div><div class="x">✕</div></div>
+          <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+          <div class="body">
+            <span class="lbl">What do you need?</span>
+            <div class="fieldbox">Help moving furniture</div>
+
+            <span class="lbl">Category</span>
+            <div class="sug">
+              <div class="row">
+                <svg class="ic" viewBox="0 0 16 16" fill="currentColor" style="color:var(--s-acc)"><path d="M8 1l1.6 4.9L14.5 8l-4.9 1.6L8 14.5 6.4 9.6 1.5 8l4.9-1.6L8 1Z"/></svg>
+                <div class="t">General help · <span class="k">Moving</span></div>
+                <span class="chg">Change</span>
+              </div>
+              <div class="note">
+                <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-ink3)"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5"/><circle cx="8" cy="11" r=".3" fill="currentColor"/></svg>
+                Open to anyone reliable nearby — no verification needed.
+              </div>
+            </div>
+
+            <div class="sug alt" style="margin-top:9px;">
+              <div class="row">
+                <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-ink3)"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/></svg>
+                <div class="t" style="color:var(--s-ink2);font-weight:500">If it were <b style="color:var(--s-ink);font-weight:660">“Maths tuition”</b>…</div>
+              </div>
+              <div class="note" style="border-top-color:var(--s-line);color:var(--s-ink2)">
+                <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-acc)"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg>
+                …it flips to <b style="color:var(--s-ink);font-weight:600">Tutoring · Maths</b> and matches verified tutors first.
+              </div>
+            </div>
+
+            <span class="lbl">Budget</span>
+            <div class="paylabelrow">
+              <div class="fieldbox mono">₹150</div>
+              <div class="fieldbox ph mono">Max ₹800</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="idx">Idea 1</div>
+          <div class="name">Infer from the title</div>
+          <p>The title already says what it is. Read it, propose a category, let them confirm or change. Zero taps in the common case, and it adapts skilled ↔ general on its own.</p>
+          <div class="best"><b>Best for speed.</b> Fewest decisions; the picker only appears if they tap Change.</div>
+        </div>
+      </div>
+
+      <!-- IDEA 2 -->
+      <div class="device">
+        <div class="screen">
+          <div class="st"><div class="h">Post a gig</div><div class="x">✕</div></div>
+          <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+          <div class="body">
+            <span class="lbl">What do you need?</span>
+            <div class="fieldbox">Weekend cook for a party</div>
+
+            <span class="lbl">Category or skill</span>
+            <div class="search active">
+              <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--s-acc)"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+              <span class="typed">coo</span><span class="car"></span>
+            </div>
+            <div class="dropdown">
+              <div class="grp">Cooking</div>
+              <div class="opt"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-ink3)"><path d="M3 7h10v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7Z"/><path d="M6 7V5.5M8 7V5M10 7V5.5"/></svg> South Indian <span class="tag v">verified pros</span></div>
+              <div class="opt"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-ink3)"><path d="M3 7h10v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7Z"/></svg> North Indian <span class="tag v">verified pros</span></div>
+              <div class="opt"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="color:var(--s-ink3)"><path d="M3 7h10v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7Z"/></svg> Party catering <span class="tag">anyone nearby</span></div>
+            </div>
+
+            <span class="lbl">Or pick a popular one</span>
+            <div class="popular">
+              <span class="pill">Delivery</span><span class="pill">Moving</span><span class="pill">Cleaning</span><span class="pill">Maths</span><span class="pill">Errands</span>
+            </div>
+
+            <span class="lbl">Budget</span>
+            <div class="paylabelrow">
+              <div class="fieldbox mono">₹500</div>
+              <div class="fieldbox ph mono">Max ₹1,200</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="idx">Idea 2</div>
+          <div class="name">Search, with a few popular picks</div>
+          <p>One field collapses all twenty bubbles. Typing filters everything; five curated chips cover the common cases. Each result carries its own "verified pros" vs "anyone nearby" tag, so job-type disappears.</p>
+          <div class="best"><b>Best for scale.</b> Add a thousand skills and the UI never grows.</div>
+        </div>
+      </div>
+
+      <!-- IDEA 3 -->
+      <div class="device">
+        <div class="screen">
+          <div class="st"><div class="h">Post a gig</div><div class="x">✕</div></div>
+          <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+          <div class="body">
+            <span class="lbl">What kind of work?</span>
+            <div class="grid">
+              <div class="tile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5h6v2"/></svg><div class="nm">Everyday help</div></div>
+              <div class="tile on"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8l9-4 9 4-9 4-9-4Z"/><path d="M7 10v4c0 1.7 2.2 3 5 3s5-1.3 5-3v-4"/></svg><div class="nm">Tutoring</div></div>
+              <div class="tile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 11h14v3a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4v-3Z"/><path d="M9 11V8M12 11V7M15 11V8"/></svg><div class="nm">Cooking</div></div>
+              <div class="tile"><svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2Z"/></svg><div class="nm">Beauty</div></div>
+              <div class="tile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 6a3 3 0 0 0-4 4l-6 6 2 2 6-6a3 3 0 0 0 4-4l-2 2-2-2 2-2Z"/></svg><div class="nm">Repairs</div></div>
+              <div class="tile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="12" cy="13" r="3"/><path d="M8 7l1.5-2h5L16 7"/></svg><div class="nm">Photography</div></div>
+            </div>
+            <div class="subskills">
+              <div class="cap"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.6 3 3.4V8c0 3.2 5 6.4 5 6.4S13 11.2 13 8V3.4L8 1.6Z"/><path d="m5.8 7.7 1.5 1.5 3-3.1"/></svg> Which subject? · matches verified tutors</div>
+              <div class="row">
+                <span class="sk on">Maths</span><span class="sk">Science</span><span class="sk">English</span><span class="sk">Coding</span><span class="sk">Music</span>
+              </div>
+            </div>
+
+            <span class="lbl">Budget</span>
+            <div class="paylabelrow">
+              <div class="fieldbox mono">₹400</div>
+              <div class="fieldbox ph mono">Max ₹600</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="idx">Idea 3</div>
+          <div class="name">Category first, then skill</div>
+          <p>Six calm tiles instead of twenty bubbles. Tap one and only its skills unfold — so you see five options, never fifty. Skilled categories reveal a subject row; general ones (Everyday help) skip straight to budget.</p>
+          <div class="best"><b>Best for browsing.</b> Organised and discoverable when the poster isn't sure what to call it.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><h2>Recommendation</h2></div>
+    <div class="reco">
+      <div>
+        <p class="lead-p">Ship <b>Idea 1 (infer from the title) with Idea 2's search as the “Change” fallback.</b> The poster already typed what they need — reading it and proposing a category is the fastest path, and when we guess wrong the search field handles the long tail without ever showing a wall of bubbles. Idea 3's tiles are the right move only if you'd rather people browse categories than type.</p>
+        <ul class="checklist">
+          <li><span class="m">→</span><span><b>Merge skill + job-type</b> into one "Category" control — kill the separate Errand / Delivery / Other row.</span></li>
+          <li><span class="m">→</span><span><b>Derive skilled vs general</b> from the chosen category, not a manual toggle. Show it as a one-line note.</span></li>
+          <li><span class="m">→</span><span><b>Never render the full list</b> — infer, search, or drill down; show at most one category's skills.</span></li>
+          <li><span class="m">→</span><span><b>Add a progress bar</b> so the shorter form feels like a quick 3-step, not an endless scroll.</span></li>
+        </ul>
+      </div>
+      <div class="aside">
+        <h3>How it maps to your data</h3>
+        <p>Your <span class="mono">SKILL_GROUPS</span> already hold the category → skills tree and a <span class="mono">skilled</span> flag per group. All three ideas read straight from it — no new schema.</p>
+        <p>Inference (Idea 1) is a keyword match from the title to a group; "moving/shift" → General · Moving, "tuition/maths" → Tutoring · Maths. Cheap to ship, easy to improve later.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Design study for GigGround · Post a gig · pick a direction and I'll build it into the modal.</div>
+</footer>
+
+<script>
+  (function(){var b=document.documentElement,t=document.getElementById('tg');
+    t.addEventListener('click',function(){var c=b.getAttribute('data-theme');
+      if(!c)c=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+      b.setAttribute('data-theme',c==='dark'?'light':'dark');});})();
+</script>
