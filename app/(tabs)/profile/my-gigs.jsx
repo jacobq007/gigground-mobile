@@ -6,20 +6,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { Chip, Skeleton, Empty, VerifiedBadge } from "../../../components/ui";
 import DayPicker from "../../../components/DayPicker";
 import { gigsAPI, applicantsAPI, OPEN_APP_STATUSES } from "../../../lib/api";
-import { compatTone } from "../../../lib/skills";
 import { formatPayRange } from "../../../lib/pay";
-import { F } from "../../../lib/theme";
+import { F, FS } from "../../../lib/theme";
 import { useC } from "../../../lib/ThemeContext";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const isExpired = (g) => g.completeBy && new Date(g.completeBy + "T00:00:00") < new Date(new Date().setHours(0, 0, 0, 0));
 const BOOKED_STATUSES = ["confirmed", "in_shift"];
-const makeTone = (C) => ({ high: { bg: C.indigoSoft, fg: C.indigo }, mid: { bg: C.dark ? "#3A2A10" : "#FEF3E2", fg: C.amber }, low: { bg: C.surface2, fg: C.text3 } });
 
 export default function MyGigs() {
   const C = useC();
   const s = makeStyles(C);
-  const TONE = makeTone(C);
   const router = useRouter();
   const [gigs, setGigs] = useState(null);
   const [applicantsByGig, setApplicantsByGig] = useState({});
@@ -128,11 +125,12 @@ export default function MyGigs() {
                   {/* Who to hire — one preview + one clear way in */}
                   {open.length > 0 ? (
                     <Pressable onPress={() => openTriage(gig.id)} style={s.reviewBtn}>
-                      {top && top.compat != null ? (() => { const t = TONE[compatTone(top.compat)]; return (
-                        <View style={[s.ring, { borderColor: t.fg, backgroundColor: t.bg }]}>
-                          <Text style={[s.ringN, { color: t.fg }]}>{top.compat}</Text>
+                      {top && top.compat != null ? (
+                        <View style={s.figure}>
+                          <Text style={s.figureN}>{top.compat}</Text>
+                          <Text style={s.figureL}>match</Text>
                         </View>
-                      ); })() : null}
+                      ) : null}
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={s.reviewTitle}>Review & hire</Text>
                         <Text style={s.reviewSub} numberOfLines={1}>
@@ -181,9 +179,10 @@ const makeStyles = (C) => StyleSheet.create({
   noShowLink: { paddingHorizontal: 4, paddingVertical: 2 },
   noShowTxt: { fontFamily: F.med, fontSize: 12, color: C.red },
 
-  reviewBtn: { flexDirection: "row", alignItems: "center", gap: 11, backgroundColor: C.indigoSoft, borderRadius: 12, paddingHorizontal: 13, paddingVertical: 12, marginTop: 2 },
-  ring: { width: 38, height: 38, borderRadius: 19, borderWidth: 2.5, alignItems: "center", justifyContent: "center" },
-  ringN: { fontFamily: F.bold, fontSize: 14 },
+  reviewBtn: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.indigoSoft, borderRadius: 12, paddingHorizontal: 13, paddingVertical: 12, marginTop: 2 },
+  figure: { alignItems: "center", width: 34 },
+  figureN: { fontFamily: FS.bold, fontSize: 19, color: C.indigo, letterSpacing: -0.5 },
+  figureL: { fontFamily: F.med, fontSize: 8, letterSpacing: 0.4, textTransform: "uppercase", color: C.indigo, marginTop: -2 },
   reviewTitle: { fontFamily: F.bold, fontSize: 14, color: C.indigo },
   reviewSub: { fontFamily: F.med, fontSize: 12, color: C.indigo, opacity: 0.8, marginTop: 1 },
   waitBadge: { backgroundColor: C.indigo, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },
