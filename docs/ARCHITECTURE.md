@@ -92,12 +92,32 @@ app/
 New modals must be registered in `app/_layout.jsx` (`<Stack.Screen>` with
 `presentation: "modal"`).
 
-## Verifying a change
+## Running it (Codespaces-friendly)
 
 ```bash
-npx expo export --platform web      # must compile clean
+npm run web        # Metro web dev server, offline (hot reload) → port 8081
 ```
 
-Then drive the affected screen in a browser (the repo's design/verify flow uses
-Playwright against the exported bundle) and confirm **zero page errors** in both
-light and dark before committing.
+`npm run web` passes `--offline` on purpose. Plain `expo start` makes a network
+call to Expo's servers at startup to validate dependency versions; if that call
+is blocked or flaky (restricted egress, proxies, Codespaces), `@expo/cli`
+crashes before Metro serves — the port then returns a 404 / "page not found".
+`--offline` skips that step. Use `npm run web:online` if you specifically want
+the version check.
+
+Static preview (most robust when the dev server misbehaves through a proxy):
+
+```bash
+npm run export:web   # → dist/  (must compile clean)
+npm run serve:web    # static-serve dist on port 8081
+```
+
+Open the app from the editor's **PORTS** tab (port 8081 → globe icon), not a
+hand-typed URL.
+
+## Verifying a change
+
+`npm run export:web` must compile clean, then drive the affected screen in a
+browser (the repo's design/verify flow uses Playwright against the exported
+bundle) and confirm **zero page errors** in both light and dark before
+committing.
