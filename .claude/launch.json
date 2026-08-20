@@ -4,7 +4,7 @@
     {
       "name": "gigground-mobile-web",
       "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "npx expo start --web --port 8081"],
+      "runtimeArgs": ["/c", "set PATH=%PATH%;C:\\PROGRA~1\\nodejs&& npx expo start --web --offline --port 8081"],
       "port": 8081
     }
   ]
