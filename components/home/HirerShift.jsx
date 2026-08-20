@@ -130,10 +130,6 @@ export default function HirerShift() {
             <Text style={s.heroLabel}>Nothing posted</Text>
             <Text style={s.heroBig}>Post a shift</Text>
             <Text style={s.heroSub}>Workers near {zone} see it straight away. You only hear from people who are free.</Text>
-            <Pressable onPress={() => router.push("/modals/post-gig")} style={s.heroBtn}>
-              <Ionicons name="add" size={16} color={HIRE.accent} />
-              <Text style={s.heroBtnTxt}>Post a gig</Text>
-            </Pressable>
           </LinearGradient>
         ) : (
           <>
@@ -243,6 +239,24 @@ export default function HirerShift() {
             ) : null}
           </>
         )}
+
+        {/* ── Posting is the hirer's primary action and is never more than one tap
+             away, whatever state the current shift is in. These three are what
+             the old speed-dial FAB carried. ── */}
+        <Pressable style={s.postBtn} onPress={() => router.push("/modals/post-gig")} accessibilityRole="button">
+          <Ionicons name="add" size={18} color="#fff" />
+          <Text style={s.postBtnTxt}>Post a shift</Text>
+        </Pressable>
+        <View style={s.quickRow}>
+          <Pressable style={s.quick} onPress={() => router.push("/modals/boost")}>
+            <Ionicons name="trending-up-outline" size={15} color={HIRE.accent} />
+            <Text style={s.quickTxt}>Boost a gig</Text>
+          </Pressable>
+          <Pressable style={s.quick} onPress={() => router.push("/modals/refer?mode=invite")}>
+            <Ionicons name="person-add-outline" size={15} color={HIRE.accent} />
+            <Text style={s.quickTxt}>Invite a worker</Text>
+          </Pressable>
+        </View>
 
         {/* ── Bench ── */}
         <View style={s.sectionHead}>
@@ -383,6 +397,12 @@ const makeStyles = (C) => StyleSheet.create({
   pinkChipTxt: { fontFamily: FJ.bold, fontSize: 9.5, color: HIRE.accent },
   redChip: { backgroundColor: C.redSoft, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 3 },
   redChipTxt: { fontFamily: FJ.bold, fontSize: 9.5, color: C.red },
+
+  postBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: HIRE.accent, borderRadius: 13, paddingVertical: 14, marginTop: 2 },
+  postBtnTxt: { fontFamily: FJ.xbold, fontSize: 14, color: "#fff", letterSpacing: -0.2 },
+  quickRow: { flexDirection: "row", gap: 8, marginTop: 8 },
+  quick: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: C.surface, borderRadius: 12, paddingVertical: 11, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border },
+  quickTxt: { fontFamily: FJ.bold, fontSize: 11, color: C.text },
 
   sectionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 14, marginBottom: 9 },
   sectionTitle: { fontFamily: FJ.xbold, fontSize: 15, color: C.text, letterSpacing: -0.3 },
