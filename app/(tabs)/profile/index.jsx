@@ -7,6 +7,7 @@ import { Initials } from "../../../components/ui";
 import { useAuth } from "../../../lib/AuthContext";
 import { useLocation } from "../../../lib/LocationContext";
 import { useTheme, useC } from "../../../lib/ThemeContext";
+import { useHomeVariant } from "../../../lib/HomeVariantContext";
 import { kycAPI } from "../../../lib/api";
 import { verifiedSkills, openToKeys, skillLabel, levelLabel } from "../../../lib/skills";
 import { money } from "../../../lib/theme";
@@ -17,6 +18,7 @@ export default function Profile() {
   const { user, signout } = useAuth();
   const { homeZone } = useLocation();
   const { dark, toggle } = useTheme();
+  const { variant, toggle: toggleHome } = useHomeVariant();
   const C = useC();
   const s = makeS(C);
   const [kyc, setKyc] = useState(user?.kyc_status || "unverified");
@@ -74,12 +76,29 @@ export default function Profile() {
 
         {/* Appearance */}
         <View style={s.menu}>
-          <View style={s.row}>
+          <View style={[s.row, s.rowBorder]}>
             <Ionicons name={dark ? "moon" : "moon-outline"} size={19} color={C.indigo} />
             <Text style={s.rowLabel}>Dark mode</Text>
             <Switch
               value={dark}
               onValueChange={toggle}
+              trackColor={{ false: C.border, true: C.indigo }}
+              thumbColor="#fff"
+              ios_backgroundColor={C.border}
+            />
+          </View>
+          {/* Both home designs stay shipped — flip between them any time. */}
+          <View style={s.row}>
+            <Ionicons name="grid-outline" size={19} color={C.indigo} />
+            <View style={{ flex: 1 }}>
+              <Text style={s.rowLabel}>Shift board home</Text>
+              <Text style={s.rowSub}>
+                {variant === "shift" ? "New: committed day, go online, offers" : "Classic: the original hero home"}
+              </Text>
+            </View>
+            <Switch
+              value={variant === "shift"}
+              onValueChange={toggleHome}
               trackColor={{ false: C.border, true: C.indigo }}
               thumbColor="#fff"
               ios_backgroundColor={C.border}
@@ -187,6 +206,7 @@ const makeS = (C) => StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14 },
   rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.hairline },
   rowLabel: { fontFamily: F.med, fontSize: 14, color: C.text, flex: 1 },
+  rowSub: { fontFamily: F.reg, fontSize: 11.5, color: C.text2, marginTop: 1 },
   kycBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   kycTxt: { fontFamily: F.bold, fontSize: 10 },
   signout: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, marginTop: 18 },

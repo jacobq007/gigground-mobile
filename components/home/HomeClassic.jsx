@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet, RefreshControl, Animated
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { Skeleton, FadeIn, Empty } from "../../components/ui";
+import { Skeleton, FadeIn, Empty } from "../ui";
 import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
 import { useMode } from "../../lib/ModeContext";
