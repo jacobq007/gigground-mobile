@@ -300,7 +300,7 @@ export default function HomeShift() {
         </LinearGradient>
 
         {/* Record — the worker's asset */}
-        <Pressable style={s.card} onPress={() => router.push("/(tabs)/profile")}>
+        <Pressable style={s.card} onPress={() => router.push("/(tabs)/profile/record")}>
           <View style={s.row}>
             <View style={s.recordAv}><Text style={s.recordAvTxt}>{initialsOf(name)}</Text></View>
             <View style={{ flex: 1, minWidth: 0 }}>
