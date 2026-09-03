@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #3C6AE2; } a:hover { color: #2B4FA8; }
+    .tap { cursor: pointer; user-select: none; }
+    .sheet { transition: height .5s cubic-bezier(.22,1,.36,1); }
+    .drawer { transition: opacity .34s ease .06s, transform .44s cubic-bezier(.22,1,.36,1); }
+    .glide { transition: transform .42s cubic-bezier(.22,1,.36,1); }
+    .fade { transition: color .28s ease; }
+    .hd { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; }
+    .lb { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; font-size: 9.5px; }
+  </style>
+</helmet>
+
+<div style="width: 850px; height: 660px; background: #EFEEEC; padding: 20px; box-sizing: border-box;">
+
+  <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px;">
+    <div class="hd" style="font-size: 20px; color: #111827; letter-spacing: -0.3px;">D &middot; Dock</div>
+    <div style="font-size: 12px; color: #6B7280;">The bar is the lip of a sheet. Tap the handle &mdash; what slides out is entirely different per mode.</div>
+  </div>
+
+  <div style="display: flex; gap: 30px;">
+
+    <div>
+      <div style="width: 390px; height: 552px; border-radius: 30px; overflow: hidden; position: relative; background: #FAFAF9; border: 1px solid #DDDBD7;">
+        <div style="padding: 22px 18px 0;">
+          <div style="font-weight: 500; font-size: 11px; color: #9CA3AF; letter-spacing: 0.6px;">NEAR T. NAGAR</div>
+          <div class="hd" style="font-size: 21px; color: #111827; margin-top: 5px; letter-spacing: -0.4px;">4 shifts tonight</div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+            <sc-for list="{{jobs}}" as="j" hint-placeholder-count="2">
+              <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="width: 34px; height: 34px; border-radius: 10px; background: {{j.tint}}; flex: none;"></div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 13.5px; color: #111827;">{{j.title}}</div>
+                  <div style="font-size: 11px; color: #6B7280; margin-top: 2px;">{{j.meta}}</div>
+                </div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; color: #15803D;">{{j.pay}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="sheet" style="position: absolute; left: 0; right: 0; bottom: 0; height: {{wh}}; background: #FFFFFF; border-radius: 26px 26px 0 0; box-shadow: 0 -8px 30px rgba(17,24,39,0.13); overflow: hidden;">
+          <div class="tap" onClick="{{ toggleW }}" style="height: 22px; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 38px; height: 4px; border-radius: 2px; background: #DCDAD6;"></div>
+          </div>
+
+          <div class="drawer" style="padding: 0 16px; opacity: {{wo}}; transform: translateY({{wt}});">
+            <div style="background: #F1F5FE; border: 1px solid #D8E8FF; border-radius: 16px; padding: 13px; display: flex; align-items: center; gap: 11px;">
+              <div style="width: 38px; height: 38px; border-radius: 12px; background: #3C6AE2; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none;">
+                <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; color: #FFFFFF; line-height: 13px;">6</div>
+                <div class="lb" style="font-size: 7px; color: #B9CEF6;">PM</div>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 13px; color: #111827;">Kitchen help &middot; Ratna Cafe</div>
+                <div style="font-size: 11px; color: #6B7280; margin-top: 2px;">Starts in 2 hrs &middot; code 4417</div>
+              </div>
+              <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; color: #15803D;">&#8377;950</div>
+            </div>
+            <div style="display: flex; gap: 9px; margin-top: 10px;">
+              <div class="tap" onClick="{{ toggleOnline }}" style="flex: 1; height: 44px; border-radius: 13px; background: {{onBg}}; display: flex; align-items: center; justify-content: center; gap: 7px;">
+                <div style="width: 7px; height: 7px; border-radius: 4px; background: {{onDot}};"></div>
+                <div class="lb" style="font-size: 11.5px; color: {{onTx}};">{{onLabel}}</div>
+              </div>
+              <div style="flex: 1; height: 44px; border-radius: 13px; background: #F4F3F0; display: flex; align-items: center; justify-content: center;">
+                <div class="lb" style="font-size: 11.5px; color: #6B7280;">This week &#8377;3,420</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 62px; display: flex; align-items: center; padding: 0 8px; box-sizing: border-box; border-top: 1px solid #F4F3F0;">
+            <div style="position: relative; flex: 1; height: 46px;">
+              <div class="glide" style="position: absolute; top: 0; left: 0; width: 46px; height: 46px; border-radius: 15px; background: #EDF3FE; transform: translateX({{wx}}px);"></div>
+              <div style="position: relative; display: flex;">
+                <sc-for list="{{wtabs}}" as="t" hint-placeholder-count="5">
+                  <div class="tap" onClick="{{ t.pick }}" style="width: 74.8px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+                    <svg class="fade" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{t.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d1}}"></path><path d="{{t.d2}}"></path></svg>
+                    <div class="lb fade" style="color: {{t.color}};">{{t.label}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 7px; margin-top: 11px; padding-left: 4px;">
+        <div style="width: 8px; height: 8px; border-radius: 4px; background: #3C6AE2;"></div>
+        <div style="font-weight: 700; font-size: 12px; color: #3C6AE2;">WORKING</div>
+        <div style="font-size: 11.5px; color: #6B7280;">Your next shift and your earnings, one pull away.</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="width: 390px; height: 552px; border-radius: 30px; overflow: hidden; position: relative; background: #F3ECF1; border: 1px solid #DDDBD7;">
+        <div style="background: linear-gradient(135deg, #3B002D, #1B0016); padding: 22px 18px 26px;">
+          <div style="font-weight: 500; font-size: 11px; color: #D861AA; letter-spacing: 0.6px;">TONIGHT &middot; 6 PM</div>
+          <div class="hd" style="font-size: 22px; color: #FFFFFF; margin-top: 5px; letter-spacing: -0.4px;">Kitchen help</div>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 10px;">
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 34px; color: #FB72C6; line-height: 34px;">1<span style="font-size: 20px; color: #B5518D;">/2</span></div>
+            <div style="font-size: 12px; color: #C79BB6;">covered &middot; 3 applied</div>
+          </div>
+        </div>
+        <div style="padding: 16px 18px 0;">
+          <div style="background: #FFFFFF; border: 1px solid #E9DFE6; border-radius: 16px; padding: 13px; display: flex; align-items: center; gap: 11px;">
+            <div style="width: 34px; height: 34px; border-radius: 17px; background: #751E5F; display: flex; align-items: center; justify-content: center; flex: none;">
+              <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12px; color: #FFD5EE;">RK</div>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; font-size: 13.5px; color: #111827;">Ravi K.</div>
+              <div style="font-size: 11px; color: #6B7280; margin-top: 2px;">0.8 km &middot; 94% reliable</div>
+            </div>
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; color: #AD248C;">91%</div>
+          </div>
+        </div>
+
+        <div class="sheet" style="position: absolute; left: 0; right: 0; bottom: 0; height: {{hh}}; background: #FFFFFF; border-radius: 26px 26px 0 0; box-shadow: 0 -8px 30px rgba(59,0,45,0.16); overflow: hidden;">
+          <div class="tap" onClick="{{ toggleH }}" style="height: 22px; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 38px; height: 4px; border-radius: 2px; background: #E3D3DD;"></div>
+          </div>
+
+          <div class="drawer" style="padding: 0 16px; opacity: {{ho}}; transform: translateY({{ht}});">
+            <div style="background: #FDF2F8; border: 1px solid #FFD5EE; border-radius: 16px; padding: 13px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z"></path><path d="M8.8 12.2l2.4 2.4 4-4.6"></path></svg>
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 13px; color: #111827;">Standby held &middot; Suresh M.</div>
+                  <div style="font-size: 11px; color: #6B7280; margin-top: 2px;">Steps in automatically on a no-show</div>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 9px; margin-top: 10px;">
+              <div class="tap" style="flex: 1.3; height: 44px; border-radius: 13px; background: #AD248C; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(173,36,140,0.32);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                <div class="lb" style="font-size: 11.5px; color: #FFFFFF;">Post a shift</div>
+              </div>
+              <div style="flex: 1; height: 44px; border-radius: 13px; background: #F4F3F0; display: flex; align-items: center; justify-content: center;">
+                <div class="lb" style="font-size: 11.5px; color: #6B7280;">Bench &middot; 7</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 62px; display: flex; align-items: center; padding: 0 8px; box-sizing: border-box; border-top: 1px solid #F6F0F4;">
+            <div style="position: relative; flex: 1; height: 46px;">
+              <div class="glide" style="position: absolute; top: 0; left: 0; width: 46px; height: 46px; border-radius: 15px; background: #FDF2F8; transform: translateX({{hx}}px);"></div>
+              <div style="position: relative; display: flex;">
+                <sc-for list="{{htabs}}" as="t" hint-placeholder-count="5">
+                  <div class="tap" onClick="{{ t.pick }}" style="width: 74.8px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+                    <svg class="fade" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{t.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d1}}"></path><path d="{{t.d2}}"></path></svg>
+                    <div class="lb fade" style="color: {{t.color}};">{{t.label}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 7px; margin-top: 11px; padding-left: 4px;">
+        <div style="width: 8px; height: 8px; border-radius: 4px; background: #AD248C;"></div>
+        <div style="font-weight: 700; font-size: 12px; color: #AD248C;">HIRING</div>
+        <div style="font-size: 11.5px; color: #6B7280;">Standby, bench and Post &mdash; the things you reach for mid-shift.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":850,"height":660}}'>
+const ICONS = {
+  home: ['M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z', ''],
+  jobs: ['M3 8.5h18v10.5H3z', 'M8.5 8.5V6a1.5 1.5 0 011.5-1.5h4A1.5 1.5 0 0115.5 6v2.5'],
+  work: ['M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z', ''],
+  chat: ['M4 5.5h16v10H9.5L4 19.5z', ''],
+  person: ['M12 12a4 4 0 100-8 4 4 0 000 8z', 'M4.5 20.5c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6'],
+  workers: ['M16 20v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2', 'M9 10.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7M21.5 20v-2a4 4 0 00-3-3.9'],
+  shifts: ['M4 6.5h16v14H4z', 'M4 10.5h16M8.5 4v4M15.5 4v4M9.5 15l2 2 3.5-3.5']
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { w: 0, h: 0, wOpen: true, hOpen: true, online: true };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const self = this;
+
+    const mk = function (defs, active, accent, setter) {
+      return defs.map(function (d, i) {
+        return {
+          label: d[1],
+          d1: ICONS[d[0]][0],
+          d2: ICONS[d[0]][1],
+          color: i === active ? accent : '#8A8F98',
+          pick: function () { setter(i); }
+        };
+      });
+    };
+
+    const wdefs = [['home', 'Home'], ['jobs', 'Jobs'], ['work', 'My work'], ['chat', 'Chat'], ['person', 'Profile']];
+    const hdefs = [['home', 'Home'], ['workers', 'Workers'], ['shifts', 'Shifts'], ['chat', 'Chat'], ['person', 'Profile']];
+
+    return {
+      wtabs: mk(wdefs, st.w, '#3C6AE2', function (i) { self.setState({ w: i }); }),
+      htabs: mk(hdefs, st.h, '#AD248C', function (i) { self.setState({ h: i }); }),
+      wx: st.w * 74.8 + 14.4,
+      hx: st.h * 74.8 + 14.4,
+      wh: st.wOpen ? '196px' : '84px',
+      hh: st.hOpen ? '196px' : '84px',
+      wo: st.wOpen ? '1' : '0',
+      ho: st.hOpen ? '1' : '0',
+      wt: st.wOpen ? '0px' : '14px',
+      ht: st.hOpen ? '0px' : '14px',
+      toggleW: function () { self.setState({ wOpen: !st.wOpen }); },
+      toggleH: function () { self.setState({ hOpen: !st.hOpen }); },
+      toggleOnline: function () { self.setState({ online: !st.online }); },
+      onBg: st.online ? '#3C6AE2' : '#F4F3F0',
+      onDot: st.online ? '#9DE6B0' : '#9CA3AF',
+      onTx: st.online ? '#FFFFFF' : '#6B7280',
+      onLabel: st.online ? 'Online' : 'Go online',
+      jobs: [
+        { title: 'Event staff', meta: 'Hotel Savera &middot; 2.4 km', pay: '&#8377;160', tint: '#F3EAF6' },
+        { title: 'Delivery', meta: 'Anna Nagar &middot; 3.1 km', pay: '&#8377;210', tint: '#FAEBE4' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

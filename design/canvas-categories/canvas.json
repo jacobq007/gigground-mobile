@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Working — Skill categories", "is_interactive": true },
+    { "file": "HiringA.dc.html", "x": 490, "y": 0, "w": 390, "h": 844, "title": "Hiring — Direction A", "is_interactive": true },
+    { "file": "HiringB.dc.html", "x": 980, "y": 0, "w": 390, "h": 844, "title": "Hiring — Direction B", "is_interactive": true },
+    { "file": "FeatureSets.dc.html", "x": 0, "y": 1010, "w": 1180, "h": 1000, "title": "The two field sets" }
+  ],
+  "annotations": [
+    { "id": "note-1", "x": 0, "y": -150, "w": 380, "text": "WORKING — settled.\n\nTap any tile. The detail underneath is the worker's own field set: sub-skills, level, years, proof, working mode. Nothing here has a headcount or a clock." },
+    { "id": "note-2", "x": 490, "y": -150, "w": 380, "text": "HIRING — Direction A: shaped by business type.\n\nRatna Cafe sees kitchen and service needs first. Tap a tile for the hirer's field set: headcount, shift window, requirement bar, standby, repeat." },
+    { "id": "note-3", "x": 980, "y": -150, "w": 380, "text": "HIRING — Direction B: one universal list.\n\nFour tiles for every hirer, then a step that narrows to a trade. Tap 'Cover a shift' to see the extra step it costs." },
+    { "id": "note-4", "x": 0, "y": 2050, "w": 560, "text": "The tiles look alike on purpose — same 16px card, same 44px icon tile. What differs is the noun, the number on the face, and every field behind it." }
+  ],
+  "launch": { "view": "canvas" }
+}

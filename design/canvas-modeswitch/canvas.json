@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 760, "title": "Mode switch — full wash", "is_interactive": true },
+    { "file": "Curves.dc.html", "x": 500, "y": 0, "w": 560, "h": 640, "title": "Four curves, one tap", "is_interactive": true }
+  ],
+  "annotations": [
+    { "id": "note-1", "x": 0, "y": -230, "w": 460, "text": "Tap Working / Hiring. The pill slides, but the point is everything behind it: page ground, hero gradient, bell, badges and the cards all re-theme at once.\n\nThe artboard has two levers above it — curve and duration — so you can dial the feel without me republishing." },
+    { "id": "note-2", "x": 500, "y": -230, "w": 560, "text": "What the reference actually does: each tab owns a whole theme (Dineout violet, Scenes black, Instamart white, Food green) and the entire surface — background, search field, placeholder text — changes with it.\n\nOne caveat: the swap completes inside a single frame of that recording, so I could not measure its easing. These four are honest candidates, not a match." },
+    { "id": "note-3", "x": 0, "y": 800, "w": 460, "text": "Today the toggle has no moving part at all — HomeShift.jsx just swaps text colour between #fff and rgba(255,255,255,0.55). There is nothing to animate yet, which is why it feels dead." }
+  ],
+  "launch": { "view": "canvas" }
+}

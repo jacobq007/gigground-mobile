@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #4338CA; } a:hover { color: #312A9E; }
+    .row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-top: 1px solid #F1F0EE; }
+    .rk { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 700; font-size: 12.5px; color: #111827; width: 132px; flex: none; line-height: 17px; }
+    .rv { font-size: 12px; color: #6B7280; line-height: 17px; flex: 1; }
+    .mono { font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; background: #FAFAF9; padding: 44px; box-sizing: border-box;">
+
+  <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 30px; color: #111827; letter-spacing: -0.6px;">One list became two</div>
+  <div style="font-size: 14px; color: #6B7280; line-height: 21px; margin-top: 9px; max-width: 760px;">
+    Today <span class="mono" style="color: #111827;">SKILL_GROUPS</span> in <span class="mono" style="color: #111827;">lib/skills.js</span> is rendered by the worker&rsquo;s Skills screen and the hirer&rsquo;s Post screen alike. The two sides are asking different questions, so they need different nouns, different fields and different lifespans.
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 30px;">
+
+    <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 20px; padding: 26px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display: flex; align-items: center; gap: 11px;">
+        <div style="width: 40px; height: 40px; border-radius: 12px; background: #EEF0FE; display: flex; align-items: center; justify-content: center;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#3C6AE2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L22 9L12 14L2 9Z"></path><path d="M6 11v5c0 1.6 2.7 3 6 3s6-1.4 6-3v-5"></path></svg>
+        </div>
+        <div>
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #111827;">Skill category</div>
+          <div style="font-weight: 500; font-size: 11px; color: #3C6AE2; letter-spacing: 0.6px; margin-top: 2px;">WORKING SIDE</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; padding: 15px 16px; background: rgba(60,106,226,0.07); border-radius: 14px;">
+        <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 14.5px; color: #2B4FA8; line-height: 21px;">&ldquo;What am I good at?&rdquo;</div>
+        <div style="font-size: 12px; color: #3C6AE2; line-height: 17px; margin-top: 5px;">A craft you own. Added once, levelled up over years, proved with a document. It outlives every job you take.</div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div class="row" style="border-top: none;"><div class="rk">Sub-skills</div><div class="rv">Multi-select chips inside the category &mdash; Maths, Science, Coding</div></div>
+        <div class="row"><div class="rk">Level</div><div class="rv">New / Experienced / Expert, set per skill</div></div>
+        <div class="row"><div class="rk">Years</div><div class="rv">A stepper per skill, feeds ranking</div></div>
+        <div class="row"><div class="rk">Proof</div><div class="rv">Category-specific: degree, FSSAI, trade licence, portfolio. Unlocks the shield.</div></div>
+        <div class="row"><div class="rk">Tags</div><div class="rv">Boards you teach, meals you take, who you serve</div></div>
+        <div class="row"><div class="rk">Working mode</div><div class="rv">At their home / online / my place. Yours, not the job&rsquo;s.</div></div>
+        <div class="row"><div class="rk">Travel radius</div><div class="rv">How far you will go for this category</div></div>
+        <div class="row"><div class="rk">Expected rate</div><div class="rv">What you want. Read by <span class="mono" style="color: #111827;">rateFit()</span>.</div></div>
+      </div>
+
+      <div style="margin-top: 18px; padding-top: 15px; border-top: 1px solid #E5E7EB;">
+        <div style="font-weight: 500; font-size: 10.5px; color: #9CA3AF; letter-spacing: 0.6px;">READ BY</div>
+        <div style="font-size: 12px; color: #6B7280; line-height: 18px; margin-top: 6px;">Profile strength &middot; verification tier &middot; the CV screen &middot; applicant compatibility</div>
+        <div style="font-size: 11.5px; color: #15803D; line-height: 17px; margin-top: 9px; font-weight: 500;">Keeps the six categories it already has. Nothing to migrate.</div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 20px; padding: 26px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display: flex; align-items: center; gap: 11px;">
+        <div style="width: 40px; height: 40px; border-radius: 12px; background: #FCE9F1; display: flex; align-items: center; justify-content: center;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path><path d="M12 7v5l3.4 2"></path></svg>
+        </div>
+        <div>
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #111827;">Need category</div>
+          <div style="font-weight: 500; font-size: 11px; color: #AD248C; letter-spacing: 0.6px; margin-top: 2px;">HIRING SIDE</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; padding: 15px 16px; background: rgba(173,36,140,0.07); border-radius: 14px;">
+        <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 14.5px; color: #8A1C6F; line-height: 21px;">&ldquo;What do I need covered, and when?&rdquo;</div>
+        <div style="font-size: 12px; color: #AD248C; line-height: 17px; margin-top: 5px;">A shift with a headcount and a clock. It is created, filled, and then it stops existing. You never level it up &mdash; you repeat it.</div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div class="row" style="border-top: none;"><div class="rk">Headcount</div><div class="rv">How many people. A worker never has this field.</div></div>
+        <div class="row"><div class="rk">Shift window</div><div class="rv">Date plus start and end time. Not &ldquo;flexible&rdquo;.</div></div>
+        <div class="row"><div class="rk">Requirement bar</div><div class="rv">Anyone reliable, or must be verified. This is what consumes the worker&rsquo;s proof.</div></div>
+        <div class="row"><div class="rk">Must bring</div><div class="rv">Own bike, knife roll, FSSAI card. Per need, not per person.</div></div>
+        <div class="row"><div class="rk">Pay vs median</div><div class="rv">Guidance from real peers &mdash; already computed in <span class="mono" style="color: #111827;">HirerShift.jsx</span></div></div>
+        <div class="row"><div class="rk">Standby</div><div class="rv">Hold a second choice against a no-show</div></div>
+        <div class="row"><div class="rk">Repeat</div><div class="rv">Save as a weekly slot; refill from your bench in one tap</div></div>
+        <div class="row"><div class="rk">Arrival code</div><div class="rv">Four digits at the door. Already in <span class="mono" style="color: #111827;">codeFor()</span>.</div></div>
+      </div>
+
+      <div style="margin-top: 18px; padding-top: 15px; border-top: 1px solid #E5E7EB;">
+        <div style="font-weight: 500; font-size: 10.5px; color: #9CA3AF; letter-spacing: 0.6px;">READ BY</div>
+        <div style="font-size: 12px; color: #6B7280; line-height: 18px; margin-top: 6px;">Fill state &middot; the applicant pool &middot; the standby slot &middot; your bench</div>
+        <div style="font-size: 11.5px; color: #AD248C; line-height: 17px; margin-top: 9px; font-weight: 500;">New. Shaped by <span class="mono">BIZ_CATEGORIES</span>, which is already in <span class="mono">lib/constants.js</span> and unused today.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 28px; background: #1C1E26; border-radius: 20px; padding: 26px 30px;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px; color: #FFFFFF;">The one place the two still touch</div>
+      <div style="flex: 1; height: 1px; background: #33363F;"></div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 18px; margin-top: 20px;">
+      <div style="background: #23252E; border: 1px solid #3C6AE2; border-radius: 14px; padding: 14px 18px;">
+        <div style="font-weight: 500; font-size: 10.5px; color: #7E9BEA; letter-spacing: 0.5px;">NEED</div>
+        <div class="mono" style="font-size: 14px; color: #FFFFFF; margin-top: 4px;">need.requires</div>
+        <div style="font-size: 11px; color: #A7AAB4; margin-top: 4px;">&ldquo;Cook cover&rdquo; needs south_indian</div>
+      </div>
+
+      <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="#71747E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M1 9h30"></path><path d="M25 3l6 6-6 6"></path></svg>
+
+      <div style="background: #23252E; border: 1px solid #AD248C; border-radius: 14px; padding: 14px 18px;">
+        <div style="font-weight: 500; font-size: 10.5px; color: #D861AA; letter-spacing: 0.5px;">SKILL</div>
+        <div class="mono" style="font-size: 14px; color: #FFFFFF; margin-top: 4px;">applicant.skilledIn</div>
+        <div style="font-size: 11px; color: #A7AAB4; margin-top: 4px;">Proved once, on the worker&rsquo;s profile</div>
+      </div>
+
+      <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="#71747E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M1 9h30"></path><path d="M25 3l6 6-6 6"></path></svg>
+
+      <div style="background: #23252E; border: 1px solid #4ADE80; border-radius: 14px; padding: 14px 18px;">
+        <div style="font-weight: 500; font-size: 10.5px; color: #4ADE80; letter-spacing: 0.5px;">ALREADY BUILT</div>
+        <div class="mono" style="font-size: 14px; color: #FFFFFF; margin-top: 4px;">compatibility()</div>
+        <div style="font-size: 11px; color: #A7AAB4; margin-top: 4px;">Reads gig.skillKey against the worker today</div>
+      </div>
+
+      <div style="flex: 1;"></div>
+    </div>
+
+    <div style="font-size: 12.5px; color: #A7AAB4; line-height: 19px; margin-top: 20px; max-width: 900px;">
+      The join already exists in <span class="mono" style="color: #F2F2F5;">lib/skills.js</span> &mdash; matching reads <span class="mono" style="color: #F2F2F5;">gig.skillKey</span> against the worker&rsquo;s verified skills. Nothing about matching changes. What changes is that the hirer stops picking out of the worker&rsquo;s list and picks a need that <em style="font-style: normal; color: #F2F2F5;">maps</em> to one.
+    </div>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

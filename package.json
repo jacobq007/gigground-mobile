@@ -25,6 +25,7 @@
     "react-native": "0.81.5",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
+    "react-native-svg": "15.12.1",
     "react-native-web": "~0.21.0"
   },
   "scripts": {
@@ -36,5 +37,8 @@
     "export:web": "expo export --platform web",
     "serve:web": "python3 -m http.server 8081 --directory dist"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@expo/ngrok": "^4.1.3"
+  }
 }

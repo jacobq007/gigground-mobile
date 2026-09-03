@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #3C6AE2; } a:hover { color: #2B4FA8; }
+    .tap { cursor: pointer; user-select: none; }
+    .hd { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; }
+    .jk { font-family: "Plus Jakarta Sans", sans-serif; }
+    .sg { font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+  </style>
+</helmet>
+
+<div style="width: 560px; height: 640px; background: #FAFAF9; padding: 26px; box-sizing: border-box;">
+
+  <div class="hd" style="font-size: 21px; color: #111827; letter-spacing: -0.4px;">Four curves, one tap</div>
+  <div style="font-size: 12.5px; color: #6B7280; line-height: 18px; margin-top: 7px;">Hit the button and all four fire together, so the difference is felt rather than described.</div>
+
+  <div class="tap" onClick="{{ flip }}" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; background: #111827; border-radius: 12px; padding: 11px 16px;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13l-3.5-3.5"></path><path d="M20 15H7l3.5 3.5"></path></svg>
+    <div class="jk" style="font-size: 12.5px; font-weight: 700; color: #FFFFFF;">Switch to {{nextLabel}}</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px;">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+      <div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px;">
+          <div class="jk" style="font-size: 12.5px; font-weight: 800; color: #111827;">{{r.name}}</div>
+          <div class="sg" style="font-size: 10.5px; color: #9CA3AF;">{{r.spec}}</div>
+        </div>
+        <div style="position: relative; height: 40px; border-radius: 99px; background: {{r.track}}; transition: background-color {{r.bgT}}; padding: 4px; box-sizing: border-box;">
+          <div style="position: absolute; top: 4px; left: 4px; width: 249px; height: 32px; border-radius: 99px; background: {{r.pill}}; transform: translateX({{r.x}}); transition: transform {{r.pillT}}, background-color {{r.bgT}}; box-shadow: 0 2px 10px rgba(0,0,0,0.22);"></div>
+          <div style="position: relative; display: flex; height: 32px;">
+            <div style="width: 249px; display: flex; align-items: center; justify-content: center;">
+              <div class="jk" style="font-size: 13px; font-weight: 700; color: {{r.wTx}}; transition: color {{r.txT}};">Working</div>
+            </div>
+            <div style="width: 249px; display: flex; align-items: center; justify-content: center;">
+              <div class="jk" style="font-size: 13px; font-weight: 700; color: {{r.hTx}}; transition: color {{r.txT}};">Hiring</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size: 11.5px; color: #6B7280; line-height: 16px; margin-top: 7px;">{{r.note}}</div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":560,"height":640}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: 'working' };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const self = this;
+    const w = st.mode === 'working';
+
+    const defs = [
+      { name: 'Snap', spec: '190ms &middot; cubic-bezier(.2,.9,.25,1)', pillT: '190ms cubic-bezier(.2,.9,.25,1)', bgT: '190ms cubic-bezier(.2,.9,.25,1)', txT: '150ms ease',
+        note: 'Closest to the reference. Almost no travel time &mdash; it reads as a hard cut with just enough motion to show direction.' },
+      { name: 'Spring', spec: '380ms &middot; cubic-bezier(.34,1.56,.64,1)', pillT: '380ms cubic-bezier(.34,1.56,.64,1)', bgT: '300ms cubic-bezier(.22,1,.36,1)', txT: '210ms ease',
+        note: 'Overshoots and settles. Playful, but the wobble fights the seriousness of money screens.' },
+      { name: 'Glide', spec: '380ms &middot; cubic-bezier(.22,1,.36,1)', pillT: '380ms cubic-bezier(.22,1,.36,1)', bgT: '380ms cubic-bezier(.22,1,.36,1)', txT: '270ms ease',
+        note: 'Even and calm. Safe, slightly soft &mdash; on a slow phone it starts to feel laggy rather than smooth.' },
+      { name: 'Wash', spec: 'pill 160ms, colour 510ms', pillT: '160ms cubic-bezier(.2,.9,.25,1)', bgT: '510ms cubic-bezier(.22,1,.36,1)', txT: '230ms ease',
+        note: 'Staggered: the pill lands immediately, the colour keeps travelling behind it. This is what makes the reference feel like the whole surface changed, not a control.' }
+    ];
+
+    return {
+      flip: function () { self.setState({ mode: w ? 'hiring' : 'working' }); },
+      nextLabel: w ? 'Hiring' : 'Working',
+      rows: defs.map(function (d) {
+        return {
+          name: d.name, spec: d.spec, note: d.note,
+          pillT: d.pillT, bgT: d.bgT, txT: d.txT,
+          x: w ? '0px' : '249px',
+          pill: w ? '#3C6AE2' : '#AD248C',
+          track: w ? '#172259' : '#39072C',
+          wTx: w ? '#FFFFFF' : 'rgba(255,255,255,0.55)',
+          hTx: w ? 'rgba(255,255,255,0.55)' : '#FFFFFF'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

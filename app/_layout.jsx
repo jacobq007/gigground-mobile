@@ -18,6 +18,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/AuthContext";
 import { LocationProvider } from "../lib/LocationContext";
 import { ThemeProvider, useTheme } from "../lib/ThemeContext";
+import { HomeVariantProvider } from "../lib/HomeVariantContext";
 import { C } from "../lib/theme";
 
 const isWeb = Platform.OS === "web";
@@ -32,11 +33,13 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AuthProvider>
-          <LocationProvider>
-            <Shell />
-          </LocationProvider>
-        </AuthProvider>
+        <HomeVariantProvider>
+          <AuthProvider>
+            <LocationProvider>
+              <Shell />
+            </LocationProvider>
+          </AuthProvider>
+        </HomeVariantProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

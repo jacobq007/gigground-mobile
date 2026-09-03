@@ -11,6 +11,7 @@ export default function ProfileLayout() {
       <Stack.Screen name="my-gigs" />
       <Stack.Screen name="applications" />
       <Stack.Screen name="applicants" />
+      <Stack.Screen name="record" />
     </Stack>
   );
 }

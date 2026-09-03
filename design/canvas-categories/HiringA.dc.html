@@ -1,0 +1,322 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #AD248C; } a:hover { color: #8A1C6F; }
+    .gg-scroll { overflow-y: auto; scrollbar-width: thin; }
+    .gg-tap { cursor: pointer; user-select: none; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FAFAF9; overflow: hidden; position: relative;">
+
+  <sc-if value="{{isGrid}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        <div style="font-weight: 700; font-size: 15px; color: #111827;">Post a shift</div>
+        <div style="width: 22px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; width: 50%; background: #AD248C; border-radius: 3px;"></div>
+        </div>
+        <div style="font-weight: 500; font-size: 11.5px; color: #6B7280; margin-top: 7px; margin-bottom: 16px;">Step 1 of 2 &middot; What do you need covered?</div>
+
+        <div style="display: flex; align-items: center; gap: 11px; background: #FFFFFF; border-radius: 14px; border: 1px solid #E5E7EB; padding: 11px; margin-bottom: 16px;">
+          <div style="width: 36px; height: 36px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; background: #FCE9F1;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9.5l8-5.5 8 5.5V20z"></path><path d="M9.5 20v-6h5v6"></path></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 13.5px; color: #111827;">Ratna Cafe</div>
+            <div style="font-size: 11px; color: #6B7280; margin-top: 1px;">Food &amp; Restaurant &middot; T. Nagar</div>
+          </div>
+          <div style="font-weight: 500; font-size: 12.5px; color: #AD248C;">Change</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <sc-for list="{{needs}}" as="n" hint-placeholder-count="6">
+            <div class="gg-tap" onClick="{{ n.open }}" style="position: relative; background: #FFFFFF; border-radius: 16px; border: 1px solid #E5E7EB; padding: 15px; min-height: 128px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: {{n.tint}};">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{n.fg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{n.d1}}"></path><path d="{{n.d2}}"></path></svg>
+              </div>
+              <div style="font-weight: 700; font-size: 14px; color: #111827;">{{n.label}}</div>
+              <div style="font-size: 10.5px; color: #9CA3AF; margin-top: 3px; line-height: 14px;">{{n.eg}}</div>
+              <div style="display: flex; align-items: center; gap: 5px; margin-top: 8px;">
+                <div style="width: 6px; height: 6px; border-radius: 3px; background: {{n.dot}};"></div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 11px; color: {{n.poolFg}};">{{n.pool}}</div>
+              </div>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; top: 16px; right: 14px;"><path d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; align-items: flex-start; padding: 13px 14px; background: rgba(173,36,140,0.06); border-radius: 14px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path><path d="M12 11v6M12 7.4v.2"></path></svg>
+          <div style="font-size: 11.5px; color: #AD248C; line-height: 17px;">A need is a <strong style="font-weight: 700;">shift</strong>. It has a headcount and a clock, and it stops existing once it is filled.</div>
+        </div>
+        <div style="height: 8px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isDetail}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <div class="gg-tap" onClick="{{ back }}" style="display: flex; align-items: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{cur.d1}}"></path><path d="{{cur.d2}}"></path></svg>
+          <div style="font-weight: 700; font-size: 15px; color: #111827;">{{cur.label}}</div>
+        </div>
+        <div style="width: 24px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; width: 100%; background: #AD248C; border-radius: 3px;"></div>
+        </div>
+        <div style="font-weight: 500; font-size: 11.5px; color: #6B7280; margin-top: 7px; margin-bottom: 18px;">Step 2 of 2 &middot; {{cur.label}}</div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin-bottom: 8px;">How many people?</div>
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div class="gg-tap" onClick="{{ dec }}" style="width: 44px; height: 44px; border-radius: 12px; background: #F4F3F0; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"></path></svg>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px; color: #111827; line-height: 30px;">{{count}}</div>
+            <div style="font-size: 11px; color: #6B7280; margin-top: 2px;">{{countWord}}</div>
+          </div>
+          <div class="gg-tap" onClick="{{ inc }}" style="width: 44px; height: 44px; border-radius: 12px; background: #F4F3F0; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2.2" stroke-linecap="round"><path d="M12 6v12M6 12h12"></path></svg>
+          </div>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">When</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+          <sc-for list="{{days}}" as="d" hint-placeholder-count="3">
+            <div class="gg-tap" onClick="{{ d.pick }}" style="flex: 1; text-align: center; padding: 11px 4px; border-radius: 10px; border: 1px solid {{d.bd}}; background: {{d.bg}};">
+              <div style="font-weight: 700; font-size: 12px; color: {{d.tx}};">{{d.label}}</div>
+              <div style="font-size: 10px; color: {{d.sub}}; margin-top: 2px;">{{d.date}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 14px; padding: 13px 14px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path><path d="M12 7v5l3.4 2"></path></svg>
+          <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; color: #111827;">6:00 pm &ndash; 11:00 pm</div>
+          <div style="flex: 1;"></div>
+          <div style="font-weight: 500; font-size: 11.5px; color: #6B7280;">5 hrs</div>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">Who can take it</div>
+        <div style="display: flex; gap: 6px;">
+          <sc-for list="{{bars}}" as="b" hint-placeholder-count="2">
+            <div class="gg-tap" onClick="{{ b.pick }}" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid {{b.bd}}; background: {{b.bg}};">
+              <div style="font-weight: 700; font-size: 12.5px; color: {{b.tx}};">{{b.label}}</div>
+              <div style="font-size: 10.5px; color: {{b.subFg}}; margin-top: 3px; line-height: 14px;">{{b.sub}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 7px; align-items: center; margin-top: 10px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"></path><path d="M10 10.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"></path><path d="M20.5 20v-2a4 4 0 00-3-3.8"></path></svg>
+          <div style="font-size: 11.5px; color: #6B7280;">{{poolLine}}</div>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">{{cur.bringLabel}}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{brings}}" as="t" hint-placeholder-count="3">
+            <div class="gg-tap" onClick="{{ t.toggle }}" style="padding: 9px 13px; border-radius: 99px; border: 1px solid {{t.bd}}; background: {{t.bg}};">
+              <div style="font-weight: 500; font-size: 12.5px; color: {{t.tx}};">{{t.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">Pay</div>
+        <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; color: #15803D;">&#8377;190</div>
+            <div style="font-weight: 500; font-size: 12px; color: #6B7280;">per hour</div>
+            <div style="flex: 1;"></div>
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px; color: #15803D;">&#8377;950 total</div>
+          </div>
+          <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden; margin-top: 12px; position: relative;">
+            <div style="height: 100%; width: 63%; background: #15803D; border-radius: 3px;"></div>
+            <div style="position: absolute; left: 55%; top: -3px; width: 2px; height: 12px; background: #9CA3AF; border-radius: 1px;"></div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center; margin-top: 9px;">
+            <div style="font-size: 11px; color: #6B7280; line-height: 16px;">Median for kitchen help in T. Nagar is <strong style="font-weight: 700; color: #111827;">&#8377;170</strong>. You are &#8377;20 above &mdash; those fill about twice as fast.</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{switches}}" as="w" hint-placeholder-count="2">
+            <div class="gg-tap" onClick="{{ w.toggle }}" style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid {{w.bd}}; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 13px; color: #111827;">{{w.label}}</div>
+                <div style="font-size: 11.5px; color: #6B7280; margin-top: 2px; line-height: 16px;">{{w.sub}}</div>
+              </div>
+              <div style="width: 44px; height: 26px; border-radius: 13px; flex: none; position: relative; background: {{w.track}};">
+                <div style="position: absolute; top: 3px; left: {{w.knob}}; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 24px; background: #AD248C; border-radius: 14px; padding: 15px; text-align: center;">
+          <div style="font-weight: 700; font-size: 14px; color: #FFFFFF;">{{postCta}}</div>
+        </div>
+        <div style="height: 12px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: 'grid',
+      need: 'kitchen_help',
+      count: 2,
+      day: 'Tomorrow',
+      bar: 'anyone',
+      brings: ['Own apron'],
+      standby: true,
+      repeat: false
+    };
+  }
+
+  data() {
+    return [
+      { key: 'kitchen_help', label: 'Kitchen help', tint: '#FCE9F1', fg: '#A32468',
+        d1: 'M4 10h16v4a5 5 0 01-5 5H9a5 5 0 01-5-5z', d2: 'M8 10V6.5M12 10V5.5M16 10V6.5',
+        eg: 'Prep, chopping, dishwash', pool: '14 free tonight', poolFg: '#15803D', dot: '#15803D',
+        bringLabel: 'They should bring', brings: ['Own apron', 'Knife roll', 'FSSAI card'], requires: 'kitchen_help' },
+      { key: 'waitstaff', label: 'Service &amp; counter', tint: '#F3EAF6', fg: '#7B3FA0',
+        d1: 'M2.5 15.5h19', d2: 'M5 15.5a7 7 0 0114 0M12 5.2v3.3',
+        eg: 'Serving, billing, clearing', pool: '9 free tonight', poolFg: '#15803D', dot: '#15803D',
+        bringLabel: 'They should bring', brings: ['Black shirt', 'Own shoes'], requires: 'event' },
+      { key: 'delivery', label: 'Delivery rider', tint: '#FAEBE4', fg: '#B0532A',
+        d1: 'M6.5 18.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18 18.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z', d2: 'M9 16h6.5M4 16H3v-3.5h6l3-6h2.5M14.5 6.5H18l1.5 9',
+        eg: 'Own bike needed', pool: '6 free tonight', poolFg: '#f59e0b', dot: '#f59e0b',
+        bringLabel: 'They must bring', brings: ['Own bike', 'Licence', 'Insulated bag'], requires: 'delivery' },
+      { key: 'deep_clean', label: 'Deep clean', tint: '#E9F1F4', fg: '#2B6E86',
+        d1: 'M9 8h5.5a2 2 0 012 2v9a2 2 0 01-2 2H9a2 2 0 01-2-2v-9a2 2 0 012-2z', d2: 'M9 8V4.5h4M13 6.5h3.5l2-2',
+        eg: 'After close, floors and hood', pool: '11 free tonight', poolFg: '#15803D', dot: '#15803D',
+        bringLabel: 'They should bring', brings: ['Own supplies', 'Gloves'], requires: 'cleaning' },
+      { key: 'cook_cover', label: 'Cook cover', tint: '#FBE7E9', fg: '#B02A3C',
+        d1: 'M7 20.5h10v-4H7z', d2: 'M7 16.5c-2.5-.6-4-2.6-4-5 0-2.8 2.2-5 5-5 .6-1.8 2.2-3 4-3s3.4 1.2 4 3c2.8 0 5 2.2 5 5 0 2.4-1.5 4.4-4 5',
+        eg: 'Your chef called in sick', pool: '3 verified nearby', poolFg: '#ef4444', dot: '#ef4444',
+        bringLabel: 'They must bring', brings: ['FSSAI card', 'Own knives'], requires: 'south_indian' },
+      { key: 'other', label: 'Something else', tint: '#F2F0EE', fg: '#6B7280',
+        d1: 'M5 5h14v14H5z', d2: 'M12 9v6M9 12h6',
+        eg: 'Describe it yourself', pool: 'We will route it', poolFg: '#6B7280', dot: '#9CA3AF',
+        bringLabel: 'They should bring', brings: ['Nothing specific'], requires: null }
+    ];
+  }
+
+  renderVals() {
+    const rows = this.data();
+    const st = this.state;
+    const cur = rows.find(function (r) { return r.key === st.need; }) || rows[0];
+    const self = this;
+
+    const needs = rows.map(function (r) {
+      return Object.assign({}, r, { open: function () { self.setState({ screen: 'detail', need: r.key, brings: [r.brings[0]] }); } });
+    });
+
+    const days = [['Today', '3 Sep'], ['Tomorrow', '4 Sep'], ['Fri', '5 Sep']].map(function (d) {
+      const on = st.day === d[0];
+      return {
+        label: d[0], date: d[1],
+        bg: on ? 'rgba(173,36,140,0.08)' : '#FFFFFF',
+        bd: on ? '#AD248C' : '#E5E7EB',
+        tx: on ? '#AD248C' : '#111827',
+        sub: on ? '#AD248C' : '#9CA3AF',
+        pick: function () { self.setState({ day: d[0] }); }
+      };
+    });
+
+    const barDefs = [
+      ['anyone', 'Anyone reliable', 'Open to everyone nearby'],
+      ['verified', 'Must be verified', 'Only proved skills match']
+    ];
+    const bars = barDefs.map(function (b) {
+      const on = st.bar === b[0];
+      return {
+        label: b[1], sub: b[2],
+        bg: on ? 'rgba(173,36,140,0.08)' : '#FFFFFF',
+        bd: on ? '#AD248C' : '#E5E7EB',
+        tx: on ? '#AD248C' : '#111827',
+        subFg: on ? '#AD248C' : '#9CA3AF',
+        pick: function () { self.setState({ bar: b[0] }); }
+      };
+    });
+
+    const brings = cur.brings.map(function (label) {
+      const on = st.brings.indexOf(label) >= 0;
+      return {
+        label: label,
+        bg: on ? 'rgba(173,36,140,0.08)' : '#FFFFFF',
+        bd: on ? '#AD248C' : '#E5E7EB',
+        tx: on ? '#AD248C' : '#111827',
+        toggle: function () {
+          self.setState({ brings: on ? st.brings.filter(function (x) { return x !== label; }) : st.brings.concat([label]) });
+        }
+      };
+    });
+
+    const switches = [
+      { key: 'standby', on: st.standby, label: 'Hold a standby', sub: 'Second choice stays warm in case of a no-show.' },
+      { key: 'repeat', on: st.repeat, label: 'Repeat weekly', sub: 'Saves this as a Saturday slot you can refill in one tap.' }
+    ].map(function (w) {
+      return {
+        label: w.label, sub: w.sub,
+        track: w.on ? '#AD248C' : '#E5E7EB',
+        knob: w.on ? '21px' : '3px',
+        bd: w.on ? '#AD248C' : '#E5E7EB',
+        toggle: function () {
+          const patch = {};
+          patch[w.key] = !w.on;
+          self.setState(patch);
+        }
+      };
+    });
+
+    return {
+      isGrid: st.screen === 'grid',
+      isDetail: st.screen === 'detail',
+      needs: needs,
+      cur: cur,
+      days: days,
+      bars: bars,
+      brings: brings,
+      switches: switches,
+      count: st.count,
+      countWord: st.count === 1 ? 'person' : 'people',
+      inc: function () { self.setState({ count: Math.min(10, st.count + 1) }); },
+      dec: function () { self.setState({ count: Math.max(1, st.count - 1) }); },
+      poolLine: st.bar === 'anyone' ? '38 workers nearby can see this' : '6 nearby have proved this skill',
+      postCta: 'Post shift for ' + st.count + (st.count === 1 ? ' person' : ' people'),
+      back: function () { self.setState({ screen: 'grid' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
