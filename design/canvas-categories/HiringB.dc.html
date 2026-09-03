@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #AD248C; } a:hover { color: #8A1C6F; }
+    .gg-scroll { overflow-y: auto; scrollbar-width: thin; }
+    .gg-tap { cursor: pointer; user-select: none; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FAFAF9; overflow: hidden; position: relative;">
+
+  <sc-if value="{{isGrid}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        <div style="font-weight: 700; font-size: 15px; color: #111827;">Post a shift</div>
+        <div style="width: 22px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; width: 33%; background: #AD248C; border-radius: 3px;"></div>
+        </div>
+        <div style="font-weight: 500; font-size: 11.5px; color: #6B7280; margin-top: 7px; margin-bottom: 16px;">Step 1 of 3 &middot; What shape is this?</div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{shapes}}" as="s" hint-placeholder-count="4">
+            <div class="gg-tap" onClick="{{ s.open }}" style="position: relative; background: #FFFFFF; border-radius: 16px; border: 1px solid #E5E7EB; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="width: 48px; height: 48px; border-radius: 14px; flex: none; display: flex; align-items: center; justify-content: center; background: {{s.tint}};">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{s.fg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{s.d1}}"></path><path d="{{s.d2}}"></path></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 14.5px; color: #111827;">{{s.label}}</div>
+                <div style="font-size: 11.5px; color: #6B7280; margin-top: 3px; line-height: 16px;">{{s.eg}}</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; align-items: flex-start; padding: 13px 14px; background: rgba(173,36,140,0.06); border-radius: 14px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#AD248C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path><path d="M12 11v6M12 7.4v.2"></path></svg>
+          <div style="font-size: 11.5px; color: #AD248C; line-height: 17px;">Four tiles for every hirer. The shape of the need decides the fields you get asked for next.</div>
+        </div>
+        <div style="height: 8px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isNarrow}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <div class="gg-tap" onClick="{{ back }}" style="display: flex; align-items: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+        </div>
+        <div style="font-weight: 700; font-size: 15px; color: #111827;">{{cur.label}}</div>
+        <div style="width: 24px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; width: 66%; background: #AD248C; border-radius: 3px;"></div>
+        </div>
+        <div style="font-weight: 500; font-size: 11.5px; color: #6B7280; margin-top: 7px; margin-bottom: 16px;">Step 2 of 3 &middot; Cover for what?</div>
+
+        <div style="display: flex; align-items: center; gap: 9px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 12px; padding: 10px 12px; margin-bottom: 16px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M11 18a7 7 0 100-14 7 7 0 000 14z"></path><path d="M16.2 16.2L21 21"></path></svg>
+          <div style="font-size: 13px; color: #9CA3AF;">Search a trade</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{trades}}" as="t" hint-placeholder-count="12">
+            <div class="gg-tap" onClick="{{ t.pick }}" style="display: flex; align-items: center; gap: 12px; padding: 13px 12px; border-radius: 12px; background: {{t.bg}};">
+              <div style="width: 30px; height: 30px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; background: {{t.tint}};">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{t.fg}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d1}}"></path><path d="{{t.d2}}"></path></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; font-size: 13.5px; color: {{t.tx}};">{{t.label}}</div>
+              </div>
+              <div style="font-size: 10.5px; color: #9CA3AF;">{{t.group}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; align-items: flex-start; padding: 13px 14px; background: #FEF7EC; border-radius: 14px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B0532A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 3.5L22 20H2z"></path><path d="M12 10v4M12 17.2v.2"></path></svg>
+          <div style="font-size: 11.5px; color: #8A4520; line-height: 17px;">The cost of one list for everyone: a cafe owner scrolls past Mehndi and Videography every single time they post.</div>
+        </div>
+        <div style="height: 12px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { screen: 'grid', shape: 'shift', trade: null };
+  }
+
+  shapesData() {
+    return [
+      { key: 'shift', label: 'Cover a shift', tint: '#FCE9F1', fg: '#A32468',
+        d1: 'M12 21a9 9 0 100-18 9 9 0 000 18z', d2: 'M12 7v5l3.4 2',
+        eg: 'Someone dropped out. Today or tomorrow, a fixed window.' },
+      { key: 'oneoff', label: 'One-off task', tint: '#F3EAF6', fg: '#7B3FA0',
+        d1: 'M4 6.5h16v13H4z', d2: 'M8 12l2.5 2.5L16 9',
+        eg: 'Moving, a deep clean, an errand. Done when it is done.' },
+      { key: 'pro', label: 'Book a pro', tint: '#E9F1F4', fg: '#2B6E86',
+        d1: 'M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z', d2: 'M8.8 12.2l2.4 2.4 4-4.6',
+        eg: 'Tutor, electrician, photographer. Proof required.' },
+      { key: 'regular', label: 'Regular help', tint: '#FAEBE4', fg: '#B0532A',
+        d1: 'M4 6.5h16v14H4z', d2: 'M4 10.5h16M8.5 4v4M15.5 4v4',
+        eg: 'Same slot every week. One person you keep.' }
+    ];
+  }
+
+  tradesData() {
+    return [
+      { label: 'Kitchen help', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M4 10h16v4a5 5 0 01-5 5H9a5 5 0 01-5-5z', d2: 'M8 10V6.5M12 10V5.5M16 10V6.5' },
+      { label: 'Event staff', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M2.5 15.5h19', d2: 'M5 15.5a7 7 0 0114 0M12 5.2v3.3' },
+      { label: 'Delivery', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M6.5 18.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18 18.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z', d2: 'M9 16h6.5M4 16H3v-3.5h6l3-6h2.5M14.5 6.5H18l1.5 9' },
+      { label: 'Cleaning', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M9 8h5.5a2 2 0 012 2v9a2 2 0 01-2 2H9a2 2 0 01-2-2v-9a2 2 0 012-2z', d2: 'M9 8V4.5h4M13 6.5h3.5l2-2' },
+      { label: 'Moving', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M12 2.8l8 4.2v10L12 21.2 4 17V7z', d2: 'M4 7l8 4.2L20 7M12 11.2v10' },
+      { label: 'Errands', group: 'Everyday', tint: '#F1F0EE', fg: '#6B7280', d1: 'M6 8h12l-1 12H7z', d2: 'M9 8V5.5a3 3 0 016 0V8' },
+      { label: 'Makeup', group: 'Beauty', tint: '#FBE9F4', fg: '#AD248C', d1: 'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z', d2: '' },
+      { label: 'Mehndi', group: 'Beauty', tint: '#FBE9F4', fg: '#AD248C', d1: 'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z', d2: '' },
+      { label: 'Hair &amp; grooming', group: 'Beauty', tint: '#FBE9F4', fg: '#AD248C', d1: 'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z', d2: '' },
+      { label: 'South Indian cook', group: 'Cooking', tint: '#FDEFE7', fg: '#B65B25', d1: 'M7 3v8M5 3v4a2 2 0 004 0V3M7 11v10', d2: 'M17 3c-1.4 0-2.4 1.8-2.4 4.5 0 2 .9 3.2 2.4 3.5v10' },
+      { label: 'Baking', group: 'Cooking', tint: '#FDEFE7', fg: '#B65B25', d1: 'M7 3v8M5 3v4a2 2 0 004 0V3M7 11v10', d2: 'M17 3c-1.4 0-2.4 1.8-2.4 4.5 0 2 .9 3.2 2.4 3.5v10' },
+      { label: 'Videography', group: 'Media', tint: '#EAF0FB', fg: '#2F55D4', d1: 'M3 8.5A2.5 2.5 0 015.5 6h1.9l1.3-2h6.6l1.3 2h1.9A2.5 2.5 0 0121 8.5v9A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5z', d2: 'M12 16.5a4 4 0 100-8 4 4 0 000 8z' },
+      { label: 'Electrical', group: 'Repairs', tint: '#E9F3EE', fg: '#2F855A', d1: 'M13 2.5L5 13.5h6l-1 8 8-11h-6z', d2: '' },
+      { label: 'Maths tuition', group: 'Tutoring', tint: '#EEF0FE', fg: '#4338CA', d1: 'M12 4L22 9L12 14L2 9Z', d2: 'M6 11v5c0 1.6 2.7 3 6 3s6-1.4 6-3v-5' }
+    ];
+  }
+
+  renderVals() {
+    const st = this.state;
+    const self = this;
+    const rows = this.shapesData();
+    const cur = rows.find(function (r) { return r.key === st.shape; }) || rows[0];
+
+    const shapes = rows.map(function (r) {
+      return Object.assign({}, r, { open: function () { self.setState({ screen: 'narrow', shape: r.key }); } });
+    });
+
+    const trades = this.tradesData().map(function (t) {
+      const on = st.trade === t.label;
+      return Object.assign({}, t, {
+        bg: on ? 'rgba(173,36,140,0.08)' : 'transparent',
+        tx: on ? '#AD248C' : '#111827',
+        pick: function () { self.setState({ trade: t.label }); }
+      });
+    });
+
+    return {
+      isGrid: st.screen === 'grid',
+      isNarrow: st.screen === 'narrow',
+      shapes: shapes,
+      trades: trades,
+      cur: cur,
+      back: function () { self.setState({ screen: 'grid' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

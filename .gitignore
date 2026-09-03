@@ -44,3 +44,6 @@ dist/
 node_modules/
 .env
 dist/
+
+# Seeded design-canvas output — regenerated from the .dc.html sources beside it
+design/**/gigground-*.html

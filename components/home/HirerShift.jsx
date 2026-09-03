@@ -1,13 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useFocusEffect } from "expo-router";
-import { View, Text, ScrollView, Pressable, StyleSheet, RefreshControl } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet, RefreshControl, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { Skeleton, FadeIn } from "../ui";
 import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
-import { useMode } from "../../lib/ModeContext";
+import { useWash } from "../../lib/ModeContext";
+import ModeSwitch from "./ModeSwitch";
 import { useC } from "../../lib/ThemeContext";
 import { gigsAPI, notificationsAPI, applicantsAPI } from "../../lib/api";
 import { FJ, FS, money } from "../../lib/theme";
@@ -29,6 +30,8 @@ const HIRE = {
   track: "#39072C", bell: "#D861AA", badgeBg: "#FFD5EE", badgeTx: "#780053",
   avatar: "#751E5F", pageBg: "#F3ECF1",
 };
+const AnimatedSafeArea = Animated.createAnimatedComponent(SafeAreaView);
+
 const FILLED_STATUSES = ["confirmed", "in_shift", "done"];
 
 // Deterministic 4-digit arrival code so it is stable per gig across renders.
@@ -41,8 +44,7 @@ const codeFor = (id) => {
 export default function HirerShift() {
   const router = useRouter();
   const { user } = useAuth();
-  const { feedZone } = useLocation();
-  const { setMode } = useMode();
+  const { feedZone, activeCity } = useLocation();
   const C = useC();
   const s = makeStyles(C);
 
@@ -64,7 +66,7 @@ export default function HirerShift() {
   const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
 
   const name = user?.name || "there";
-  const zone = feedZone || "Chennai";
+  const zone = feedZone || activeCity;
   const posted = myGigs || [];
 
   // The gig that needs attention: an unfilled one first, else the most recent.
@@ -96,10 +98,15 @@ export default function HirerShift() {
   });
   bench.sort((x, y) => y.shifts - x.shifts);
 
+  // Same pair, same direction as HomeShift — that identity is what lets the
+  // colour carry across the swap instead of jumping.
+  const washPageBg = useWash("#F0F2F6", HIRE.pageBg);
+  const pageBg = C.dark ? C.bg : washPageBg;
+
   const totalApplicants = Object.values(byGig).reduce((n, l) => n + l.length, 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: C.dark ? C.bg : HIRE.pageBg }} edges={["top"]}>
+    <AnimatedSafeArea style={{ flex: 1, backgroundColor: pageBg }} edges={["top"]}>
       <View style={s.header}>
         <Text style={s.name} numberOfLines={1}>{name}</Text>
         <Pressable onPress={() => router.push("/modals/notifications")} style={[s.bell, { backgroundColor: HIRE.bell }]}>
@@ -108,14 +115,7 @@ export default function HirerShift() {
         </Pressable>
       </View>
 
-      <View style={s.segWrap}>
-        <View style={[s.segTrack, { backgroundColor: HIRE.track }]}>
-          <Pressable style={s.segBtn} onPress={() => setMode("working")}>
-            <Text style={[s.segTxt, { color: "rgba(255,255,255,0.55)" }]}>Working</Text>
-          </Pressable>
-          <View style={s.segBtn}><Text style={[s.segTxt, { color: "#fff" }]}>Hiring</Text></View>
-        </View>
-      </View>
+      <ModeSwitch />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -252,9 +252,9 @@ export default function HirerShift() {
             <Ionicons name="trending-up-outline" size={15} color={HIRE.accent} />
             <Text style={s.quickTxt}>Boost a gig</Text>
           </Pressable>
-          <Pressable style={s.quick} onPress={() => router.push("/modals/refer?mode=invite")}>
-            <Ionicons name="person-add-outline" size={15} color={HIRE.accent} />
-            <Text style={s.quickTxt}>Invite a worker</Text>
+          <Pressable style={s.quick} onPress={() => router.push("/modals/workers-map")}>
+            <Ionicons name="map-outline" size={15} color={HIRE.accent} />
+            <Text style={s.quickTxt}>Find workers</Text>
           </Pressable>
         </View>
 
@@ -344,7 +344,7 @@ export default function HirerShift() {
           </Text>
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </AnimatedSafeArea>
   );
 }
 
@@ -353,11 +353,6 @@ const makeStyles = (C) => StyleSheet.create({
   name: { flex: 1, fontFamily: FJ.xbold, fontSize: 21, color: C.text, letterSpacing: -0.4 },
   bell: { width: 34, height: 34, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   bellDot: { position: "absolute", top: 6, right: 6, width: 8, height: 8, borderRadius: 4, backgroundColor: "#E62B34", borderWidth: 1.5 },
-
-  segWrap: { paddingHorizontal: 20, paddingBottom: 10 },
-  segTrack: { flexDirection: "row", borderRadius: 99, padding: 4 },
-  segBtn: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 8, borderRadius: 99 },
-  segTxt: { fontFamily: FJ.bold, fontSize: 13 },
 
   hero: { borderRadius: 20, padding: 18, marginBottom: 10, overflow: "hidden" },
   heroRing: { position: "absolute", right: -44, top: -44, width: 170, height: 170, borderRadius: 85, borderWidth: 1, borderColor: "rgba(255,255,255,0.07)" },

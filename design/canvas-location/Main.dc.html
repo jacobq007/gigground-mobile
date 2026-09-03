@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #4338CA; } a:hover { color: #312A9E; }
+    .tap { cursor: pointer; user-select: none; }
+    .hd { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; }
+    .jk { font-family: "Plus Jakarta Sans", sans-serif; }
+    .spin { animation: spin 900ms linear infinite; transform-origin: 50% 50%; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .breathe { animation: breathe 2.6s ease-in-out infinite; transform-origin: 50% 50%; }
+    @keyframes breathe { 0%,100% { opacity: .5; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.04); } }
+    .drop { animation: drop 2.6s cubic-bezier(.34,1.4,.5,1) infinite; }
+    @keyframes drop { 0%,100% { transform: translateY(0); } 45% { transform: translateY(-7px); } }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FAFAF9; position: relative; overflow: hidden; display: flex; flex-direction: column;">
+
+  <div style="padding: 16px 20px 0;">
+    <div class="tap" style="width: 36px; height: 36px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; align-items: center; justify-content: center;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </div>
+  </div>
+
+  <div style="padding: 22px 26px 0;">
+    <div class="hd" style="font-size: 27px; line-height: 33px; color: #111827; letter-spacing: -0.7px;">What&rsquo;s your location?</div>
+    <div style="font-size: 14px; line-height: 21px; color: #6B7280; margin-top: 9px;">{{sub}}</div>
+  </div>
+
+  <div style="flex: 1; position: relative; margin-top: 6px;">
+
+    <svg viewBox="0 0 390 400" width="390" height="400" style="position: absolute; left: 0; top: 0; opacity: {{mapOp}};">
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="52%" r="42%">
+          <stop offset="0%" stop-color="#4338CA" stop-opacity="0.30"></stop>
+          <stop offset="60%" stop-color="#4338CA" stop-opacity="0.10"></stop>
+          <stop offset="100%" stop-color="#4338CA" stop-opacity="0"></stop>
+        </radialGradient>
+        <linearGradient id="fadeout" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="55%" stop-color="#FAFAF9" stop-opacity="0"></stop>
+          <stop offset="100%" stop-color="#FAFAF9" stop-opacity="1"></stop>
+        </linearGradient>
+      </defs>
+
+      <ellipse cx="195" cy="208" rx="180" ry="120" fill="url(#glow)"></ellipse>
+
+      <sc-for list="{{roads}}" as="r" hint-placeholder-count="4">
+        <polygon points="{{r.pts}}" fill="#EDECE9"></polygon>
+      </sc-for>
+
+      <sc-for list="{{blocks}}" as="b" hint-placeholder-count="18">
+        <g>
+          <polygon points="{{b.left}}" fill="{{b.cLeft}}"></polygon>
+          <polygon points="{{b.right}}" fill="{{b.cRight}}"></polygon>
+          <polygon points="{{b.top}}" fill="{{b.cTop}}"></polygon>
+        </g>
+      </sc-for>
+
+      <rect x="0" y="300" width="390" height="100" fill="url(#fadeout)"></rect>
+    </svg>
+
+    <div style="position: absolute; left: 0; right: 0; top: 150px; display: flex; flex-direction: column; align-items: center;">
+      <sc-if value="{{isLocating}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 11px;">
+          <svg class="spin" width="34" height="34" viewBox="0 0 34 34" fill="none">
+            <circle cx="17" cy="17" r="14" stroke="#D6D3D1" stroke-width="3"></circle>
+            <path d="M17 3a14 14 0 0114 14" stroke="#4338CA" stroke-width="3" stroke-linecap="round"></path>
+          </svg>
+          <div class="jk" style="font-size: 13px; font-weight: 700; color: #4B5563;">Finding you&hellip;</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isIdle}}" hint-placeholder-val="{{ false }}">
+        <div class="drop" style="display: flex; flex-direction: column; align-items: center;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <path d="M22 6c-6.1 0-11 4.9-11 11 0 8 11 19 11 19s11-11 11-19c0-6.1-4.9-11-11-11z" fill="#4338CA"></path>
+            <circle cx="22" cy="17" r="4.2" fill="#FFFFFF"></circle>
+          </svg>
+          <div class="breathe" style="width: 46px; height: 13px; border-radius: 23px; background: rgba(67,56,202,0.18); margin-top: -2px;"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isFound}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <path d="M22 6c-6.1 0-11 4.9-11 11 0 8 11 19 11 19s11-11 11-19c0-6.1-4.9-11-11-11z" fill="#4338CA"></path>
+            <circle cx="22" cy="17" r="4.2" fill="#FFFFFF"></circle>
+          </svg>
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 14px; padding: 11px 15px; box-shadow: 0 4px 16px rgba(17,24,39,0.09); display: flex; align-items: center; gap: 10px;">
+            <div style="width: 8px; height: 8px; border-radius: 4px; background: #4338CA;"></div>
+            <div>
+              <div class="jk" style="font-size: 13.5px; font-weight: 800; color: #111827;">Navrangpura</div>
+              <div style="font-size: 11px; color: #6B7280; margin-top: 1px;">Ahmedabad &middot; 34 shifts nearby</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isDenied}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 40px;">
+          <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
+            <path d="M22 6c-6.1 0-11 4.9-11 11 0 8 11 19 11 19s11-11 11-19c0-6.1-4.9-11-11-11z" fill="#9CA3AF"></path>
+            <path d="M17.6 12.6l8.8 8.8M26.4 12.6l-8.8 8.8" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path>
+          </svg>
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 14px; padding: 13px 15px; box-shadow: 0 4px 16px rgba(17,24,39,0.09); text-align: center;">
+            <div class="jk" style="font-size: 13px; font-weight: 800; color: #111827;">Location is off</div>
+            <div style="font-size: 11.5px; color: #6B7280; margin-top: 3px; line-height: 16px;">No problem &mdash; pick your area and we will show shifts around it.</div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="padding: 0 20px 26px;">
+    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 0 6px 14px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z"></path></svg>
+      <div style="font-size: 11.5px; color: #9CA3AF; line-height: 16px;">Used to place you, never to track you. You can change it anytime.</div>
+    </div>
+
+    <div class="tap" onClick="{{ press }}" style="height: 54px; border-radius: 15px; background: {{ctaBg}}; display: flex; align-items: center; justify-content: center; gap: 9px;">
+      <sc-if value="{{ctaSpin}}" hint-placeholder-val="{{ false }}">
+        <svg class="spin" width="17" height="17" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="14" stroke="rgba(255,255,255,0.35)" stroke-width="4"></circle>
+          <path d="M17 3a14 14 0 0114 14" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+      </sc-if>
+      <sc-if value="{{ctaIcon}}" hint-placeholder-val="{{ true }}">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L14.5 21l-2.6-7.9L4 10.5z"></path></svg>
+      </sc-if>
+      <div class="jk" style="font-size: 15px; font-weight: 800; color: #FFFFFF;">{{ctaLabel}}</div>
+    </div>
+
+    <div class="tap" onClick="{{ manual }}" style="height: 48px; display: flex; align-items: center; justify-content: center; margin-top: 4px;">
+      <div class="jk" style="font-size: 14.5px; font-weight: 700; color: #4338CA;">{{secondary}}</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"state":{"editor":"enum","options":["idle","locating","found","denied"],"default":"idle","section":"State"},"$preview":{"width":390,"height":844}}'>
+// Isometric projection for the city. One tile is W2 x H2 half-extents; a block
+// is a 1x1 footprint extruded by `h`. Top face lightest, left face darkest —
+// a single light source from the upper right, so the mass reads without outlines.
+const W2 = 25;
+const H2 = 14.5;
+const OX = 195;
+const OY = 92;
+
+const P = (gx, gy, lift) => [OX + (gx - gy) * W2, OY + (gx + gy) * H2 - (lift || 0)];
+const pts = (arr) => arr.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ");
+
+// gx, gy, height, tone. Tone 0 is plain concrete; 1 is the highlighted core
+// under the glow; 2 is a low structure (sheds, small shops).
+const CITY = [
+  [0, 0, 62, 1], [1, 0, 40, 0], [2, 0, 26, 2], [3, 0, 44, 0],
+  [0, 1, 34, 0], [1, 1, 74, 1], [2, 1, 30, 2], [3, 1, 52, 0],
+  [0, 2, 46, 0], [1, 2, 28, 2], [2, 2, 58, 1], [3, 2, 32, 0],
+  [0, 3, 24, 2], [1, 3, 50, 0], [2, 3, 36, 0], [3, 3, 66, 1],
+  [-1, 0, 30, 0], [-1, 1, 48, 0], [-1, 2, 22, 2], [-1, 3, 38, 0],
+  [0, 4, 42, 0], [1, 4, 26, 2], [2, 4, 46, 0], [3, 4, 28, 2],
+  [4, 1, 34, 0], [4, 2, 24, 2], [4, 3, 40, 0],
+  [-2, 1, 26, 2], [-2, 2, 36, 0], [-2, 3, 22, 2]
+];
+
+const TONES = {
+  0: { top: "#D9D7D2", right: "#BFBCB6", left: "#A8A49D" },
+  1: { top: "#C9C7E8", right: "#AEABD8", left: "#918DC4" },
+  2: { top: "#E3E1DC", right: "#CCC9C3", left: "#B5B1AA" }
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { override: null };
+  }
+
+  renderVals() {
+    const self = this;
+    const st = this.state.override || this.props.state || "idle";
+
+    // Ground plates between the block rows, so the mass sits on something.
+    const roads = [
+      { pts: pts([P(-2.2, 4.2), P(4.4, 4.2), P(4.4, 4.6), P(-2.2, 4.6)]) },
+      { pts: pts([P(-2.2, -0.5), P(4.4, -0.5), P(4.4, -0.2), P(-2.2, -0.2)]) }
+    ];
+
+    // Painter's algorithm: farthest tile first, so nearer blocks overlap it.
+    const blocks = CITY.slice().sort(function (a, b) {
+      return (a[0] + a[1]) - (b[0] + b[1]);
+    }).map(function (b) {
+      const gx = b[0], gy = b[1], h = b[2];
+      const t = TONES[b[3]] || TONES[0];
+      const a0 = P(gx, gy), b0 = P(gx + 1, gy), c0 = P(gx + 1, gy + 1), d0 = P(gx, gy + 1);
+      const a1 = P(gx, gy, h), b1 = P(gx + 1, gy, h), c1 = P(gx + 1, gy + 1, h), d1 = P(gx, gy + 1, h);
+      return {
+        top: pts([a1, b1, c1, d1]),
+        left: pts([d0, c0, c1, d1]),
+        right: pts([c0, b0, b1, c1]),
+        cTop: t.top, cLeft: t.left, cRight: t.right
+      };
+    });
+
+    const COPY = {
+      idle: {
+        sub: "We need it to show you shifts you can actually walk or ride to.",
+        cta: "Use current location", secondary: "Enter location manually"
+      },
+      locating: {
+        sub: "We need it to show you shifts you can actually walk or ride to.",
+        cta: "Finding you…", secondary: "Enter location manually"
+      },
+      found: {
+        sub: "Found you. This is where your shifts will be measured from.",
+        cta: "Continue with Navrangpura", secondary: "Pick a different area"
+      },
+      denied: {
+        sub: "You said no to location, which is fine. Choose your area instead.",
+        cta: "Try location again", secondary: "Choose my area"
+      }
+    };
+    const copy = COPY[st] || COPY.idle;
+
+    return {
+      roads: roads,
+      blocks: blocks,
+      isIdle: st === "idle",
+      isLocating: st === "locating",
+      isFound: st === "found",
+      isDenied: st === "denied",
+      mapOp: st === "denied" ? "0.45" : "1",
+      sub: copy.sub,
+      ctaLabel: copy.cta,
+      secondary: copy.secondary,
+      ctaBg: st === "locating" ? "#6B62D8" : "#4338CA",
+      ctaSpin: st === "locating",
+      ctaIcon: st !== "locating",
+      press: function () {
+        if (st === "idle" || st === "denied") { self.setState({ override: "locating" }); setTimeout(function () { self.setState({ override: "found" }); }, 1400); }
+        else if (st === "found") { self.setState({ override: "idle" }); }
+      },
+      manual: function () { self.setState({ override: st === "denied" ? "idle" : "denied" }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

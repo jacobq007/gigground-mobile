@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "What's your location?", "is_interactive": true }
+  ],
+  "annotations": [
+    { "id": "note-1", "x": 470, "y": 0, "w": 400, "text": "Tap the button: it goes idle - finding you - found, and the secondary link flips to the denied state.\n\nFour states in one screen, matching what onboarding.jsx already tracks (locating / detectedZone / denied)." },
+    { "id": "note-2", "x": 470, "y": 300, "w": 400, "text": "One deliberate change from your reference: the reference is green throughout. Green means money and nothing else in your system, so the CTA and the map glow are indigo #4338CA. Using green here would be the first place in the app where it means something other than rupees." },
+    { "id": "note-3", "x": 470, "y": 560, "w": 400, "text": "The city is drawn, not an asset - plain SVG polygons on an isometric grid, three faces per block. No image to ship, recolours with a token, and stays sharp at any density." }
+  ],
+  "launch": { "view": "canvas" }
+}

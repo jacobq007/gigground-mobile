@@ -1,0 +1,312 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #4338CA; } a:hover { color: #312A9E; }
+    .gg-scroll { overflow-y: auto; scrollbar-width: thin; }
+    .gg-tap { cursor: pointer; user-select: none; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FAFAF9; overflow: hidden; position: relative;">
+
+  <sc-if value="{{isGrid}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        <div style="font-weight: 700; font-size: 15px; color: #111827;">Skills &amp; credentials</div>
+        <div style="width: 22px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="font-size: 13.5px; color: #6B7280; line-height: 20px;">Pick a category to add what you can do. Verified skills get you matched to skilled, better-paid jobs.</div>
+
+        <div style="margin-top: 14px; margin-bottom: 20px;">
+          <div style="height: 6px; background: #F4F3F0; border-radius: 3px; overflow: hidden;">
+            <div style="height: 100%; width: 62%; background: #4338CA; border-radius: 3px;"></div>
+          </div>
+          <div style="font-weight: 500; font-size: 11px; color: #6B7280; margin-top: 6px;">Profile strength 62% &middot; 2 verified skills</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <sc-for list="{{groups}}" as="g" hint-placeholder-count="6">
+            <div class="gg-tap" onClick="{{ g.open }}" style="position: relative; background: #FFFFFF; border-radius: 16px; border: 1px solid #E5E7EB; padding: 15px; min-height: 116px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: {{g.tint}};">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{g.fg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{g.d1}}"></path><path d="{{g.d2}}"></path></svg>
+              </div>
+              <div style="font-weight: 700; font-size: 14px; color: #111827;">{{g.label}}</div>
+              <div style="display: flex; align-items: center; gap: 5px; margin-top: 3px;">
+                <div style="font-weight: 500; font-size: 11.5px; color: {{g.statColor}};">{{g.stat}}</div>
+                <sc-if value="{{g.verified}}" hint-placeholder-val="{{ true }}">
+                  <div style="width: 16px; height: 16px; border-radius: 8px; background: rgba(67,56,202,0.08); display: flex; align-items: center; justify-content: center;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4338CA" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z"></path></svg>
+                  </div>
+                </sc-if>
+              </div>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; top: 16px; right: 14px;"><path d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; align-items: flex-start; padding: 13px 14px; background: rgba(67,56,202,0.06); border-radius: 14px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4338CA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path><path d="M12 11v6M12 7.4v.2"></path></svg>
+          <div style="font-size: 11.5px; color: #4338CA; line-height: 17px;">A skill is <strong style="font-weight: 700;">yours</strong>. It stays on your profile, gains a level, and is proved once. It is not a job.</div>
+        </div>
+        <div style="height: 8px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isDetail}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; height: 844px;">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F1F0EE;">
+        <div class="gg-tap" onClick="{{ back }}" style="display: flex; align-items: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1C1E26" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4338CA" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{cur.d1}}"></path><path d="{{cur.d2}}"></path></svg>
+          <div style="font-weight: 700; font-size: 15px; color: #111827;">{{cur.label}}</div>
+        </div>
+        <div style="width: 24px;"></div>
+      </div>
+
+      <div class="gg-scroll" style="flex: 1; padding: 18px;">
+        <div style="font-size: 13.5px; color: #6B7280; line-height: 20px;">{{cur.blurb}}</div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 20px 0 8px;">What can you do here?</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{cur.skills}}" as="sk" hint-placeholder-count="5">
+            <div class="gg-tap" onClick="{{ sk.toggle }}" style="padding: 9px 13px; border-radius: 99px; border: 1px solid {{sk.bd}}; background: {{sk.bg}};">
+              <div style="font-weight: 500; font-size: 12.5px; color: {{sk.tx}};">{{sk.chip}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">Your level in each</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{cur.chosen}}" as="c" hint-placeholder-count="2">
+            <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-weight: 700; font-size: 13.5px; color: #111827;">{{c.label}}</div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 12px; color: #6B7280;">{{c.years}}</div>
+              </div>
+              <div style="display: flex; gap: 5px; margin-top: 11px;">
+                <sc-for list="{{c.levels}}" as="lv" hint-placeholder-count="3">
+                  <div class="gg-tap" onClick="{{ lv.pick }}" style="flex: 1; text-align: center; padding: 9px 0; border-radius: 9px; border: 1px solid {{lv.bd}}; background: {{lv.bg}};">
+                    <div style="font-weight: 500; font-size: 12px; color: {{lv.tx}};">{{lv.label}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">Proof</div>
+        <div class="gg-tap" onClick="{{ toggleProof }}" style="background: #FFFFFF; border: 1px solid {{proofBd}}; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 36px; height: 36px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; background: {{proofTint}};">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{proofFg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z"></path><path d="{{proofTick}}"></path></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 13px; color: #111827;">{{cur.proofLabel}}</div>
+            <div style="font-size: 11.5px; color: #6B7280; margin-top: 2px; line-height: 16px;">{{proofSub}}</div>
+          </div>
+          <div style="font-weight: 500; font-size: 12.5px; color: #4338CA;">{{proofCta}}</div>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">{{cur.extraLabel}}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{cur.tags}}" as="t" hint-placeholder-count="7">
+            <div class="gg-tap" onClick="{{ t.toggle }}" style="padding: 9px 13px; border-radius: 99px; border: 1px solid {{t.bd}}; background: {{t.bg}};">
+              <div style="font-weight: 500; font-size: 12.5px; color: {{t.tx}};">{{t.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-weight: 500; font-size: 12px; color: #6B7280; margin: 22px 0 8px;">{{cur.modeLabel}}</div>
+        <div style="display: flex; gap: 5px;">
+          <sc-for list="{{cur.modes}}" as="m" hint-placeholder-count="3">
+            <div class="gg-tap" onClick="{{ m.pick }}" style="flex: 1; text-align: center; padding: 11px 4px; border-radius: 9px; border: 1px solid {{m.bd}}; background: {{m.bg}};">
+              <div style="font-weight: 500; font-size: 11.5px; color: {{m.tx}};">{{m.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 24px; background: #4338CA; border-radius: 14px; padding: 15px; text-align: center;">
+          <div style="font-weight: 700; font-size: 14px; color: #FFFFFF;">Save</div>
+        </div>
+        <div style="height: 12px;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: 'grid',
+      group: 'tutoring',
+      picked: { maths: 'expert', english: 'experienced' },
+      proof: true,
+      tags: ['Class 6–10', 'CBSE'],
+      mode: 'Online'
+    };
+  }
+
+  data() {
+    return [
+      { key: 'tutoring', label: 'Tutoring', tint: '#EEF0FE', fg: '#4338CA', stat: '2 added', verified: true,
+        d1: 'M12 4L22 9L12 14L2 9Z', d2: 'M6 11v5c0 1.6 2.7 3 6 3s6-1.4 6-3v-5',
+        blurb: 'Add the subjects you teach. Proof unlocks paid tuition matches.',
+        proofLabel: 'Degree / teaching certificate',
+        skills: [['maths', 'Maths'], ['science', 'Science'], ['english', 'Spoken English'], ['coding', 'Coding'], ['music', 'Music']],
+        extraLabel: 'Boards and levels you teach',
+        tags: ['Class 1–5', 'Class 6–10', 'Class 11–12', 'College', 'CBSE', 'State board', 'ICSE'],
+        modeLabel: 'How do you teach?', modes: ['At their home', 'Online', 'My place'] },
+      { key: 'cooking', label: 'Home cooking', tint: '#FDEFE7', fg: '#B65B25', stat: '1 added', verified: false,
+        d1: 'M7 3v8M5 3v4a2 2 0 004 0V3M7 11v10', d2: 'M17 3c-1.4 0-2.4 1.8-2.4 4.5 0 2 .9 3.2 2.4 3.5v10',
+        blurb: 'Pick the cuisines you cook and how you like to work.',
+        proofLabel: 'Food-safety / FSSAI (optional)',
+        skills: [['south_indian', 'South Indian'], ['north_indian', 'North Indian'], ['baking', 'Baking'], ['tiffin', 'Tiffin / meal prep']],
+        extraLabel: 'Meals you take on', tags: ['Breakfast', 'Lunch', 'Dinner', 'Party orders', 'Daily tiffin'],
+        modeLabel: 'Where do you cook?', modes: ['Their kitchen', 'My kitchen'] },
+      { key: 'beauty', label: 'Beauty &amp; wellness', tint: '#FBE9F4', fg: '#AD248C', stat: 'Add', verified: false,
+        d1: 'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z', d2: 'M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z',
+        blurb: 'List your services. A certificate helps you get booked faster.',
+        proofLabel: 'Certification (optional)',
+        skills: [['hair', 'Hair &amp; grooming'], ['makeup', 'Makeup'], ['mehndi', 'Mehndi'], ['massage', 'Massage']],
+        extraLabel: 'Who you serve', tags: ['Women', 'Men', 'Kids', 'Bridal'],
+        modeLabel: 'Where do you work?', modes: ['Their home', 'At a salon'] },
+      { key: 'repairs', label: 'Home repairs', tint: '#E9F3EE', fg: '#2F855A', stat: '1 added', verified: true,
+        d1: 'M15.5 3.5a5 5 0 00-4.6 6.9L3.6 17.7a1.9 1.9 0 002.7 2.7l7.3-7.3a5 5 0 006.9-4.6 5 5 0 00-.4-2l-3.2 3.2-2.6-2.6 3.2-3.2a5 5 0 00-2-.4z', d2: '',
+        blurb: 'Add your trades. A licence or ID is required for trade jobs.',
+        proofLabel: 'Trade licence / ID proof',
+        skills: [['electrical', 'Electrical'], ['plumbing', 'Plumbing'], ['carpentry', 'Carpentry'], ['appliance', 'Appliance repair'], ['painting', 'Painting']],
+        extraLabel: 'What you handle', tags: ['Repairs', 'New installation', 'Emergency call-outs'],
+        modeLabel: 'Tools', modes: ['My own tools', 'They provide'] },
+      { key: 'media', label: 'Photography &amp; media', tint: '#EAF0FB', fg: '#2F55D4', stat: 'Add', verified: false,
+        d1: 'M3 8.5A2.5 2.5 0 015.5 6h1.9l1.3-2h6.6l1.3 2h1.9A2.5 2.5 0 0121 8.5v9A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5z', d2: 'M12 16.5a4 4 0 100-8 4 4 0 000 8z',
+        blurb: 'Show what you shoot. A portfolio is your strongest proof.',
+        proofLabel: 'Portfolio link',
+        skills: [['photography', 'Photography'], ['videography', 'Videography'], ['editing', 'Photo/video editing']],
+        extraLabel: 'You cover', tags: ['Events', 'Weddings', 'Portraits', 'Product', 'Reels'],
+        modeLabel: 'Gear', modes: ['My own gear', 'Rented / theirs'] },
+      { key: 'general', label: 'Everyday help', tint: '#F1F0EE', fg: '#6B7280', stat: '4 added', verified: false,
+        d1: 'M12 2.8l8 4.2v10L12 21.2 4 17V7z', d2: 'M4 7l8 4.2L20 7M12 11.2v10',
+        blurb: 'Tick the everyday jobs you are happy to take. No proof needed.',
+        proofLabel: 'No proof needed here',
+        skills: [['delivery', 'Delivery'], ['moving', 'Moving'], ['cleaning', 'Cleaning'], ['errands', 'Errands'], ['event', 'Event staff'], ['kitchen_help', 'Kitchen help']],
+        extraLabel: 'How far will you travel?', tags: ['Under 2 km', 'Up to 5 km', 'Up to 10 km', 'Anywhere in city'],
+        modeLabel: 'Transport', modes: ['I have a bike', 'Bus / train', 'On foot'] }
+    ];
+  }
+
+  renderVals() {
+    const rows = this.data();
+    const st = this.state;
+    const cur = rows.find(function (r) { return r.key === st.group; }) || rows[0];
+    const LEVELS = [['new', 'New'], ['experienced', 'Experienced'], ['expert', 'Expert']];
+    const self = this;
+
+    const groups = rows.map(function (r) {
+      return Object.assign({}, r, {
+        statColor: r.stat === 'Add' ? '#4338CA' : '#6B7280',
+        open: function () { self.setState({ screen: 'detail', group: r.key }); }
+      });
+    });
+
+    const skills = cur.skills.map(function (pair) {
+      const k = pair[0], label = pair[1];
+      const on = !!st.picked[k];
+      return {
+        chip: (on ? '✓  ' : '+  ') + label,
+        bg: on ? '#4338CA' : '#FFFFFF',
+        bd: on ? '#4338CA' : '#E5E7EB',
+        tx: on ? '#FFFFFF' : '#111827',
+        toggle: function () {
+          const next = Object.assign({}, st.picked);
+          if (next[k]) { delete next[k]; } else { next[k] = 'experienced'; }
+          self.setState({ picked: next });
+        }
+      };
+    });
+
+    const chosen = cur.skills.filter(function (p) { return !!st.picked[p[0]]; }).map(function (pair) {
+      const k = pair[0], label = pair[1];
+      const lvl = st.picked[k];
+      return {
+        label: label,
+        years: lvl === 'expert' ? '6 yrs' : lvl === 'experienced' ? '2 yrs' : 'under a year',
+        levels: LEVELS.map(function (l) {
+          const on = lvl === l[0];
+          return {
+            label: l[1],
+            bg: on ? 'rgba(67,56,202,0.08)' : '#FFFFFF',
+            bd: on ? '#4338CA' : '#E5E7EB',
+            tx: on ? '#4338CA' : '#6B7280',
+            pick: function () {
+              const next = Object.assign({}, st.picked);
+              next[k] = l[0];
+              self.setState({ picked: next });
+            }
+          };
+        })
+      };
+    });
+
+    const tags = cur.tags.map(function (label) {
+      const on = st.tags.indexOf(label) >= 0;
+      return {
+        label: label,
+        bg: on ? 'rgba(67,56,202,0.08)' : '#FFFFFF',
+        bd: on ? '#4338CA' : '#E5E7EB',
+        tx: on ? '#4338CA' : '#111827',
+        toggle: function () {
+          self.setState({ tags: on ? st.tags.filter(function (x) { return x !== label; }) : st.tags.concat([label]) });
+        }
+      };
+    });
+
+    const modes = cur.modes.map(function (label) {
+      const on = st.mode === label;
+      return {
+        label: label,
+        bg: on ? 'rgba(67,56,202,0.08)' : '#FFFFFF',
+        bd: on ? '#4338CA' : '#E5E7EB',
+        tx: on ? '#4338CA' : '#6B7280',
+        pick: function () { self.setState({ mode: label }); }
+      };
+    });
+
+    return {
+      isGrid: st.screen === 'grid',
+      isDetail: st.screen === 'detail',
+      groups: groups,
+      cur: Object.assign({}, cur, { skills: skills, chosen: chosen, tags: tags, modes: modes }),
+      back: function () { self.setState({ screen: 'grid' }); },
+      toggleProof: function () { self.setState({ proof: !st.proof }); },
+      proofBd: st.proof ? '#4338CA' : '#E5E7EB',
+      proofTint: st.proof ? 'rgba(67,56,202,0.08)' : '#F4F3F0',
+      proofFg: st.proof ? '#4338CA' : '#9CA3AF',
+      proofTick: st.proof ? 'M8.8 11.9l2.3 2.3 4-4.6' : '',
+      proofSub: st.proof ? 'Verified. Shown as a shield on your profile.' : 'Not uploaded. You can still take unskilled work.',
+      proofCta: st.proof ? 'Replace' : 'Upload'
+    };
+  }
+}
+</script>
+</body>
+</html>

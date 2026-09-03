@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 850, "h": 660, "title": "A — Floating glass", "is_interactive": true },
+    { "file": "DirB.dc.html", "x": 950, "y": 0, "w": 850, "h": 660, "title": "B — Solid mode slab", "is_interactive": true },
+    { "file": "DirC.dc.html", "x": 1900, "y": 0, "w": 850, "h": 660, "title": "C — Quiet bead", "is_interactive": true },
+    { "file": "DirD.dc.html", "x": 0, "y": 790, "w": 850, "h": 660, "title": "D — Dock", "is_interactive": true },
+    { "file": "DirE.dc.html", "x": 950, "y": 790, "w": 850, "h": 660, "title": "E — Editorial rule", "is_interactive": true },
+    { "file": "DirF.dc.html", "x": 1900, "y": 790, "w": 850, "h": 660, "title": "F — Live strip", "is_interactive": true },
+    { "file": "WhatChanges.dc.html", "x": 0, "y": 1580, "w": 1800, "h": 720, "title": "What changes between modes" }
+  ],
+  "annotations": [
+    { "id": "note-1", "x": 0, "y": -170, "w": 660, "text": "Six directions for the mode nav. Every bar is live — tap the tabs, tap the Online control, tap the handle on D.\n\nThe constant across all six: Working gets Jobs + an Online switch; Hiring gets Workers + Post. Only the feeling changes." },
+    { "id": "note-2", "x": 2800, "y": 0, "w": 340, "text": "A is the transparent one you asked for — blurred glass, spring-morphing pill, a pulsing hairline along the top edge while you are online." },
+    { "id": "note-3", "x": 2800, "y": 790, "w": 340, "text": "D is the only one where the bar holds content, not just destinations. Tap the handle to collapse it." },
+    { "id": "note-4", "x": 1900, "y": 1580, "w": 420, "text": "The reference sheet below is the argument, if you want to take one direction to build: which slot carries what, per mode, and why." }
+  ],
+  "launch": { "view": "canvas" }
+}

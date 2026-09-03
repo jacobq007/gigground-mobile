@@ -7,11 +7,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { Skeleton, FadeIn } from "../ui";
 import { useAuth } from "../../lib/AuthContext";
 import { useLocation } from "../../lib/LocationContext";
-import { useMode } from "../../lib/ModeContext";
+import { useOnline } from "../../lib/OnlineContext";
+import { useWash } from "../../lib/ModeContext";
+import ModeSwitch from "./ModeSwitch";
 import { useC } from "../../lib/ThemeContext";
-import { gigsAPI, notificationsAPI, applicationsAPI, matchesAPI } from "../../lib/api";
+import { gigsAPI, notificationsAPI, applicationsAPI, matchesAPI, invitesAPI } from "../../lib/api";
 import { sortGigsByZone } from "../../lib/gigSort";
-import { FJ, FS, money } from "../../lib/theme";
+import { F, FJ, FS, money } from "../../lib/theme";
 
 // ── Shift-board home (worker side) ────────────────────────────────────────────
 // Three states of ONE screen, never three screens. The day bar and the gig feed
@@ -29,6 +31,8 @@ const WORK = {
   track: "#172259", bell: "#EBB353", badgeBg: "#D8E8FF", badgeTx: "#0B288E",
   statBg: "#E9EBF1", avatar: "#1D223C", pageBg: "#F0F2F6",
 };
+const AnimatedSafeArea = Animated.createAnimatedComponent(SafeAreaView);
+
 const CO = { muted: "#66696F", pay: "#15803D", live: "#33A340", urgent: "#E62B34", hold: "#EBB353" };
 
 // Radius grows while the zone is dry — the geographic half of wave dispatch.
@@ -84,8 +88,7 @@ function RadiusRings({ radius }) {
 export default function HomeShift() {
   const router = useRouter();
   const { user } = useAuth();
-  const { feedZone } = useLocation();
-  const { setMode } = useMode();
+  const { feedZone, activeCity } = useLocation();
   const C = useC();
   const s = makeStyles(C);
 
@@ -93,9 +96,13 @@ export default function HomeShift() {
   const [apps, setApps] = useState([]);
   const [unread, setUnread] = useState(0);
   const [matchCount, setMatchCount] = useState(0);
+  const [inviteCount, setInviteCount] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
-  const [online, setOnline] = useState(false);
+  // Online is app-level now: it gates whether this worker can be offered or
+  // accept work at all, and it can switch itself off (idle / ignored offers /
+  // location lost). See lib/OnlineContext.jsx.
+  const { online, offMessage, clearOffReason, toggle: toggleOnlineState, touch } = useOnline();
   const [radius, setRadius] = useState(RADIUS_START);
   const [queue, setQueue] = useState(4);
   const [offer, setOffer] = useState(null);   // the gig currently in the offer bar
@@ -106,16 +113,17 @@ export default function HomeShift() {
   const expandOp = useRef(new Animated.Value(0)).current;
 
   const load = useCallback(async () => {
-    const [g, u, a, mc] = await Promise.all([
+    const [g, u, a, mc, ic] = await Promise.all([
       gigsAPI.getAll(), notificationsAPI.unreadCount(), applicationsAPI.getMy(), matchesAPI.countForMe(),
+      invitesAPI.countForMe(),
     ]);
-    setGigs(g); setUnread(u); setApps(a); setMatchCount(mc);
+    setGigs(g); setUnread(u); setApps(a); setMatchCount(mc); setInviteCount(ic);
   }, []);
   useEffect(() => { load(); }, [load]);
   useFocusEffect(useCallback(() => { applicationsAPI.getMy().then(setApps); }, []));
   const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
 
-  const zone = feedZone || "Chennai";
+  const zone = feedZone || activeCity;
   const name = user?.name || "there";
 
   const sorted = gigs ? sortGigsByZone(gigs, feedZone) : null;
@@ -165,6 +173,7 @@ export default function HomeShift() {
     ]).start();
   }, [barY, barOp]);
 
+  // An offer that came and went without a tap counts against staying online.
   const hideBar = useCallback(() => {
     Animated.parallel([
       Animated.timing(barY, { toValue: 120, duration: 300, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
@@ -180,6 +189,9 @@ export default function HomeShift() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [online, gigs]);
 
+  // The bar slides away on its own after 6s. That is NOT an ignored offer: the
+  // offer itself does not expire, and it stays reachable from the bell and the
+  // feed. Counting it would switch a worker offline for glancing away.
   useEffect(() => {
     if (!offer) return undefined;
     const t = setTimeout(hideBar, 6000);
@@ -189,21 +201,29 @@ export default function HomeShift() {
   const openOffer = () => {
     const g = offer;
     setSeenOffer(true);
+    touch();
     hideBar();
     if (g) router.push(`/(tabs)/jobs/${g.id}`);
   };
 
   const toggleOnline = () => {
-    const next = !online;
-    setOnline(next);
-    if (!next) { setSeenOffer(true); hideBar(); }
+    if (online) { setSeenOffer(true); hideBar(); }
+    clearOffReason();
+    toggleOnlineState();
   };
 
   const feed = dry ? farGigs : nearGigs;
   const preview = feed.slice(0, 4);
 
+  const washPageBg = useWash(WORK.pageBg, "#F3ECF1");
+
+  // The page ground is carried by the shared wash, not switched — so the colour
+  // is still travelling when HirerShift takes over. Dark mode opts out: there is
+  // no per-mode ground there to wash between.
+  const pageBg = C.dark ? C.bg : washPageBg;
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: C.dark ? C.bg : WORK.pageBg }} edges={["top"]}>
+    <AnimatedSafeArea style={{ flex: 1, backgroundColor: pageBg }} edges={["top"]}>
       {/* Header */}
       <View style={s.header}>
         <Text style={s.name} numberOfLines={1}>{name}</Text>
@@ -214,14 +234,7 @@ export default function HomeShift() {
       </View>
 
       {/* Working / Hiring */}
-      <View style={s.segWrap}>
-        <View style={[s.segTrack, { backgroundColor: WORK.track }]}>
-          <View style={s.segBtn}><Text style={[s.segTxt, s.segOn]}>Working</Text></View>
-          <Pressable style={s.segBtn} onPress={() => setMode("hiring")}>
-            <Text style={[s.segTxt, { color: "rgba(255,255,255,0.55)" }]}>Hiring</Text>
-          </Pressable>
-        </View>
-      </View>
+      <ModeSwitch />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -266,16 +279,27 @@ export default function HomeShift() {
               <PulseDot color={WORK.heroNum} on={online} />
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={s.stripT1}>
-                  {!online ? "Go online for offers" : dry ? `Online · nothing in ${zone} yet` : `Online · ${nearGigs.length} nearby`}
+                  {!online ? "You're offline" : dry ? `Online · nothing in ${zone} yet` : `Online · ${nearGigs.length} nearby`}
                 </Text>
-                <Text style={s.stripT2}>
-                  {!online ? "Your day and the feed stay either way" : dry ? "Widening the search for you" : "Offers come straight to you"}
+                <Text style={[s.stripT2, !online && s.stripT2Off]}>
+                  {!online
+                    ? "Turn this on to be offered work"
+                    : dry ? "Widening the search for you" : "Offers come straight to you"}
                 </Text>
               </View>
               <View style={[s.switch, online && s.switchOn]}>
                 <View style={[s.knob, online && s.knobOn]} />
               </View>
             </Pressable>
+
+            {!online ? (
+              <View style={s.offNote}>
+                <Ionicons name="warning-outline" size={14} color="#f59e0b" style={{ marginTop: 1 }} />
+                <Text style={s.offNoteTxt}>
+                  {offMessage || "You cannot be offered or accept work while offline. Your place in the queue resets each time."}
+                </Text>
+              </View>
+            ) : null}
 
             {dry ? (
               <Animated.View style={[s.expand, { opacity: expandOp }]}>
@@ -321,14 +345,40 @@ export default function HomeShift() {
           ))}
         </View>
 
+        {/* Invites — a hirer asked for this worker by name (path B) */}
+        {inviteCount > 0 ? (
+          <Pressable
+            style={[s.card, s.cardAccent, !online && s.cardLocked]}
+            onPress={() => router.push("/modals/invites")}
+          >
+            <View style={s.row}>
+              <View style={[s.matchIcon, { backgroundColor: WORK.avatar }]}>
+                <Ionicons name={online ? "paper-plane" : "lock-closed"} size={15} color="#fff" />
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={s.cardTitle}>{inviteCount} hirer{inviteCount === 1 ? "" : "s"} asked for you</Text>
+                <Text style={s.cardSub}>{online ? "Accept or pass — they picked you off the map." : "Go online to accept"}</Text>
+              </View>
+              <View style={[s.badge, { backgroundColor: WORK.badgeBg }]}>
+                <Text style={[s.badgeTxt, { color: WORK.badgeTx }]}>{inviteCount}</Text>
+              </View>
+            </View>
+          </Pressable>
+        ) : null}
+
         {/* Matches */}
         {matchCount > 0 ? (
-          <Pressable style={[s.card, s.cardAccent]} onPress={() => router.push("/modals/matches")}>
+          <Pressable
+            style={[s.card, s.cardAccent, !online && s.cardLocked]}
+            onPress={() => (online ? router.push("/modals/matches") : toggleOnline())}
+          >
             <View style={s.row}>
-              <View style={[s.matchIcon, { backgroundColor: WORK.accent }]}><Ionicons name="flash" size={16} color="#fff" /></View>
+              <View style={[s.matchIcon, { backgroundColor: WORK.accent }]}>
+                <Ionicons name={online ? "flash" : "lock-closed"} size={16} color="#fff" />
+              </View>
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={s.cardTitle}>{matchCount} job{matchCount === 1 ? "" : "s"} matched to your skills</Text>
-                <Text style={s.cardSub}>Accept or skip. No feed scrolling.</Text>
+                <Text style={s.cardSub}>{online ? "Accept or skip. No feed scrolling." : "Go online to receive offers"}</Text>
               </View>
               <View style={[s.badge, { backgroundColor: WORK.badgeBg }]}>
                 <Text style={[s.badgeTxt, { color: WORK.badgeTx }]}>{matchCount} new</Text>
@@ -409,7 +459,7 @@ export default function HomeShift() {
           </Pressable>
         </Animated.View>
       ) : null}
-    </SafeAreaView>
+    </AnimatedSafeArea>
   );
 }
 
@@ -425,12 +475,6 @@ const makeStyles = (C) => StyleSheet.create({
   name: { flex: 1, fontFamily: FJ.xbold, fontSize: 21, color: C.text, letterSpacing: -0.4 },
   bell: { width: 34, height: 34, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   bellDot: { position: "absolute", top: 6, right: 6, width: 8, height: 8, borderRadius: 4, backgroundColor: CO.urgent, borderWidth: 1.5 },
-
-  segWrap: { paddingHorizontal: 20, paddingBottom: 10 },
-  segTrack: { flexDirection: "row", borderRadius: 99, padding: 4 },
-  segBtn: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 8, borderRadius: 99 },
-  segTxt: { fontFamily: FJ.bold, fontSize: 13 },
-  segOn: { color: "#fff" },
 
   hero: { borderRadius: 20, marginBottom: 12, overflow: "hidden" },
   heroRing: { position: "absolute", right: -44, top: -44, width: 170, height: 170, borderRadius: 85, borderWidth: 1, borderColor: "rgba(255,255,255,0.07)" },
@@ -460,6 +504,10 @@ const makeStyles = (C) => StyleSheet.create({
   stripT2: { fontFamily: FJ.med, fontSize: 10, color: "rgba(255,255,255,0.5)", marginTop: 1 },
   switch: { width: 42, height: 24, borderRadius: 99, backgroundColor: "rgba(255,255,255,0.18)", padding: 2, justifyContent: "center" },
   switchOn: { backgroundColor: WORK.heroNum },
+  stripT2Off: { color: "#F0C871" },
+  offNote: { flexDirection: "row", alignItems: "flex-start", gap: 8, backgroundColor: "#2A1E05", borderWidth: 1, borderColor: "#5C4310", borderRadius: 10, paddingHorizontal: 11, paddingVertical: 10, marginTop: 12 },
+  offNoteTxt: { flex: 1, fontFamily: F.reg, fontSize: 11.5, color: "#F0C871", lineHeight: 17 },
+  cardLocked: { opacity: 0.55 },
   knob: { width: 20, height: 20, borderRadius: 10, backgroundColor: "#fff" },
   knobOn: { alignSelf: "flex-end" },
 

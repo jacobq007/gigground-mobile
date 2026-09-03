@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #3C6AE2; } a:hover { color: #2B4FA8; }
+    .hd { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; }
+    .lb { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; font-size: 9.5px; }
+    .mono { font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+    .cell { padding: 13px 16px; font-size: 12.5px; line-height: 18px; }
+  </style>
+</helmet>
+
+<div style="width: 1800px; height: 720px; background: #FAFAF9; padding: 40px; box-sizing: border-box;">
+
+  <div class="hd" style="font-size: 28px; color: #111827; letter-spacing: -0.5px;">What actually changes between the two modes</div>
+  <div style="font-size: 13.5px; color: #6B7280; line-height: 20px; margin-top: 8px; max-width: 900px;">
+    Right now <span class="mono" style="color: #111827;">TAB_CFG</span> in <span class="mono" style="color: #111827;">app/(tabs)/_layout.jsx</span> holds one route set and swaps a colour. Five destinations, five icons, one relabel. That is a theme, not a mode.
+  </div>
+
+  <div style="display: flex; gap: 32px; margin-top: 26px;">
+
+    <div style="width: 470px; flex: none; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 20px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <div style="width: 22px; height: 22px; border-radius: 7px; background: #FEF2F2; display: flex; align-items: center; justify-content: center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </div>
+        <div class="hd" style="font-size: 15px; color: #111827;">Today</div>
+      </div>
+
+      <div style="margin-top: 18px; border: 1px solid #E5E7EB; border-radius: 14px; overflow: hidden;">
+        <div style="background: #FFFFFF; display: flex; padding: 9px 4px 8px;">
+          <sc-for list="{{oldW}}" as="t" hint-placeholder-count="5">
+            <div style="width: 88px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 40px; height: 26px; border-radius: 9px; background: {{t.pill}}; display: flex; align-items: center; justify-content: center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{t.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d1}}"></path><path d="{{t.d2}}"></path></svg>
+              </div>
+              <div class="lb" style="color: {{t.color}};">{{t.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="height: 1px; background: #E5E7EB;"></div>
+        <div style="background: #FFFFFF; display: flex; padding: 9px 4px 8px;">
+          <sc-for list="{{oldH}}" as="t" hint-placeholder-count="5">
+            <div style="width: 88px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 40px; height: 26px; border-radius: 9px; background: {{t.pill}}; display: flex; align-items: center; justify-content: center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{t.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d1}}"></path><path d="{{t.d2}}"></path></svg>
+              </div>
+              <div class="lb" style="color: {{t.color}};">{{t.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 9px;">
+        <div style="display: flex; gap: 9px; align-items: flex-start;">
+          <div style="width: 5px; height: 5px; border-radius: 3px; background: #9CA3AF; margin-top: 6px; flex: none;"></div>
+          <div style="font-size: 12.5px; color: #6B7280; line-height: 18px;">Accent <span class="mono" style="color: #3C6AE2;">#3C6AE2</span> becomes <span class="mono" style="color: #AD248C;">#AD248C</span></div>
+        </div>
+        <div style="display: flex; gap: 9px; align-items: flex-start;">
+          <div style="width: 5px; height: 5px; border-radius: 3px; background: #9CA3AF; margin-top: 6px; flex: none;"></div>
+          <div style="font-size: 12.5px; color: #6B7280; line-height: 18px;">Pill tint <span class="mono" style="color: #111827;">#D8E8FF</span> becomes <span class="mono" style="color: #111827;">#FFD5EE</span></div>
+        </div>
+        <div style="display: flex; gap: 9px; align-items: flex-start;">
+          <div style="width: 5px; height: 5px; border-radius: 3px; background: #9CA3AF; margin-top: 6px; flex: none;"></div>
+          <div style="font-size: 12.5px; color: #6B7280; line-height: 18px;">One word: &ldquo;My work&rdquo; becomes &ldquo;My gigs&rdquo;</div>
+        </div>
+        <div style="display: flex; gap: 9px; align-items: flex-start; margin-top: 4px; padding: 11px 13px; background: #FEF2F2; border-radius: 12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M12 3.5L22 20H2z"></path><path d="M12 10v4M12 17.2v.2"></path></svg>
+          <div style="font-size: 12px; color: #9B2C2C; line-height: 17px;">And the &ldquo;Post a shift&rdquo; bar is a separate floating element that the tab bar clips &mdash; visible in the screenshot. Folding Post into the bar removes the collision.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 20px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <div style="width: 22px; height: 22px; border-radius: 7px; background: #F0FDF4; display: flex; align-items: center; justify-content: center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+        </div>
+        <div class="hd" style="font-size: 15px; color: #111827;">Proposed &mdash; two route sets, one shared shell</div>
+      </div>
+
+      <div style="margin-top: 18px; border: 1px solid #E5E7EB; border-radius: 14px; overflow: hidden;">
+        <div style="display: flex; background: #F4F3F0;">
+          <div class="cell" style="width: 90px; flex: none; font-weight: 700; color: #6B7280; font-size: 11px; letter-spacing: 0.5px;">SLOT</div>
+          <div class="cell" style="flex: 1; font-weight: 700; color: #3C6AE2; font-size: 11px; letter-spacing: 0.5px;">WORKING</div>
+          <div class="cell" style="flex: 1; font-weight: 700; color: #AD248C; font-size: 11px; letter-spacing: 0.5px;">HIRING</div>
+        </div>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+          <div style="display: flex; border-top: 1px solid #F1F0EE; background: {{r.bg}};">
+            <div class="cell mono" style="width: 90px; flex: none; color: #9CA3AF; font-size: 11.5px;">{{r.slot}}</div>
+            <div class="cell" style="flex: 1; color: #111827;"><strong style="font-weight: 700;">{{r.w}}</strong> <span style="color: #6B7280;">{{r.wSub}}</span></div>
+            <div class="cell" style="flex: 1; color: #111827;"><strong style="font-weight: 700;">{{r.h}}</strong> <span style="color: #6B7280;">{{r.hSub}}</span></div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; gap: 14px; margin-top: 18px;">
+        <div style="flex: 1; padding: 14px 16px; background: rgba(60,106,226,0.06); border-radius: 14px;">
+          <div class="hd" style="font-size: 12.5px; color: #2B4FA8;">Why the worker gets a switch</div>
+          <div style="font-size: 12px; color: #3C6AE2; line-height: 17px; margin-top: 5px;">
+            <span class="mono">lib/OnlineContext.jsx</span> already says it: being online is how you work. It never persists, never turns itself on, and gates every offer. A state that important should not be buried in a modal.
+          </div>
+        </div>
+        <div style="flex: 1; padding: 14px 16px; background: rgba(173,36,140,0.06); border-radius: 14px;">
+          <div class="hd" style="font-size: 12.5px; color: #8A1C6F;">Why the hirer gets a button</div>
+          <div style="font-size: 12px; color: #AD248C; line-height: 17px; margin-top: 5px;">
+            A hirer never browses jobs &mdash; they browse people. <span class="mono">workers-map.jsx</span> and <span class="mono">worker-profile.jsx</span> already exist and the nav cannot reach them today.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1800,"height":720}}'>
+const ICONS = {
+  home: ['M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z', ''],
+  jobs: ['M3 8.5h18v10.5H3z', 'M8.5 8.5V6a1.5 1.5 0 011.5-1.5h4A1.5 1.5 0 0115.5 6v2.5'],
+  work: ['M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z', ''],
+  chat: ['M4 5.5h16v10H9.5L4 19.5z', ''],
+  person: ['M12 12a4 4 0 100-8 4 4 0 000 8z', 'M4.5 20.5c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6']
+};
+
+class Component extends DCLogic {
+  renderVals() {
+    const old = function (accent, pill, third) {
+      const defs = [['home', 'Home'], ['jobs', 'Jobs'], ['work', third], ['chat', 'Chat'], ['person', 'Profile']];
+      return defs.map(function (d, i) {
+        return {
+          label: d[1],
+          d1: ICONS[d[0]][0],
+          d2: ICONS[d[0]][1],
+          color: i === 0 ? accent : '#8A8F98',
+          pill: i === 0 ? pill : 'transparent'
+        };
+      });
+    };
+
+    return {
+      oldW: old('#3C6AE2', '#D8E8FF', 'My work'),
+      oldH: old('#AD248C', '#FFD5EE', 'My gigs'),
+      rows: [
+        { slot: '1', w: 'Home', wSub: 'shift board', h: 'Home', hSub: 'fill state', bg: '#FFFFFF' },
+        { slot: '2', w: 'Jobs', wSub: 'browse shifts to take', h: 'Workers', hSub: 'browse people to book', bg: '#FCFCFB' },
+        { slot: '3', w: 'My work', wSub: 'accepted, today, earnings', h: 'Shifts', hSub: 'posted, applicants, standby', bg: '#FFFFFF' },
+        { slot: '4', w: 'Chat', wSub: '', h: 'Chat', hSub: '', bg: '#FCFCFB' },
+        { slot: '5', w: 'Profile', wSub: 'skills and proof', h: 'Profile', hSub: 'business and bench', bg: '#FFFFFF' },
+        { slot: 'action', w: 'Online', wSub: 'the switch that lets you be offered work', h: 'Post a shift', hSub: 'the only thing that creates supply demand', bg: '#F7F6F4' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
