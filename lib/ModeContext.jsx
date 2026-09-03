@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useRef, useState } from "react";
-import { Animated, Easing, Platform } from "react-native";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Animated, Easing } from "react-native";
 
 // Shared Home intent: "working" (find gigs) vs "hiring" (post gigs).
 // Lives above the tab navigator so both the Home screen and the bottom
@@ -27,11 +27,15 @@ const WASH_MS = 513;
 const PILL_EASING = Easing.bezier(0.2, 0.9, 0.25, 1);
 const WASH_EASING = Easing.bezier(0.22, 1, 0.36, 1);
 
-// The pill is a transform, so it can ride the native driver on a device. On web
-// there is no native animated module: asking for it there does not degrade, it
-// throws out of the press handler — which silently killed the colour animation
-// queued behind it. Colours can never use it, on any platform.
-const PILL_NATIVE = Platform.OS !== "web";
+// Neither track uses the native driver, and the pill's transform is the
+// deliberate part. A native-driven animation binds to the view that is mounted
+// when it starts — and the switch is torn down and rebuilt one frame later,
+// when Home swaps HomeShift for HirerShift. The driven value then goes to a
+// view that no longer exists while the new one sits at the stale JS value, so
+// the pill only appeared to move on a second press. Colours could never use the
+// native driver anyway, so the frame budget is JS-bound regardless: this costs
+// one small transform per frame for 160ms and removes the whole failure mode.
+const NATIVE = false;
 
 export function ModeProvider({ children }) {
   const [mode, setModeState] = useState("working");
@@ -43,21 +47,25 @@ export function ModeProvider({ children }) {
   // travel, so it collapses instead of sliding. Held here it survives the swap.
   const [trackW, setTrackW] = useState(0);
 
-  // 0 = working, 1 = hiring.
-  // Two values, not one, because they run at different speeds — and because
-  // transforms can go on the native driver while colours cannot.
-  const pill = useRef(new Animated.Value(0)).current; // native driver
-  const wash = useRef(new Animated.Value(0)).current; // JS driver (colours)
+  // 0 = working, 1 = hiring. Two values, not one, because they run at
+  // different speeds — that disagreement is the whole effect.
+  const pill = useRef(new Animated.Value(0)).current;
+  const wash = useRef(new Animated.Value(0)).current;
 
-  const setMode = useCallback((next) => {
-    setModeState(next);
-    const to = next === "hiring" ? 1 : 0;
-    Animated.timing(pill, { toValue: to, duration: PILL_MS, easing: PILL_EASING, useNativeDriver: PILL_NATIVE }).start();
-    Animated.timing(wash, { toValue: to, duration: WASH_MS, easing: WASH_EASING, useNativeDriver: false }).start();
-  }, [pill, wash]);
+  // Driven from the mode itself rather than fired inside setMode, and driven
+  // from HERE rather than from the switch. The provider is the only thing in
+  // this path that never unmounts: an animation started by the switch belongs
+  // to a component that React tears down on the very next render, which is what
+  // orphaned it. Started here it simply runs, and whichever switch is mounted
+  // reads the values as they move.
+  useEffect(() => {
+    const to = mode === "hiring" ? 1 : 0;
+    Animated.timing(pill, { toValue: to, duration: PILL_MS, easing: PILL_EASING, useNativeDriver: NATIVE }).start();
+    Animated.timing(wash, { toValue: to, duration: WASH_MS, easing: WASH_EASING, useNativeDriver: NATIVE }).start();
+  }, [mode, pill, wash]);
 
   return (
-    <ModeCtx.Provider value={{ mode, setMode, pill, wash, trackW, setTrackW }}>
+    <ModeCtx.Provider value={{ mode, setMode: setModeState, pill, wash, trackW, setTrackW }}>
       {children}
     </ModeCtx.Provider>
   );

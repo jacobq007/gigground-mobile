@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,12 +45,11 @@ export default function Onboarding() {
     setStep("pick");
   };
 
-  // Startup detection lands asynchronously — the moment it has a city, skip the
-  // permission gate and go straight to a prefilled picker.
-  useEffect(() => {
-    if (locating || step !== "permission" || !detectedCity) return;
-    applyDetection(detectedCity, detectedZone, coords);
-  }, [locating, detectedCity, detectedZone, coords, step]);
+  // Startup detection lands asynchronously. It used to skip this screen the
+  // moment it had a city, which meant anyone who had already granted permission
+  // never saw the location step at all — it flashed past on the way to the
+  // picker. Now the result is shown here instead: same single tap to accept, but
+  // you can see what we decided before you agree to it.
 
   const allowLocation = async () => {
     const { city: dCity, area: dArea, coords: dCoords, status } = await refreshLocation();
@@ -94,6 +93,8 @@ export default function Onboarding() {
   // and refused — because a refusal is not an error worth its own dead end.
   if (step === "permission") {
     const denied = permState === "denied";
+    const found = !locating && !denied && !!detectedCity;
+    const foundName = detectedZone || detectedCity;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }}>
         <View style={{ paddingHorizontal: 26, paddingTop: 22 }}>
@@ -101,7 +102,9 @@ export default function Onboarding() {
           <Text style={s.sub}>
             {denied
               ? "You said no to location, which is fine. Choose your area instead and we'll measure from there."
-              : "We need it to show you shifts you can actually walk or ride to."}
+              : found
+                ? "Found you. This is where your shifts will be measured from."
+                : "We need it to show you shifts you can actually walk or ride to."}
           </Text>
         </View>
 
@@ -124,6 +127,17 @@ export default function Onboarding() {
                   <Text style={s.mapCardSub}>Pick your area and we'll show shifts around it.</Text>
                 </View>
               </View>
+            ) : found ? (
+              <View style={{ alignItems: "center", gap: 12 }}>
+                <Ionicons name="location" size={44} color={C.indigo} />
+                <View style={[s.mapCard, { flexDirection: "row", alignItems: "center", gap: 10 }]}>
+                  <View style={s.foundDot} />
+                  <View>
+                    <Text style={s.mapCardTitle}>{foundName}</Text>
+                    <Text style={s.foundSub}>{detectedCity}</Text>
+                  </View>
+                </View>
+              </View>
             ) : (
               <Ionicons name="location" size={44} color={C.indigo} />
             )}
@@ -136,13 +150,15 @@ export default function Onboarding() {
             <Text style={s.privacyTxt}>Used to place you, never to track you. You can change it anytime.</Text>
           </View>
           <Button
-            title={locating ? "Finding you…" : denied ? "Try location again" : "Use current location"}
-            onPress={allowLocation}
+            title={locating ? "Finding you…" : found ? `Continue with ${foundName}` : denied ? "Try location again" : "Use current location"}
+            onPress={found ? () => applyDetection(detectedCity, detectedZone, coords) : allowLocation}
             disabled={locating}
-            icon={locating ? <ActivityIndicator color="#fff" size="small" /> : <Ionicons name="navigate" size={16} color="#fff" />}
+            icon={locating ? <ActivityIndicator color="#fff" size="small" /> : <Ionicons name={found ? "checkmark" : "navigate"} size={16} color="#fff" />}
           />
           <Pressable onPress={chooseManually} disabled={locating} style={s.secondary}>
-            <Text style={s.secondaryTxt}>{denied ? "Choose my area" : "Enter location manually"}</Text>
+            <Text style={s.secondaryTxt}>
+              {denied ? "Choose my area" : found ? "Pick a different area" : "Enter location manually"}
+            </Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -243,7 +259,9 @@ const makeStyles = (C) => StyleSheet.create({
   mapCentre: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   mapNote: { fontFamily: F.bold, fontSize: 13, color: C.text2 },
   mapCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 14, paddingHorizontal: 15, paddingVertical: 12, alignItems: "center", maxWidth: 250, shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
-  mapCardTitle: { fontFamily: F.bold, fontSize: 13, color: C.text },
+  mapCardTitle: { fontFamily: F.bold, fontSize: 13.5, color: C.text },
+  foundDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: C.indigo },
+  foundSub: { fontFamily: F.reg, fontSize: 11, color: C.text2, marginTop: 1 },
   mapCardSub: { fontFamily: F.reg, fontSize: 11.5, color: C.text2, lineHeight: 16, marginTop: 3, textAlign: "center" },
   privacyRow: { flexDirection: "row", alignItems: "flex-start", gap: 8, paddingHorizontal: 6, paddingBottom: 14 },
   privacyTxt: { flex: 1, fontFamily: F.reg, fontSize: 11.5, color: C.text3, lineHeight: 16 },
