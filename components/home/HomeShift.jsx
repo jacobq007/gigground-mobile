@@ -142,8 +142,6 @@ export default function HomeShift() {
   while (dayBlocks.length < 4) dayBlocks.push({ key: `open-${dayBlocks.length}`, label: "Free", state: "open", amt: 0 });
   const openCount = dayBlocks.filter((b) => b.state === "open").length;
 
-  const gigsDone = user?.gigsDone || 38;
-  const onTime = 96;
 
   // Widen the radius while the zone stays dry. Resets whenever work appears.
   useEffect(() => {
@@ -323,18 +321,6 @@ export default function HomeShift() {
           </View>
         </LinearGradient>
 
-        {/* Record — the worker's asset */}
-        <Pressable style={s.card} onPress={() => router.push("/(tabs)/profile/record")}>
-          <View style={s.row}>
-            <View style={s.recordAv}><Text style={s.recordAvTxt}>{initialsOf(name)}</Text></View>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={s.cardTitle}>{gigsDone} shifts · {onTime}% on time</Text>
-              <Text style={s.cardSub}>Your record is what hirers filter on</Text>
-            </View>
-            <View style={s.chipOk}><Text style={s.chipOkTxt}>Trusted</Text></View>
-          </View>
-        </Pressable>
-
         {/* Quick actions */}
         <View style={s.quickRow}>
           {QUICK.map((q) => (
@@ -468,7 +454,6 @@ const ordinal = (n) => {
   const v = n % 100;
   return n + (suf[(v - 20) % 10] || suf[v] || suf[0]);
 };
-const initialsOf = (n) => n.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
 
 const makeStyles = (C) => StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 6, paddingBottom: 10, gap: 12 },
@@ -521,11 +506,6 @@ const makeStyles = (C) => StyleSheet.create({
   cardTitle: { fontFamily: FJ.bold, fontSize: 13, color: C.text },
   cardSub: { fontFamily: FJ.med, fontSize: 10.5, color: C.text2, marginTop: 2 },
   row: { flexDirection: "row", alignItems: "center", gap: 11 },
-
-  recordAv: { width: 34, height: 34, borderRadius: 17, backgroundColor: C.indigoSoft, alignItems: "center", justifyContent: "center" },
-  recordAvTxt: { fontFamily: FJ.bold, fontSize: 12, color: C.indigo },
-  chipOk: { backgroundColor: C.greenSoft, borderRadius: 7, paddingHorizontal: 8, paddingVertical: 3 },
-  chipOkTxt: { fontFamily: FJ.bold, fontSize: 9.5, color: C.green },
 
   quickRow: { flexDirection: "row", gap: 8, marginBottom: 12 },
   quick: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: C.surface, borderRadius: 12, paddingVertical: 11, borderWidth: StyleSheet.hairlineWidth, borderColor: C.border },
